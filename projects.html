@@ -73,106 +73,78 @@
         <main>
             <h1 class="text-3xl font-bold mb-6 text-gray-100">Projects</h1>
 
-            <h2 class="text-2xl font-bold mb-6 text-gray-100">GitHub Repositories</h2>
             <section id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <p class="text-gray-500">Loading GitHub repositories...</p>
-            </section>
-
-            <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-100">Notable Contributions</h2>
-            <section id="contributions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <p class="text-gray-500">Loading contributions...</p>
             </section>
         </main>
     </div>
 
     <script>
         async function fetchRepos() {
-// ...
-        }
-
-        async function fetchContributions() {
-            const container = document.getElementById('contributions-container');
+            const container = document.getElementById('projects-container');
             const username = 'vmd1';
-            const eventsUrl = `https://api.github.com/users/${username}/events/public`;
+            // Added sort parameter to the API URL
+            const apiUrl = `https://api.github.com/users/${username}/repos?sort=pushed`;
 
             try {
-                const response = await fetch(eventsUrl);
+                const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`GitHub API error! status: ${response.status}`);
                 }
-                const events = await response.json();
-
-                const pushEvents = events.filter(event => event.type === 'PushEvent');
-                
-                const contributedRepoNames = new Set();
-                for (const event of pushEvents) {
-                    const repoName = event.repo.name;
-                    const owner = repoName.split('/')[0];
-                    if (owner !== username) {
-                        contributedRepoNames.add(repoName);
-                    }
-                }
-
-                if (contributedRepoNames.size === 0) {
-                    container.innerHTML = `<p class="text-gray-500">No recent contributions to other repositories found.</p>`;
-                    return;
-                }
+                const repos = await response.json();
 
                 container.innerHTML = ''; // Clear loading message
 
-                for (const repoName of contributedRepoNames) {
-                    const repoApiUrl = `https://api.github.com/repos/${repoName}`;
-                    try {
-                        const repoResponse = await fetch(repoApiUrl);
-                        if (!repoResponse.ok) {
-                            console.warn(`Could not fetch repo details for ${repoName}`);
-                            continue; // Skip this repo if details can't be fetched
-                        }
-                        const repo = await repoResponse.json();
-                        
-                        const repoCard = document.createElement('a');
-                        repoCard.href = repo.html_url;
-                        repoCard.target = "_blank";
-                        repoCard.className = 'block bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hover:border-slate-600 transition-colors duration-200 cursor-pointer';
-
-                        repoCard.innerHTML = `
-                            <div class="flex items-start justify-between mb-2">
-                                <h3 class="text-xl font-semibold text-gray-100 truncate">${repo.full_name}</h3>
-                                <span class="text-xs font-medium text-white px-2 py-1 rounded-full bg-blue-600">Public</span>
-                            </div>
-                            <p class="text-sm text-gray-400 mb-4">${repo.description || 'No description available.'}</p>
-                            <div class="flex items-center space-x-4 text-gray-400 text-sm">
-                                ${repo.language ? `<span class="flex items-center space-x-1">
-                                    <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
-                                    <span>${repo.language}</span>
-                                </span>` : ''}
-                                <span class="flex items-center space-x-1">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .587l3.668 7.425 8.219 1.192-5.962 5.811 1.41 8.188-7.335-3.856-7.336 3.856 1.41-8.188-5.962-5.811 8.22-1.192z"/></svg>
-                                    <span>${repo.stargazers_count}</span>
-                                </span>
-                                <span class="flex items-center space-x-1">
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm3.333 13.5L12 18.167 8.667 15.5l-2.028-2.028 2.028-2.028L12 14.167l3.333-2.667 2.028 2.028-2.028 2.028z"/></svg>
-                                    <span>${repo.forks_count}</span>
-                                </span>
-                            </div>
-                        `;
-                        container.appendChild(repoCard);
-
-                    } catch (error) {
-                        console.error(`Failed to fetch repo details for ${repoName}:`, error);
-                    }
+                if (repos.length === 0) {
+                    container.innerHTML = `<p class="text-gray-500">No public repositories found for ${username}.</p>`;
+                    return;
                 }
 
+                repos.forEach(repo => {
+                    const repoCard = document.createElement('a');
+                    repoCard.href = repo.html_url;
+                    repoCard.target = "_blank"; // Open link in a new tab
+                    repoCard.className = 'block bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hover:border-slate-600 transition-colors duration-200 cursor-pointer';
+
+                    // Language label with placeholder color
+                    const languageColor = repo.language ? 'bg-blue-500' : 'bg-gray-500';
+
+                    repoCard.innerHTML = `
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="text-xl font-semibold text-gray-100 truncate">${repo.name}</h3>
+                            <span class="text-xs font-medium text-white px-2 py-1 rounded-full bg-blue-600">Public</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-4">${repo.description || 'No description available.'}</p>
+                        <div class="flex items-center space-x-4 text-gray-400 text-sm">
+                            ${repo.language ? `<span class="flex items-center space-x-1">
+                                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                                <span>${repo.language}</span>
+                            </span>` : ''}
+                            <span class="flex items-center space-x-1">
+                                <!-- Star Icon -->
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 .587l3.668 7.425 8.219 1.192-5.962 5.811 1.41 8.188-7.335-3.856-7.336 3.856 1.41-8.188-5.962-5.811 8.22-1.192z"/>
+                                </svg>
+                                <span>${repo.stargazers_count}</span>
+                            </span>
+                            <span class="flex items-center space-x-1">
+                                <!-- Fork Icon -->
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm3.333 13.5L12 18.167 8.667 15.5l-2.028-2.028 2.028-2.028L12 14.167l3.333-2.667 2.028 2.028-2.028 2.028z"/>
+                                </svg>
+                                <span>${repo.forks_count}</span>
+                            </span>
+                        </div>
+                    `;
+                    container.appendChild(repoCard);
+                });
             } catch (error) {
-                console.error('Failed to fetch GitHub contributions:', error);
-                container.innerHTML = `<p class="text-red-500">Failed to load contributions. Please check your network connection.</p>`;
+                console.error('Failed to fetch GitHub repos:', error);
+                container.innerHTML = `<p class="text-red-500">Failed to load projects. Please check the GitHub username or your network connection.</p>`;
             }
         }
 
-        window.onload = function() {
-            fetchRepos();
-            fetchContributions();
-        };
+        window.onload = fetchRepos;
     </script>
 
 </body>
