@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vmd1's Website</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://cdn.848226.xyz/v1/vmd1/media/favicon/favicon-32.ico">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Remixicon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles to handle text truncation with ellipsis */
+        .text-truncate-4 {
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-gray-300">
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+
+        <!-- Header Section -->
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-12">
+            <!-- Logo and name container -->
+            <div class="flex items-center">
+                <!-- Logo -->
+                <img src="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg" alt="vmd1 logo" class="w-12 h-12 mr-4 rounded-full">
+                <h1 class="text-4xl font-extrabold text-gray-100">
+                    vmd1
+                </h1>
+            </div>
+            <div class="flex space-x-4 mt-4 sm:mt-0">
+                <!-- Social media icons using Remixicon -->
+                <!-- GitHub -->
+                <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <i class="ri-github-fill text-2xl"></i>
+                </a>
+                <!-- Reddit -->
+                <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <i class="ri-reddit-fill text-2xl"></i>
+                </a>
+                <!-- Instagram -->
+                <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <i class="ri-instagram-fill text-2xl"></i>
+                </a>
+                <!-- Email -->
+                <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <i class="ri-mail-fill text-2xl"></i>
+                </a>
+                <!-- Blog -->
+                <a href="#" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <i class="ri-rss-fill text-2xl"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- About Me Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Hi!</h2>
+            <div class="space-y-4 text-gray-400 leading-relaxed">
+                <p>I'm Vivaan, a high school freshman with a passion for programming and security. This is my portfolio page. It showcases my work and includes my latest blog posts.</p>
+                <p>This is a placeholder for a more detailed bio. I'll describe some of my projects, interests, and accomplishments here. I'm currently working on a few open-source projects and enjoying every bit of the learning process.</p>
+                <p>Some more information can go here about my hobbies, skills, or anything else I'd like to share. The links above will take you to my social media profiles and blog.</p>
+            </div>
+            <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="projects.html" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">View my projects list →</a>
+                <a href="https://init0.848226.xyz" target="_blank" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">View my blog →</a>
+                <a href="about.html" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">Find out a bit more about me →</a>
+            </div>
+        </section>
+
+        <!-- Featured Posts Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-100">Featured posts</h2>
+            <div id="blog-posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Blog posts will be dynamically inserted here -->
+                <p class="text-gray-500">Loading featured posts...</p>
+            </div>
+        </section>
+        
+        <!-- Script to fetch and display blog posts -->
+        <script>
+            // This function fetches the RSS feed and populates the blog posts section.
+            async function fetchBlogPosts() {
+                const container = document.getElementById('blog-posts-container');
+                const rssUrl = 'https://init0.848226.xyz/index.xml';
+
+                try {
+                    // Fetch the RSS feed. Note: This may encounter a CORS error
+                    // if the server does not have the correct headers. In a real
+                    //-world scenario, a server-side proxy is often used to avoid this.
+                    const response = await fetch(rssUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const xmlText = await response.text();
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+                    const items = xmlDoc.querySelectorAll('item');
+                    const posts = Array.from(items).slice(0, 4); // Get the latest 4 posts
+
+                    if (posts.length === 0) {
+                        container.innerHTML = `<p class="text-gray-500">No blog posts found.</p>`;
+                        return;
+                    }
+
+                    container.innerHTML = ''; // Clear the loading message
+
+                    posts.forEach(post => {
+                        const title = post.querySelector('title').textContent;
+                        const link = post.querySelector('link').textContent;
+                        // The RSS feed may have different elements for summary.
+                        // I'll check for 'description' and 'summary'
+                        const fullDescription = post.querySelector('description')?.textContent || post.querySelector('summary')?.textContent || 'No description available.';
+
+                        // Truncate the description to simulate a 4-line preview
+                        const lineLimit = 4;
+                        const words = fullDescription.split(' ');
+                        const truncatedDescription = words.slice(0, 40).join(' ') + (words.length > 40 ? '...' : '');
+
+                        const postElement = document.createElement('div');
+                        postElement.className = 'bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hover:border-slate-600 transition-colors duration-200';
+                        postElement.innerHTML = `
+                            <h3 class="text-xl font-semibold mb-2 text-gray-100">${title}</h3>
+                            <p class="text-gray-400 mb-4 text-truncate-4">${truncatedDescription}</p>
+                            <a href="${link}" class="text-blue-400 hover:text-blue-300 underline font-medium">Click for more details →</a>
+                        `;
+                        container.appendChild(postElement);
+                    });
+                } catch (error) {
+                    console.error('Failed to fetch blog posts:', error);
+                    container.innerHTML = `<p class="text-red-500">Failed to load blog posts. Please check the RSS feed URL or your network connection.</p>`;
+                }
+            }
+
+            // Call the function when the page loads
+            window.onload = fetchBlogPosts;
+        </script>
+    </div>
+
+</body>
+</html>
