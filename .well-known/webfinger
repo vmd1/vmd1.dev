@@ -1,0 +1,9 @@
+{
+    "links": [
+        {
+            "href": "https://authentik.company/application/o/tailscale-vmd1dev/",
+            "rel": "http://openid.net/specs/connect/1.0/issuer"
+        }
+    ],
+    "subject": "acct:me@vmd1.dev"
+}
