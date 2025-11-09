@@ -20,17 +20,15 @@
     <!-- Use Inter font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <!-- Remixicon CDN -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
         /* Custom styles to handle text truncation with ellipsis */
         .text-truncate-4 {
             display: -webkit-box;
             -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -43,12 +41,12 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-gray-300">
-
+<body class="text-gray-300">
+    <div id="spotlight"></div>
     <div class="container mx-auto px-4 py-8 max-w-5xl">
 
         <!-- Header Section -->
-        <header class="flex flex-col sm:flex-row justify-between items-center mb-12">
+        <header class="flex flex-col sm:flex-row justify-between items-center card navbar-card">
             <!-- Logo and name container -->
             <a href="/" class="flex items-center">
                 <!-- Logo -->
@@ -63,15 +61,15 @@
                     <a href="/" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Home">
                         <i class="ri-home-line text-2xl"></i>
                     </a>
-                    <a href="projects" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Projects">
+                    <a href="projects.html" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Projects">
                         <i class="ri-function-line text-2xl"></i>
                     </a>
-                    <a href="about" class="text-gray-100 font-bold transition-colors duration-200" title="About">
+                    <a href="about.html" class="text-gray-100 font-bold transition-colors duration-200" title="About">
                         <i class="ri-information-line text-2xl"></i>
                     </a>
                 </nav>
                 <div class="text-gray-600">|</div>
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 social-icons">
                     <!-- Social media icons using Remixicon -->
                     <!-- GitHub -->
                     <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
@@ -98,172 +96,26 @@
         </header>
 
         <!-- About Me Content -->
-        <main class="text-center">
-            <h1 class="mb-8">
-                <img src="https://cdn.848226.xyz/v1/vmd1/media/vmd1.dev/header.png" alt="vmd1.dev header banner" class="w-full h-auto">
-            </h1>
+        <main class="card">
+            <h1 class="text-3xl font-bold mb-6 text-gray-100">About Me</h1>
 
-            <p class="text-gray-400 leading-relaxed max-w-xl mx-auto mb-10">
-                Hi there 👋 I'm Vivaan — passionate about coding, self-hosting, and tech in general.<br>
-                You can check out my blog over at 👉 <a href="https://init0.848226.xyz/" class="text-blue-400 hover:underline">init0.848226.xyz</a>
-            </p>
-
-            <!-- SKILLS & MAIN SKILLS TWO COLUMN LAYOUT -->
-            <div class="flex flex-col md:flex-row justify-center gap-6 mb-10">
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-100 flex items-center justify-center">
-                        <img src="https://media.giphy.com/media/UuYtvq24KIj6I38nQ1/giphy.gif" width="36" alt="ToolsUsed-gif" class="mr-2"> Tools I use
-                    </h3>
-                    <h4 class="text-lg font-medium mb-2 text-gray-200">IDEs</h4>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=vscode&theme=dark" alt="IDEs" />
-                        </a>
-                    </div>
-                    <h4 class="text-lg font-medium mb-2 text-gray-200">Operating Systems</h4>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=windows,linux,debian,ubuntu&theme=dark" alt="Devops & Productivity" />
-                        </a>
-                    </div>
-                    <h4 class="text-lg font-medium mb-2 text-gray-200">DevOps & Productivity</h4>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=github,git,notion,postman,docker&theme=dark" alt="Devops & Productivity" />
-                        </a>
-                    </div>
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Left column for text -->
+                <div class="md:w-2/3 space-y-4 text-gray-400 leading-relaxed">
+                    <p>I'm Vivaan, a student with a deep passion for programming, cybersecurity, and all things tech. I thrive on the challenge of breaking down complex systems to understand how they work, and I'm constantly exploring new ways to build, innovate, and (ethically) break things.</p>
+                    <p>My journey into tech started with a simple curiosity for how computers work, and it has since grown into a full-blown obsession. I'm particularly interested in the intersection of software development and security, and I enjoy creating tools that can automate and simplify complex processes. I believe that the best way to learn is by doing, which is why I'm always working on personal projects and contributing to open-source communities.</p>
+                    <p>When I'm not coding, you can find me gaming, reading up on the latest tech trends, or participating in cybersecurity challenges. I'm a firm believer in lifelong learning and am always on the lookout for new skills to acquire and new challenges to overcome.</p>
+                    <p>This website serves as my personal portfolio and blog, where I document my projects, share my learnings, and connect with like-minded individuals. Feel free to explore my work and reach out if you'd like to collaborate or just chat about tech.</p>
                 </div>
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-100 flex items-center justify-center">
-                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDIzYzk0ODBlYWRlYjliZGEwNDNhZDc3YTY1NzEyMzAyYmMxOTBkOCZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/LmrjyYSZE60bHpn2Bg/giphy.gif" width="36" alt="CodeSkills-gif" class="mr-2"> Main skills
-                    </h3>
-                    <h4 class="text-lg font-medium mb-2 text-gray-200">Front-end</h4>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=js,html,css&theme=dark" alt="Front-end" />
-                        </a>
-                    </div>
-                    <h4 class="text-lg font-medium mb-2 text-gray-200">Back-end</h4>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=python,fastapi&theme=dark" alt="Back-end" />
-                        </a>
-                    </div>
-                    <h3 class="text-xl font-semibold mb-4 text-gray-100 flex items-center justify-center">
-                        <img src="https://media.giphy.com/media/hfnkqlWI5Oh91vsvcw/giphy.gif" width="36" alt="CodeLearning-gif" class="mr-2"/> Studying for now
-                    </h3>
-                    <div class="flex justify-center mb-4">
-                        <a href="https://skillicons.dev" target="_blank">
-                            <img src="https://skillicons.dev/icons?i=react,c&theme=dark" alt="Studying for now" />
-                        </a>
-                    </div>
+                <!-- Right column for GitHub stats -->
+                <div class="md:w-1/3 flex flex-col items-center space-y-4">
+                    <img src="https://github-readme-stats.vercel.app/api?username=vmd1&show_icons=true&theme=transparent&text_color=e0e0e0&title_color=845EC2&icon_color=845EC2&border_color=ffffff1a" alt="vmd1's GitHub Stats" class="github-image rounded-lg" />
+                    <img src="https://github-readme-streak-stats.herokuapp.com?user=vmd1&theme=transparent&date_format=M%20j%5B%2C%20Y%5D&text_color=e0e0e0&title_color=845EC2&border_color=ffffff1a" alt="vmd1's GitHub Streak" class="github-image rounded-lg" />
+                    <img src="https://github-profile-trophy.vercel.app/?username=vmd1&theme=transparent&no-frame=true&no-bg=true&margin-w=4&margin-h=4&column=4&title_color=845EC2&text_color=e0e0e0&border_color=ffffff1a" alt="vmd1's GitHub Trophies" class="github-image" />
                 </div>
-            </div>
-
-            <!-- Notable Projects -->
-            <h2 class="text-2xl font-bold text-gray-100 mt-10 mb-6">🧠 Notable Projects</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Backend Section -->
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                    <h4 class="text-lg font-medium text-gray-200 mb-4 text-center">🔙 Backend (Python)</h4>
-                    <div class="space-y-4">
-                        <a href="https://github.com/vmd1/Aria-Complete" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=Aria-Complete&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="Aria - Voice Assistant" />
-                        </a>
-                        <a href="https://github.com/vmd1/TermClient" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=TermClient&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="TermClient - CLI Client" />
-                        </a>
-                        <a href="https://github.com/vmd1/My-Top-Projects" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=My-Top-Projects&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="My Top Projects" />
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Frontend Section -->
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                    <h4 class="text-lg font-medium text-gray-200 mb-4 text-center">🌐 Frontend (HTML/CSS)</h4>
-                    <div class="space-y-4">
-                        <a href="https://github.com/vmd1/My-Top-Projects/tree/main/WebSites" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=My-Top-Projects&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="Static Sites" />
-                        </a>
-                        <a href="https://github.com/vmd1/web-base" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=web-base&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="Web Base" />
-                        </a>
-                        <a href="https://github.com/vmd1/housepoints" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=housepoints&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="HousePoints" />
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Docker & Deployments Section -->
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                    <h4 class="text-lg font-medium text-gray-200 mb-4 text-center">🐳 Docker & Deployments</h4>
-                    <div class="space-y-4">
-                        <a href="https://github.com/vmd1/home-compose" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=home-compose&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="Home Compose Stack" />
-                        </a>
-                        <a href="https://github.com/vmd1/new-server-provision" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=new-server-provision&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="New Server Provisioning" />
-                        </a>
-                        <a href="https://github.com/vmd1/scripts" target="_blank">
-                            <img class="github-image" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=scripts&theme=tokyonight&show_owner=true&hide_border=true&no-frame=true" alt="New Server Provisioning" />
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!--Trophies Section-->
-            <h2 class="text-2xl font-bold text-gray-100 mt-10 mb-4">🏆 GitHub Trophies 🏆</h2>
-            <div class="flex justify-center mb-8">
-                <a href="https://github.com/vmd1" target="_blank">
-                    <img alt="GitHub Trophies" src="https://github-profile-trophy.vercel.app/?username=vmd1&no-bg=true&row=2&column=6&margin-w=20&margin-h=20&theme=tokyonight&no-frame=true">
-                </a>
-            </div>
-
-            <!--Github stats Table-->
-            <h2 class="text-2xl font-bold text-gray-100 mt-10 mb-6">📊 GitHub Stats 📊</h2>
-            <div class="flex flex-col md:flex-row justify-center gap-6 mb-8">
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold text-gray-200 mb-4">GitHub Stats</h3>
-                    <a href="https://github.com/vmd1" target="_blank">
-                        <img class="github-image" src="https://github-readme-stats.vercel.app/api?username=vmd1&count_private=true&show_icons=true&theme=tokyonight&rank_icon=github&hide=prs,issues,contribs&show=reviews,prs_merged,prs_merged_percentage&hide_border=true&no-frame=true" alt="GitHub Stats" />
-                    </a>
-                </div>
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold text-gray-200 mb-4">Streak Stats</h3>
-                    <a href="https://github.com/vmd1" target="_blank">
-                        <img class="github-image" src="https://streak-stats.demolab.com?user=vmd1&theme=tokyonight&hide_border=true" alt="Streak Stats" />
-                    </a>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row justify-center gap-6 mb-8">
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold text-gray-200 mb-4">My Blog</h3>
-                    <a href="https://init0.848226.xyz" target="_blank">
-                        <img class="github-image" width="470" src="https://github-readme-stats.vercel.app/api/pin/?username=vmd1&repo=init0&theme=tokyonight&show_owner=trueffff&hide_border=true&no-frame=true" alt="Awesome-Dev-Portfolios" />
-                    </a>
-                </div>
-                <div class="flex-1 px-2">
-                    <h3 class="text-xl font-semibold text-gray-200 mb-4">Top Contributions</h3>
-                    <a href="https://github.com/vmd1" target="_blank">
-                        <img class="github-image" src="https://github-contributor-stats.vercel.app/api?username=vmd1&limit=2&theme=tokyonight&show_owner=true&combine_all_yearly_contributions=false&hide_border=true" alt="Top Repo" />
-                    </a>
-                </div>
-            </div>
-
-            <!--Contribution Graph-->
-            <h2 class="text-2xl font-bold text-gray-100 mt-10 mb-6">📈 Contribution Graph 📈</h2>
-            <div class="flex justify-center">
-                <img src="https://github-readme-activity-graph.vercel.app/graph?username=vmd1&theme=tokyo-night&area=false&hide_border=true" alt="Contribution Graph" class="w-full h-auto rounded-lg">
-            </div>
-
-            <!-- Spotify Now Playing Section -->
-            <h2 class="text-2xl font-bold text-gray-100 mt-10 mb-6">♫ Currently vibing to... ♫</h2>
-            <div class="flex justify-center mb-8">
-                <img src="https://spotify-github-profile.kittinanx.com/api/view?uid=1sl4s67zya5ybt44exyu5y127&cover_image=true&theme=novatorem&show_offline=false&background_color=121212&interchange=false&bar_color=53b14f&bar_color_cover=false" alt="Spotify Now Playing" class="rounded-lg shadow-lg" style="max-width: 100%; height: auto;">
             </div>
         </main>
     </div>
-
+    <script src="spotlight.js"></script>
 </body>
 </html>

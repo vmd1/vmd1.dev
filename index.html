@@ -20,29 +20,27 @@
     <!-- Use Inter font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <!-- Remixicon CDN -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
         /* Custom styles to handle text truncation with ellipsis */
         .text-truncate-4 {
             display: -webkit-box;
             -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-gray-300">
-
+<body class="text-gray-300">
+    <div id="spotlight"></div>
     <div class="container mx-auto px-4 py-8 max-w-5xl">
 
         <!-- Header Section -->
-        <header class="flex flex-col sm:flex-row justify-between items-center mb-12">
+        <header class="flex flex-col sm:flex-row justify-between items-center card navbar-card">
             <!-- Logo and name container -->
             <a href="/" class="flex items-center">
                 <!-- Logo -->
@@ -56,15 +54,15 @@
                     <a href="/" class="text-gray-100 font-bold transition-colors duration-200" title="Home">
                         <i class="ri-home-line text-2xl"></i>
                     </a>
-                    <a href="projects" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Projects">
+                    <a href="projects.html" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Projects">
                         <i class="ri-function-line text-2xl"></i>
                     </a>
-                    <a href="about" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="About">
+                    <a href="about.html" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="About">
                         <i class="ri-information-line text-2xl"></i>
                     </a>
                 </nav>
                 <div class="text-gray-600">|</div>
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 social-icons">
                     <!-- Social media icons using Remixicon -->
                     <!-- GitHub -->
                     <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
@@ -91,92 +89,100 @@
         </header>
 
         <!-- About Me Section -->
-        <section class="mb-12">
+        <section class="mb-12 card">
             <h2 class="text-2xl font-semibold mb-4 text-gray-100">Hi!</h2>
             <div class="space-y-4 text-gray-400 leading-relaxed">
             <p>I'm Vivaan, a student who’s super into programming, security, and breaking things (ethically, of course 😅). This is my portfolio page where I dump my projects, write-ups, and blog posts about what I’m learning along the way.</p>
             <p>Right now, I’m working on a few open-source projects - mostly related to security tools and automation. I love digging into code, figuring out how stuff works under the hood, and then building (or breaking) things just to see what happens. Every bug, every fix, every “oh no why is this broken” moment makes me better.</p>
             <p>Outside of coding, I’m into gaming and reading. I’m always looking for ways to challenge myself and pick up new skills, whether that’s learning a new programming language, exploring cybersecurity challenges, or contributing to communities online.</p>
             <p>This page will keep growing as I add more projects, write more blog posts, and (hopefully) ship some cool stuff that others find useful. Feel free to check out my socials/blog through the links above and reach out if you wanna chat or collab.</p>
-            </div>
-            <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="projects" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">View my projects list →</a>
-                <a href="https://init0.vmd1.dev" target="_blank" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">View my blog →</a>
-                <a href="about" class="inline-block bg-slate-800 text-gray-200 px-6 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200 shadow-lg">Find out a bit more about me →</a>
-            </div>
         </section>
 
-        <!-- Featured Posts Section -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-semibold mb-6 text-gray-100">Featured posts</h2>
-            <div id="blog-posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Blog Section -->
+        <section class="mb-12 card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Latest Posts</h2>
+            <div id="blog-posts" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Blog posts will be dynamically inserted here -->
-                <p class="text-gray-500">Loading featured posts...</p>
             </div>
         </section>
-        
-        <!-- Script to fetch and display blog posts -->
-        <script>
-            // This function fetches the RSS feed and populates the blog posts section.
-            async function fetchBlogPosts() {
-                const container = document.getElementById('blog-posts-container');
-                const rssUrl = 'https://init0.vmd1.dev/index.xml';
 
-                try {
-                    // Fetch the RSS feed. Note: This may encounter a CORS error
-                    // if the server does not have the correct headers. In a real
-                    //-world scenario, a server-side proxy is often used to avoid this.
-                    const response = await fetch(rssUrl);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const xmlText = await response.text();
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        <!-- Featured Projects Section -->
+        <section class="card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Featured Projects</h2>
+            <div id="featured-projects" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Featured projects will be dynamically inserted here -->
+            </div>
+        </section>
 
-                    const items = xmlDoc.querySelectorAll('item');
-                    const posts = Array.from(items).slice(0, 4); // Get the latest 4 posts
-
-                    if (posts.length === 0) {
-                        container.innerHTML = `<p class="text-gray-500">No blog posts found.</p>`;
-                        return;
-                    }
-
-                    container.innerHTML = ''; // Clear the loading message
-
-                    posts.forEach(post => {
-                        const title = post.querySelector('title').textContent;
-                        const link = post.querySelector('link').textContent;
-                        // The RSS feed may have different elements for summary.
-                        // I'll check for 'description' and 'summary'
-                        const fullDescription = post.querySelector('description')?.textContent || post.querySelector('summary')?.textContent || 'No description available.';
-
-                        // Truncate the description to simulate a 4-line preview
-                        const lineLimit = 4;
-                        const words = fullDescription.split(' ');
-                        const truncatedDescription = words.slice(0, 40).join(' ') + (words.length > 40 ? '...' : '');
-
-                        const postElement = document.createElement('a');
-                        postElement.href = link;
-                        postElement.target = '_blank';
-                        postElement.className = 'block bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 hover:border-slate-600 transition-colors duration-200 cursor-pointer';
-                        postElement.innerHTML = `
-                            <h3 class="text-xl font-semibold mb-2 text-gray-100">${title}</h3>
-                            <p class="text-gray-400 mb-4 text-truncate-4">${truncatedDescription}</p>
-                            <span class="text-blue-400 hover:text-blue-300 font-medium">Click for more details →</span>
-                        `;
-                        container.appendChild(postElement);
-                    });
-                } catch (error) {
-                    console.error('Failed to fetch blog posts:', error);
-                    container.innerHTML = `<p class="text-red-500">Failed to load blog posts. Please check the RSS feed URL or your network connection.</p>`;
-                }
-            }
-
-            // Call the function when the page loads
-            window.onload = fetchBlogPosts;
-        </script>
     </div>
 
+    <script>
+        // Fetch and display blog posts
+        async function fetchBlogPosts() {
+            const feedUrl = 'https://init0.vmd1.dev/index.xml';
+            const container = document.getElementById('blog-posts');
+            try {
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    const posts = data.items.slice(0, 6);
+                    let postsHtml = '';
+                    posts.forEach(post => {
+                        // Create a temporary div to parse the description HTML
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = post.description;
+                        const descriptionText = tempDiv.textContent || tempDiv.innerText || "";
+                        const truncatedDescription = descriptionText.substring(0, 120) + '...';
+
+                        postsHtml += `
+                            <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
+                                <h3 class="text-xl font-bold text-gray-100 mb-2">${post.title}</h3>
+                                <p class="text-gray-400 text-truncate-4">${truncatedDescription}</p>
+                            </a>
+                        `;
+                    });
+                    container.innerHTML = postsHtml;
+                } else {
+                    container.innerHTML = '<p class="text-gray-500">Failed to load blog posts.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching blog posts:', error);
+                container.innerHTML = '<p class="text-gray-500">Error fetching blog posts.</p>';
+            }
+        }
+
+        // Fetch and display featured projects
+        async function fetchFeaturedProjects() {
+            const container = document.getElementById('featured-projects');
+            const username = 'vmd1';
+            const featuredRepos = ['vmd1.dev', 'pwninit-template']; 
+
+            try {
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
+                const repos = await response.json();
+                
+                const filteredProjects = repos.filter(repo => featuredRepos.includes(repo.name));
+
+                let projectsHtml = '';
+                filteredProjects.forEach(repo => {
+                    projectsHtml += `
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
+                            <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.name}</h3>
+                            <p class="text-gray-400">${repo.description || 'No description available.'}</p>
+                        </a>
+                    `;
+                });
+                container.innerHTML = projectsHtml;
+            } catch (error) {
+                console.error('Error fetching featured projects:', error);
+                container.innerHTML = '<p class="text-gray-500">Failed to load featured projects.</p>';
+            }
+        }
+
+        fetchBlogPosts();
+        fetchFeaturedProjects();
+    </script>
+    <script src="spotlight.js"></script>
 </body>
 </html>
