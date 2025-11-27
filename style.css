@@ -78,3 +78,20 @@ body {
     z-index: -1;
     opacity: 0.3;
 }
+
+/* Custom styles to handle text truncation with ellipsis */
+.text-truncate-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Custom styles for the GitHub stats and trophy images to prevent layout shift */
+.github-image {
+    width: 100%;
+    max-width: 470px;
+    height: auto;
+}

@@ -23,17 +23,6 @@
     <link rel="stylesheet" href="style.css">
     <!-- Remixicon CDN -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
-    <style>
-        /* Custom styles to handle text truncation with ellipsis */
-        .text-truncate-4 {
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
 </head>
 <body class="text-gray-300">
     <div id="spotlight"></div>
@@ -156,7 +145,7 @@
         async function fetchFeaturedProjects() {
             const container = document.getElementById('featured-projects');
             const username = 'vmd1';
-            const featuredRepos = ['vmd1.dev', 'pwninit-template']; 
+            const featuredRepos = ['vmd1.dev']; 
 
             try {
                 const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated`);
