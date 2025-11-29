@@ -1,0 +1,40 @@
+{{ define "main" }}
+<div class="space-y-8">
+    <!-- Content Card -->
+    <article class="card static-card">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-100 mb-2">{{ .Title }}</h1>
+            <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
+                <span>{{ .Date.Format "January 2, 2006" }}</span>
+                <span>·</span>
+                <span>{{ .Params.author | default .Site.Params.author.name }}</span>
+                {{ if .Params.tags }}
+                <span class="ml-2">
+                    {{ range .Params.tags }}
+                    <a href="{{ "tags" | relURL }}/{{ . | urlize }}" class="inline-block bg-slate-800 hover:bg-slate-700 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-colors">#{{ . }}</a>
+                    {{ end }}
+                </span>
+                {{ end }}
+            </div>
+        </header>
+
+        {{ if and (ne .Params.toc false) .TableOfContents }}
+        <div class="mb-8 p-4 bg-slate-900 rounded-lg">
+            <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
+            {{ .TableOfContents }}
+        </div>
+        {{ end }}
+
+        <div class="prose prose-invert max-w-none">
+            {{ .Content }}
+        </div>
+    </article>
+
+    <!-- Comments Card (only if not disabled) -->
+    {{ if not .Params.disableComments }}
+    <div class="card static-card">
+        {{ partial "comments.html" . }}
+    </div>
+    {{ end }}
+</div>
+{{ end }}

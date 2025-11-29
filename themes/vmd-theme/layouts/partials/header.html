@@ -1,0 +1,100 @@
+        <!-- Header Section -->
+        <header class="flex flex-col sm:flex-row justify-between items-center card navbar-card relative">
+            <!-- Logo and name container -->
+            <a href="{{ "/" | relURL }}" class="flex items-center">
+                <!-- Logo -->
+                <img src="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg" alt="vmd1 logo" class="w-12 h-12 mr-4 rounded-full">
+                <h1 class="text-4xl font-extrabold text-gray-100">
+                    {{ .Site.Title }}
+                </h1>
+            </a>
+            <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                <nav class="flex space-x-4 items-center">
+                    <a href="{{ "/" | relURL }}" class="{{ if .IsHome }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200" title="Home">
+                        <i class="ri-home-line text-2xl"></i>
+                    </a>
+                    <a href="{{ "posts" | relURL }}" class="{{ if eq .Section "posts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200" title="Posts">
+                        <i class="ri-article-line text-2xl"></i>
+                    </a>
+                    <a href="{{ "archive" | relURL }}" class="{{ if eq .Title "Archive" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200" title="Archive">
+                        <i class="ri-archive-line text-2xl"></i>
+                    </a>
+                    <a href="#" id="projects-nav-link" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Projects">
+                        <i class="ri-function-line text-2xl"></i>
+                    </a>
+                    <button id="search-toggle" class="text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="Search">
+                        <i class="ri-search-line text-2xl"></i>
+                    </button>
+                </nav>
+                <div class="text-gray-600">|</div>
+                <div class="flex space-x-4 social-icons">
+                    <!-- Social media icons using Remixicon -->
+                    <!-- GitHub -->
+                    <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                        <i class="ri-github-fill text-2xl"></i>
+                    </a>
+                    <!-- Reddit -->
+                    <a href="https://www.reddit.com/user/vmd1_" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                        <i class="ri-reddit-fill text-2xl"></i>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/v.md.1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                        <i class="ri-instagram-fill text-2xl"></i>
+                    </a>
+                    <!-- Email -->
+                    <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                        <i class="ri-mail-fill text-2xl"></i>
+                    </a>
+                    <!-- Blog -->
+                    <a href="{{ "posts" | relURL }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                        <i class="ri-rss-fill text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search Input Container -->
+            <div id="search-container" class="hidden absolute top-full right-0 mt-2 w-full sm:w-80 px-4 sm:px-0 z-50">
+                <div class="card p-2 bg-slate-900/95 backdrop-blur-xl border border-gray-700">
+                    <div class="relative">
+                        <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search-input" placeholder="Search posts..." class="w-full bg-slate-800 text-gray-100 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-gray-700 placeholder-gray-500">
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                const searchToggle = document.getElementById('search-toggle');
+                const searchContainer = document.getElementById('search-container');
+                const searchInput = document.getElementById('search-input');
+
+                searchToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    searchContainer.classList.toggle('hidden');
+                    if (!searchContainer.classList.contains('hidden')) {
+                        searchInput.focus();
+                    }
+                });
+
+                // Close when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!searchToggle.contains(e.target) && !searchContainer.contains(e.target)) {
+                        searchContainer.classList.add('hidden');
+                    }
+                });
+
+                // Prevent closing when clicking inside the search container
+                searchContainer.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+
+                // Handle search submission
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            window.location.href = '{{ "search" | relURL }}?q=' + encodeURIComponent(query);
+                        }
+                    }
+                });
+            </script>
+        </header>

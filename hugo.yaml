@@ -1,0 +1,32 @@
+baseURL: 'https://vmd1.dev/'
+relativeURLs: true
+languageCode: 'en-us'
+title: 'vmd1'
+theme: 'vmd-theme'
+enableRobotsTXT: true
+
+params:
+  description: "Vivaan M's portfolio and blog. Exploring programming, security, and technology."
+  keywords: "programming, security, cybersecurity, blog, portfolio, vmd1, vivaan m"
+  images: ["https://cdn.848226.xyz/v1/vmd1/media/logo/logo.png"] # Fallback image for social sharing
+  author:
+    name: "Vivaan M"
+    email: "me@vmd1.dev"
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    lineNos: true
+    lineNumbersInTable: false
+    noClasses: false
+    style: dracula
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+

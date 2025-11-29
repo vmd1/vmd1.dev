@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ partial "head.html" . }}
+<body class="text-gray-300">
+    <div id="spotlight"></div>
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        {{ partial "header.html" . }}
+        
+        {{ block "main" . }}{{ end }}
+
+    </div>
+
+    <!-- Projects Modal -->
+    <div id="projects-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="modal-content" class="bg-slate-900 p-8 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto card">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-100">All Projects</h2>
+                <button id="close-modal" class="text-gray-400 hover:text-gray-100">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+            </div>
+            <div id="all-projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- All projects will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Projects Modal Logic
+        const showAllProjectsButton = document.getElementById('show-all-projects'); // This might be null on pages without the button
+        const closeModalButton = document.getElementById('close-modal');
+        const projectsModal = document.getElementById('projects-modal');
+        const allProjectsContainer = document.getElementById('all-projects-container');
+        const projectsNavLink = document.getElementById('projects-nav-link');
+        const modalContent = document.getElementById('modal-content');
+
+        function openModal() {
+            projectsModal.classList.remove('hidden');
+            fetchAllProjects();
+        }
+
+        function closeModal() {
+            projectsModal.classList.add('hidden');
+        }
+
+        // Event delegation or check if element exists before adding listener
+        document.addEventListener('click', function(e) {
+            if (e.target && e.target.id === 'show-all-projects') {
+                openModal();
+            }
+        });
+        
+        if (projectsNavLink) {
+            projectsNavLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal();
+            });
+        }
+
+        if (closeModalButton) {
+            closeModalButton.addEventListener('click', closeModal);
+        }
+
+        if (projectsModal) {
+            projectsModal.addEventListener('click', (e) => {
+                if (e.target === projectsModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        async function fetchAllProjects() {
+            const username = 'vmd1';
+            try {
+                allProjectsContainer.innerHTML = '<p class="text-gray-500">Loading GitHub repositories...</p>';
+                
+                const [ownedResponse] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}/repos?sort=pushed`)
+                ]);
+
+                const ownedRepos = await ownedResponse.json();
+
+                const allRepos = [...ownedRepos];
+                
+                // Simple duplicate removal by repo id
+                const uniqueRepos = Array.from(new Set(allRepos.map(a => a.id)))
+                    .map(id => {
+                        return allRepos.find(a => a.id === id)
+                    });
+
+                allProjectsContainer.innerHTML = '';
+
+                uniqueRepos.forEach(repo => {
+                    const projectCard = `
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors duration-200 card">
+                            <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.full_name}</h3>
+                            <p class="text-gray-400 text-sm mb-2">
+                                <i class="ri-star-line"></i> ${repo.stargazers_count}
+                                <i class="ri-git-repository-commits-line ml-4"></i> ${repo.forks_count}
+                            </p>
+                            <p class="text-gray-500 text-sm">${repo.description || 'No description available.'}</p>
+                        </a>
+                    `;
+                    allProjectsContainer.innerHTML += projectCard;
+                });
+            } catch (error) {
+                console.error('Error fetching all projects:', error);
+                allProjectsContainer.innerHTML = '<p class="text-gray-500">Failed to load projects. Please try again later.</p>';
+            }
+        }
+    </script>
+    <script src="{{ "js/spotlight.js" | relURL }}"></script>
+</body>
+</html>

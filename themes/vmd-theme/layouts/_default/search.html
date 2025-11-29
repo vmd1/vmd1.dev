@@ -1,0 +1,96 @@
+{{ define "main" }}
+<div class="card static-card min-h-[60vh]">
+    <h1 class="text-3xl font-bold text-gray-100 mb-8">Search Results</h1>
+    
+    <div id="search-results" class="space-y-6">
+        <!-- Results will be populated here -->
+        <div class="text-center text-gray-400 py-12">
+            <i class="ri-loader-4-line text-4xl animate-spin mb-4 inline-block"></i>
+            <p>Searching...</p>
+        </div>
+    </div>
+    
+    <template id="search-result-template">
+        <a href="" class="block p-6 bg-slate-900/50 rounded-lg hover:bg-slate-800 transition-colors duration-200 border border-gray-800">
+            <h3 class="text-xl font-bold text-gray-100 mb-2 result-title"></h3>
+            <div class="text-sm text-gray-500 mb-2 result-date"></div>
+            <p class="text-gray-400 text-sm result-summary"></p>
+        </a>
+    </template>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q');
+        const resultsContainer = document.getElementById('search-results');
+        
+        if (!query) {
+            resultsContainer.innerHTML = '<p class="text-gray-400">Please enter a search term.</p>';
+            return;
+        }
+
+        try {
+            // Fetch the search index
+            const response = await fetch('{{ "index.json" | relURL }}');
+            if (!response.ok) {
+                throw new Error('Failed to load search index');
+            }
+            const searchIndex = await response.json();
+
+            // Initialize Fuse.js
+            const fuse = new Fuse(searchIndex, {
+                keys: [
+                    { name: 'title', weight: 0.7 },
+                    { name: 'contents', weight: 0.5 },
+                    { name: 'tags', weight: 0.3 },
+                    { name: 'categories', weight: 0.3 }
+                ],
+                threshold: 0.3, // Lower = more exact matching
+                ignoreLocation: true
+            });
+
+            // Perform search
+            const results = fuse.search(query);
+
+            // Display results
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-gray-400">No results found for "${query}".</p>`;
+            } else {
+                resultsContainer.innerHTML = '';
+                const template = document.getElementById('search-result-template');
+
+                results.forEach(result => {
+                    const item = result.item;
+                    const clone = template.content.cloneNode(true);
+                    
+                    const link = clone.querySelector('a');
+                    link.href = item.permalink;
+                    
+                    clone.querySelector('.result-title').textContent = item.title;
+                    
+                    // Format date if available
+                    if (item.date) {
+                        const date = new Date(item.date);
+                        clone.querySelector('.result-date').textContent = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                    }
+                    
+                    // Truncate summary
+                    const summary = item.summary || item.contents.substring(0, 150) + '...';
+                    clone.querySelector('.result-summary').textContent = summary;
+                    
+                    resultsContainer.appendChild(clone);
+                });
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            resultsContainer.innerHTML = '<p class="text-red-400">An error occurred while searching. Please try again later.</p>';
+        }
+    });
+</script>
+{{ end }}

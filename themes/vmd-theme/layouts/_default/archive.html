@@ -1,0 +1,56 @@
+{{ define "main" }}
+<div class="card static-card min-h-[60vh]">
+    <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
+        <h1 class="text-3xl font-bold text-gray-100 flex items-center gap-3">
+            Archive 
+            <a href="{{ "index.xml" | relURL }}" class="text-gray-400 hover:text-white transition-colors" title="RSS Feed">
+                <i class="ri-rss-fill text-xl"></i>
+            </a>
+        </h1>
+    </div>
+
+    <div class="space-y-12">
+        {{ $posts := where .Site.RegularPages "Section" "ne" "" }}
+        {{ range $posts.GroupByDate "2006" }}
+        <div class="year-group">
+            <h2 class="text-2xl font-bold text-gray-200 mb-6 flex items-start">
+                {{ .Key }}
+                <span class="text-sm text-gray-500 ml-2 font-normal relative -top-1">{{ len .Pages }}</span>
+            </h2>
+            
+            <div class="space-y-8 ml-2 md:ml-4 border-l-2 border-gray-800 pl-4 md:pl-6">
+                {{ range .Pages.GroupByDate "January" }}
+                <div class="month-group">
+                    <h3 class="text-xl font-semibold text-gray-300 mb-4 flex items-start">
+                        {{ .Key }}
+                        <span class="text-xs text-gray-500 ml-2 font-normal relative -top-1">{{ len .Pages }}</span>
+                    </h3>
+
+                    <div class="space-y-6">
+                        {{ range .Pages }}
+                        <div class="post-item group">
+                            <a href="{{ .RelPermalink }}" class="block">
+                                <h4 class="text-lg font-medium text-gray-100 group-hover:text-[var(--primary-color)] transition-colors">
+                                    {{ .Title }}
+                                </h4>
+                            </a>
+                            <div class="text-sm text-gray-500 mt-1 flex flex-wrap items-center gap-x-2">
+                                <span>{{ .Date.Format "January 2, 2006" }}</span>
+                                <span>·</span>
+                                <span>{{ .ReadingTime }} min</span>
+                                <span>·</span>
+                                <span>{{ .WordCount }} words</span>
+                                <span>·</span>
+                                <span>{{ .Params.author | default $.Site.Params.author.name }}</span>
+                            </div>
+                        </div>
+                        {{ end }}
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ end }}

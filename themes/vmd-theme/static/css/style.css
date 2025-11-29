@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+  --primary-color: #845EC2;
+  --secondary-color: #D65DB1;
+  --highlight-color: #FF6F91;
+  --accent-color: #FF9671;
+  --background-start: #000326;
+  --background-end: #00010f;
+  --card-background: rgba(10, 10, 25, 0.5);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-color: #e0e0e0;
+  --text-color-dark: #a0a0a0;
+  --shadow-color: rgba(132, 94, 194, 0.5);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-start);
+    color: var(--text-color);
+    overflow-y: scroll;
+}
+
+.card {
+    background: var(--card-background);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease;
+}
+
+.card:not(.static-card):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 var(--shadow-color);
+}
+
+.static-card {
+    transform: none !important;
+    transition: none !important;
+}
+
+.static-card:hover {
+    transform: none !important;
+    box-shadow: 0 8px 32px 0 var(--shadow-color) !important;
+}
+
+.navbar-card {
+    position: sticky;
+    top: 1rem;
+    z-index: 50;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+    width: 100%;
+    padding: 1.5rem;
+}
+
+.social-icons a i {
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover .ri-github-fill { color: #ffffff; transform: scale(1.2); }
+.social-icons a:hover .ri-reddit-fill { color: #FF4500; transform: scale(1.2); }
+.social-icons a:hover .ri-instagram-fill { color: #E4405F; transform: scale(1.2); }
+.social-icons a:hover .ri-mail-fill { color: var(--highlight-color); transform: scale(1.2); }
+.social-icons a:hover .ri-rss-fill { color: #FFA500; transform: scale(1.2); }
+
+.card .card {
+    box-shadow: none;
+}
+
+.card .card:hover {
+    box-shadow: none;
+}
+
+#spotlight {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-color) 0%, rgba(132, 94, 194, 0) 60%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    opacity: 0.3;
+}
+
+/* Custom styles to handle text truncation with ellipsis */
+.text-truncate-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Custom styles for the GitHub stats and trophy images to prevent layout shift */
+.github-image {
+    width: 100%;
+    max-width: 470px;
+    height: auto;
+}
+
+/* Modal styles */
+#projects-modal.hidden {
+    display: none;
+}
+
+#projects-modal {
+    display: flex;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#projects-modal .card {
+    animation: slideIn 0.3s ease-out;
+    overflow-y: auto; /* Use auto for scrolling only when needed */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+#projects-modal .card::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Typography Customization */
+.prose {
+    max-width: none;
+}
+
+.prose p {
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+    color: #f3f4f6; /* text-gray-100 */
+    margin-top: 2em;
+    margin-bottom: 1em;
+    font-weight: 700;
+}
+
+.prose h1 { font-size: 2.25rem; }
+.prose h2 { font-size: 1.875rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+.prose h3 { font-size: 1.5rem; }
+
+.prose ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.prose li {
+    margin-bottom: 0.5em;
+    color: #d1d5db; /* text-gray-300 */
+}
+
+.prose blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+    font-style: italic;
+    color: #9ca3af; /* text-gray-400 */
+    background: rgba(132, 94, 194, 0.1);
+    padding: 1rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.prose code {
+    color: var(--highlight-color);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+/* Code Block Styling */
+/* Base pre styling (fallback) */
+.prose pre {
+    background: #1e1e2e !important;
+    padding: 1.5rem !important;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    margin-bottom: 2em;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Wrapper for syntax highlighting (overrides syntax.css) */
+.prose .chroma {
+    background: #1e1e2e !important;
+    color: #f8f8f2 !important; /* Dracula foreground */
+    padding: 1.5rem !important;
+    border-radius: 0.75rem;
+    margin-bottom: 2em;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow-x: auto;
+}
+
+/* Reset inner pre styling when inside .chroma (fix for line numbers table) */
+.prose .chroma pre {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+}
+
+.prose pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.9em;
+}
+
+/* Line numbers styling */
+.chroma .lntable {
+    border-spacing: 0;
+    width: 100%;
+    display: table;
+}
+
+.chroma .lntd {
+    padding: 0;
+    vertical-align: top;
+}
+
+.chroma .lntd:first-child {
+    padding-right: 1em;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    user-select: none;
+    width: 1%; /* Shrink to fit content */
+}
+
+.chroma .ln {
+    color: #6b7280;
+    margin-right: 0;
+}
+
+.prose a {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent-color);
+    transition: all 0.2s;
+}
+
+.prose a:hover {
+    color: var(--highlight-color);
+    border-bottom-style: solid;
+}
+
+.prose img {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin: 2em auto;
+}
+
+/* Table of Contents Styling */
+#TableOfContents {
+    font-size: 0.95rem;
+}
+
+#TableOfContents ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+#TableOfContents ul ul {
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#TableOfContents li {
+    margin-bottom: 0.5rem;
+}
+
+#TableOfContents a {
+    color: #9ca3af; /* text-gray-400 */
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: block;
+    padding: 0.2rem 0;
+    border-bottom: none; /* Override prose link style */
+}
+
+#TableOfContents a:hover {
+    color: var(--primary-color);
+    transform: translateX(4px);
+    border-bottom: none;
+}

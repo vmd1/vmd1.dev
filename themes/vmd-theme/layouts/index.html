@@ -1,0 +1,82 @@
+{{ define "main" }}
+        <!-- About Me Section -->
+        <section class="mb-12 card static-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Hi!</h2>
+            <div class="space-y-4 text-gray-400 leading-relaxed">
+            <p>I'm Vivaan, a student who’s super into programming, security, and breaking things (ethically, of course 😅). This is my portfolio page where I dump my projects, write-ups, and blog posts about what I’m learning along the way.</p>
+            <p>Right now, I’m working on a few open-source projects - mostly related to security tools and automation. I love digging into code, figuring out how stuff works under the hood, and then building (or breaking) things just to see what happens. Every bug, every fix, every “oh no why is this broken” moment makes me better.</p>
+            <p>Outside of coding, I’m into gaming and reading. I’m always looking for ways to challenge myself and pick up new skills, whether that’s learning a new programming language, exploring cybersecurity challenges, or contributing to communities online.</p>
+            <p>This page will keep growing as I add more projects, write more blog posts, and (hopefully) ship some cool stuff that others find useful. Feel free to check out my socials/blog through the links above and reach out if you wanna chat or collab.</p>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section class="mb-12 card static-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Latest Posts</h2>
+            <div id="blog-posts" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {{ $posts := where .Site.RegularPages "Section" "ne" "" }}
+                {{ range first 6 $posts }}
+                <a href="{{ .RelPermalink }}" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
+                    <h3 class="text-xl font-bold text-gray-100 mb-2">{{ .Title }}</h3>
+                    <p class="text-gray-400 text-truncate-4">{{ .Summary | truncate 120 }}</p>
+                </a>
+                {{ end }}
+            </div>
+            <div class="text-right mt-4">
+                <a href="{{ "posts" | relURL }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">Show all -></a>
+            </div>
+        </section>
+
+        <!-- Featured Projects Section -->
+        <section class="card static-card">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-100">Featured Projects</h2>
+            <div id="featured-projects" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Featured projects will be dynamically inserted here -->
+            </div>
+            <div class="text-right mt-4">
+                <button id="show-all-projects" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">Show all -></button>
+            </div>
+        </section>
+
+        <script>
+        // Fetch and display featured projects
+        async function fetchFeaturedProjects() {
+            const container = document.getElementById('featured-projects');
+            const username = 'vmd1';
+
+            try {
+                const [ownedResponse, starredResponse] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=2`),
+                    fetch(`https://api.github.com/users/${username}/starred?per_page=2`)
+                ]);
+
+                const ownedRepos = await ownedResponse.json();
+                const starredRepos = await starredResponse.json();
+
+                const allRepos = [...ownedRepos, ...starredRepos];
+
+                // Simple duplicate removal by repo id
+                const uniqueRepos = Array.from(new Set(allRepos.map(a => a.id)))
+                    .map(id => {
+                        return allRepos.find(a => a.id === id)
+                    });
+
+                let projectsHtml = '';
+                uniqueRepos.slice(0, 4).forEach(repo => {
+                    projectsHtml += `
+                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
+                            <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.full_name}</h3>
+                            <p class="text-gray-400">${repo.description || 'No description available.'}</p>
+                        </a>
+                    `;
+                });
+                container.innerHTML = projectsHtml;
+            } catch (error) {
+                console.error('Error fetching featured projects:', error);
+                container.innerHTML = '<p class="text-gray-500">Failed to load featured projects.</p>';
+            }
+        }
+
+        fetchFeaturedProjects();
+        </script>
+{{ end }}
