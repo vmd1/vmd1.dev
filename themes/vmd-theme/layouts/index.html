@@ -1,6 +1,6 @@
 {{ define "main" }}
         <!-- About Me Section -->
-        <section class="mb-12 card static-card">
+        <section class="mb-12 card card">
             <h2 class="text-2xl font-semibold mb-4 text-gray-100">Hi!</h2>
             <div class="space-y-4 text-gray-400 leading-relaxed">
             <p>I'm Vivaan, a student who’s super into programming, security, and breaking things (ethically, of course 😅). This is my portfolio page where I dump my projects, write-ups, and blog posts about what I’m learning along the way.</p>
@@ -44,6 +44,25 @@
             const container = document.getElementById('featured-projects');
             const username = 'vmd1';
 
+            // 3D card tilt effect function (inline)
+            function applyTilt(card) {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const { width, height } = rect;
+                    
+                    const rotateX = (y / height - 0.5) * -20; // Max rotation 10 degrees
+                    const rotateY = (x / width - 0.5) * 20;  // Max rotation 10 degrees
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            }
+
             try {
                 const [ownedResponse, starredResponse] = await Promise.all([
                     fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=2`),
@@ -71,6 +90,12 @@
                     `;
                 });
                 container.innerHTML = projectsHtml;
+
+                // Apply tilt effect to newly added cards
+                const newCards = container.querySelectorAll('.card');
+                newCards.forEach(card => {
+                    applyTilt(card);
+                });
             } catch (error) {
                 console.error('Error fetching featured projects:', error);
                 container.innerHTML = '<p class="text-gray-500">Failed to load featured projects.</p>';

@@ -34,7 +34,6 @@ body {
 }
 
 .card:not(.static-card):hover {
-    transform: translateY(-5px);
     box-shadow: 0 12px 40px 0 var(--shadow-color);
 }
 
@@ -49,7 +48,7 @@ body {
 }
 
 .navbar-card {
-    position: sticky;
+    position: sticky !important;
     top: 1rem;
     z-index: 50;
     margin-bottom: 2rem;
@@ -62,11 +61,10 @@ body {
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
-.social-icons a:hover .ri-github-fill { color: #ffffff; transform: scale(1.2); }
-.social-icons a:hover .ri-reddit-fill { color: #FF4500; transform: scale(1.2); }
-.social-icons a:hover .ri-instagram-fill { color: #E4405F; transform: scale(1.2); }
-.social-icons a:hover .ri-mail-fill { color: var(--highlight-color); transform: scale(1.2); }
-.social-icons a:hover .ri-rss-fill { color: #FFA500; transform: scale(1.2); }
+.social-icons a:hover .ri-github-line { color: #ffffff; transform: scale(1.2); }
+.social-icons a:hover .ri-reddit-line { color: #FF4500; transform: scale(1.2); }
+.social-icons a:hover .ri-instagram-line { color: #E4405F; transform: scale(1.2); }
+.social-icons a:hover .ri-mail-line { color: #daa520; transform: scale(1.2); }
 
 .card .card {
     box-shadow: none;

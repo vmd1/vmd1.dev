@@ -27,28 +27,50 @@
                     </button>
                 </nav>
                 <div class="text-gray-600">|</div>
-                <div class="flex space-x-4 social-icons">
+                
+                <!-- Desktop Social Icons -->
+                <div class="hidden sm:flex space-x-4 social-icons">
                     <!-- Social media icons using Remixicon -->
                     <!-- GitHub -->
                     <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-github-fill text-2xl"></i>
+                        <i class="ri-github-line text-2xl"></i>
                     </a>
                     <!-- Reddit -->
                     <a href="https://www.reddit.com/user/vmd1_" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-reddit-fill text-2xl"></i>
+                        <i class="ri-reddit-line text-2xl"></i>
                     </a>
                     <!-- Instagram -->
                     <a href="https://www.instagram.com/v.md.1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-instagram-fill text-2xl"></i>
+                        <i class="ri-instagram-line text-2xl"></i>
                     </a>
                     <!-- Email -->
                     <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-mail-fill text-2xl"></i>
+                        <i class="ri-mail-line text-2xl"></i>
                     </a>
-                    <!-- Blog -->
-                    <a href="{{ "posts" | relURL }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-rss-fill text-2xl"></i>
-                    </a>
+                </div>
+
+                <!-- Mobile Social Button & Menu -->
+                <div class="sm:hidden relative">
+                    <button id="mobile-social-toggle" class="text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="Socials">
+                        <i class="ri-share-line text-2xl"></i>
+                    </button>
+                    
+                    <div id="mobile-social-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-slate-900/95 backdrop-blur-xl rounded-lg border border-gray-700 shadow-xl z-50 w-48">
+                        <div class="grid grid-cols-3 gap-4 social-icons justify-items-center">
+                            <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                <i class="ri-github-line text-2xl"></i>
+                            </a>
+                            <a href="https://www.reddit.com/user/vmd1_" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                <i class="ri-reddit-line text-2xl"></i>
+                            </a>
+                            <a href="https://www.instagram.com/v.md.1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                <i class="ri-instagram-line text-2xl"></i>
+                            </a>
+                            <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                <i class="ri-mail-line text-2xl"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -66,19 +88,35 @@
                 const searchToggle = document.getElementById('search-toggle');
                 const searchContainer = document.getElementById('search-container');
                 const searchInput = document.getElementById('search-input');
+                const mobileSocialToggle = document.getElementById('mobile-social-toggle');
+                const mobileSocialMenu = document.getElementById('mobile-social-menu');
 
                 searchToggle.addEventListener('click', (e) => {
                     e.stopPropagation();
                     searchContainer.classList.toggle('hidden');
                     if (!searchContainer.classList.contains('hidden')) {
                         searchInput.focus();
+                        // Close social menu if open
+                        if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
                     }
                 });
+
+                if (mobileSocialToggle && mobileSocialMenu) {
+                    mobileSocialToggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        mobileSocialMenu.classList.toggle('hidden');
+                        // Close search if open
+                        searchContainer.classList.add('hidden');
+                    });
+                }
 
                 // Close when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!searchToggle.contains(e.target) && !searchContainer.contains(e.target)) {
                         searchContainer.classList.add('hidden');
+                    }
+                    if (mobileSocialToggle && mobileSocialMenu && !mobileSocialToggle.contains(e.target) && !mobileSocialMenu.contains(e.target)) {
+                        mobileSocialMenu.classList.add('hidden');
                     }
                 });
 

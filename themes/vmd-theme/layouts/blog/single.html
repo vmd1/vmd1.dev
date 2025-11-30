@@ -16,7 +16,7 @@
             </div>
         </header>
 
-        {{ if and (ne .Params.toc false) .TableOfContents }}
+        {{ if and (ne .Params.toc false) (in .TableOfContents "<li>") }}
         <div class="mb-8 p-4 bg-slate-900 rounded-lg">
             <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
             {{ .TableOfContents }}
