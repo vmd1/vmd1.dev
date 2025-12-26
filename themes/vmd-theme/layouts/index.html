@@ -16,10 +16,39 @@
             <div id="blog-posts" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {{ $posts := where .Site.RegularPages "Section" "ne" "" }}
                 {{ range first 6 $posts }}
-                <a href="{{ .RelPermalink }}" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
-                    <h3 class="text-xl font-bold text-gray-100 mb-2">{{ .Title }}</h3>
-                    <p class="text-gray-400 text-truncate-4">{{ .Summary | truncate 120 }}</p>
-                </a>
+                <div class="group relative h-full">
+                    <a href="{{ .RelPermalink }}" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card h-full">
+                        <h3 class="text-xl font-bold text-gray-100 mb-2">{{ .Title }}</h3>
+                        <p class="text-gray-400 text-truncate-4">{{ .Summary | truncate 120 }}</p>
+                    </a>
+                    <div class="absolute top-full left-0 right-0 mt-0 bg-slate-800 rounded-b-lg px-6 py-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-10 shadow-lg max-h-96 overflow-y-auto">
+                        <div class="space-y-4">
+                            {{ if in .Content "<h" }}
+                            <div>
+                                <h4 class="text-xs font-semibold text-gray-200 mb-2 uppercase">Contents</h4>
+                                <nav class="text-xs text-gray-400 space-y-1">
+                                    {{ range $key, $item := findRE `<li><a href="[^"]*"[^>]*>([^<]*)</a>` .TableOfContents 3 }}
+                                        <div class="truncate hover:text-gray-200 transition-colors">{{ $item | replaceRE `<[^>]*>` "" }}</div>
+                                    {{ end }}
+                                </nav>
+                            </div>
+                            {{ end }}
+                            <div class="space-y-2 pt-2 border-t border-slate-700">
+                                <div class="text-xs text-gray-400 flex items-center gap-4">
+                                    <span>{{ len (split .Content " ") }} words</span>
+                                    <span>{{ .ReadingTime }} min read</span>
+                                </div>
+                                {{ if .Params.tags }}
+                                <div class="flex flex-wrap gap-2">
+                                    {{ range .Params.tags }}
+                                    <span class="inline-block bg-slate-700 rounded px-2 py-1 text-xs text-gray-300">{{ . }}</span>
+                                    {{ end }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {{ end }}
             </div>
             <div class="text-right mt-4">
@@ -87,10 +116,34 @@
                 let projectsHtml = '';
                 bothOwnedAndStarred.forEach(repo => {
                     projectsHtml += `
-                        <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
-                            <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.full_name}</h3>
-                            <p class="text-gray-400">${repo.description || 'No description available.'}</p>
-                        </a>
+                        <div class="group relative h-full">
+                            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card h-full">
+                                <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.full_name}</h3>
+                                <p class="text-gray-400">${repo.description || 'No description available.'}</p>
+                            </a>
+                            <div class="absolute top-full left-0 right-0 mt-0 bg-slate-800 rounded-b-lg px-6 py-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-10 shadow-lg">
+                                <div class="space-y-3">
+                                    <div class="grid grid-cols-2 gap-4 text-xs text-gray-400">
+                                        <div>
+                                            <span class="text-gray-300 font-semibold">⭐ ${repo.stargazers_count}</span>
+                                            <p class="text-gray-500">Stars</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-300 font-semibold">${repo.language || 'N/A'}</span>
+                                            <p class="text-gray-500">Language</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-300 font-semibold">${new Date(repo.pushed_at).toLocaleDateString()}</span>
+                                            <p class="text-gray-500">Last Commit</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-300 font-semibold">${repo.forks_count}</span>
+                                            <p class="text-gray-500">Forks</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     `;
                 });
                 container.innerHTML = projectsHtml;
