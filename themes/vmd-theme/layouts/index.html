@@ -65,23 +65,21 @@
 
             try {
                 const [ownedResponse, starredResponse] = await Promise.all([
-                    fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=2`),
-                    fetch(`https://api.github.com/users/${username}/starred?per_page=2`)
+                    fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`),
+                    fetch(`https://api.github.com/users/${username}/starred?per_page=100`)
                 ]);
 
                 const ownedRepos = await ownedResponse.json();
                 const starredRepos = await starredResponse.json();
 
-                const allRepos = [...ownedRepos, ...starredRepos];
+                // Get the set of starred repo IDs for quick lookup
+                const starredIds = new Set(starredRepos.map(repo => repo.id));
 
-                // Simple duplicate removal by repo id
-                const uniqueRepos = Array.from(new Set(allRepos.map(a => a.id)))
-                    .map(id => {
-                        return allRepos.find(a => a.id === id)
-                    });
+                // Filter owned repos to only those that are also starred
+                const bothOwnedAndStarred = ownedRepos.filter(repo => starredIds.has(repo.id));
 
                 let projectsHtml = '';
-                uniqueRepos.slice(0, 4).forEach(repo => {
+                bothOwnedAndStarred.forEach(repo => {
                     projectsHtml += `
                         <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 card">
                             <h3 class="text-xl font-bold text-gray-100 mb-2">${repo.full_name}</h3>
