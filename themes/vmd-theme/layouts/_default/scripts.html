@@ -1,0 +1,294 @@
+{{ define "main" }}
+<div class="mt-8 card static-card p-8">
+    <h1 class="text-4xl font-bold mb-8 text-center text-gray-100">Scripts Library</h1>
+    
+    <!-- Controls -->
+    <div class="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center">
+        <!-- Search -->
+        <div class="relative w-full md:w-96">
+            <i class="ri-search-line absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="script-search" placeholder="Search scripts..." 
+                class="w-full bg-slate-800 text-gray-100 pl-10 pr-4 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 transition-colors">
+        </div>
+        
+        <!-- OS Filter -->
+        <div class="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+            <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium transition-colors bg-blue-600 text-white" data-os="all">All</button>
+            <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors" data-os="windows">Windows</button>
+            <button class="filter-btn px-4 py-1.5 rounded-md text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors" data-os="linux">Linux</button>
+        </div>
+    </div>
+
+    <!-- Scripts Grid -->
+    <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24">
+        <!-- Scripts will be injected here -->
+        <div class="col-span-full text-center py-12 text-gray-500">
+            <i class="ri-loader-4-line text-3xl animate-spin mb-2 inline-block"></i>
+            <p>Loading scripts...</p>
+        </div>
+    </div>
+</div>
+
+    <!-- Batch Command Bar -->
+    <div id="batch-bar" class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 p-4 transform translate-y-full transition-transform duration-300 z-50 shadow-2xl">
+        <div class="container mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold" id="batch-count">0</div>
+                <span class="text-gray-300 font-medium">Scripts Selected</span>
+                <button onclick="clearBatch()" class="text-sm text-gray-400 hover:text-red-400 transition-colors">
+                    Clear All
+                </button>
+            </div>
+            
+            <div class="flex-1 w-full md:w-auto flex items-center gap-2">
+                <div class="relative flex-1">
+                    <input type="text" id="batch-command" readonly 
+                        class="w-full bg-slate-800 text-gray-300 px-4 py-2 rounded-lg border border-slate-700 font-mono text-sm focus:outline-none">
+                </div>
+                <button onclick="copyBatchCommand(this)" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 font-medium">
+                    <i class="ri-file-copy-line"></i>
+                    <span>Copy Command</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let allScripts = [];
+    let currentFilter = 'all';
+    let selectedScripts = new Set();
+    
+    // Fetch scripts
+    fetch('https://sc.vmd1.dev/scripts.json')
+        .then(response => response.json())
+        .then(data => {
+            allScripts = data;
+            renderScripts();
+        })
+        .catch(error => {
+            console.error('Error fetching scripts:', error);
+            document.getElementById('scripts-grid').innerHTML = `
+                <div class="col-span-full text-center py-12 text-red-400">
+                    <i class="ri-error-warning-line text-3xl mb-2 inline-block"></i>
+                    <p>Failed to load scripts. Please try again later.</p>
+                </div>
+            `;
+        });
+
+    // Search functionality
+    document.getElementById('script-search').addEventListener('input', (e) => {
+        renderScripts(e.target.value);
+    });
+
+    // Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('text-gray-400');
+            });
+            btn.classList.remove('text-gray-400');
+            btn.classList.add('bg-blue-600', 'text-white');
+            
+            currentFilter = btn.dataset.os;
+            renderScripts(document.getElementById('script-search').value);
+        });
+    });
+
+    function renderScripts(searchTerm = '') {
+        const grid = document.getElementById('scripts-grid');
+        const term = searchTerm.toLowerCase();
+        
+        // Check for active selection to enforce OS filter
+        let selectionOS = null;
+        if (selectedScripts.size > 0) {
+            const firstCode = selectedScripts.values().next().value;
+            const firstScript = allScripts.find(s => s['short-code'] === firstCode);
+            if (firstScript) {
+                selectionOS = firstScript.oses.includes('windows') ? 'windows' : 'linux';
+            }
+        }
+
+        const filteredScripts = allScripts.filter(script => {
+            const matchesSearch = script.name.toLowerCase().includes(term) || 
+                                script['short-code'].toLowerCase().includes(term);
+            
+            let matchesOS = currentFilter === 'all' || script.oses.includes(currentFilter);
+            
+            // If selection is active, only show scripts from that OS
+            if (selectionOS) {
+                matchesOS = script.oses.includes(selectionOS);
+            }
+
+            return matchesSearch && matchesOS;
+        });
+
+        if (filteredScripts.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <p>No scripts found matching your criteria.</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filteredScripts.map(script => {
+            const isWindows = script.oses.includes('windows');
+            const osColor = isWindows ? 'text-blue-400 bg-blue-400/10' : 'text-purple-400 bg-purple-400/10';
+            const osIcon = isWindows ? 'ri-windows-fill' : 'ri-qq-fill';
+            const osName = isWindows ? 'Windows' : 'Linux';
+            const isSelected = selectedScripts.has(script['short-code']);
+            
+            // Generate command
+            let command = '';
+            if (isWindows) {
+                command = `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\\\w.ps1; & $env:TEMP\\\\w.ps1 ${script['short-code']}`;
+            } else {
+                command = `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${script['short-code']}`;
+            }
+
+            return `
+                <div class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200 h-full group relative ${isSelected ? 'ring-2 ring-blue-500' : ''}" onclick="toggleSelection('${script['short-code']}', '${isWindows ? 'windows' : 'linux'}')">
+                    <div class="absolute bottom-4 right-4 z-10">
+                        <div class="w-6 h-6 rounded border ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-slate-600 bg-slate-800'} flex items-center justify-center transition-colors">
+                            ${isSelected ? '<i class="ri-check-line text-white text-sm"></i>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${osColor}">
+                                <i class="${osIcon}"></i>
+                                ${osName}
+                            </span>
+                        </div>
+                        <a href="${script.url}" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors z-20 relative" title="View Source" onclick="event.stopPropagation()">
+                            <i class="ri-external-link-line"></i>
+                        </a>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-100 mb-2">${script.name}</h3>
+                    <div class="flex items-center gap-2 text-sm text-gray-400 mb-4 font-mono bg-slate-900/50 px-2 py-1 rounded w-fit">
+                        <i class="ri-terminal-box-line"></i>
+                        ${script['short-code']}
+                    </div>
+
+                    <div class="relative" onclick="event.stopPropagation()">
+                        <div class="bg-slate-900 rounded-lg p-3 font-mono text-xs text-gray-300 break-all pr-10 h-20 overflow-y-auto custom-scrollbar">
+                            ${command}
+                        </div>
+                        <button onclick="copyToClipboard(this, '${command.replace(/'/g, "\\'")}')" 
+                            class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-800 text-gray-400 hover:text-white hover:bg-slate-700 transition-all border border-slate-700"
+                            title="Copy command">
+                            <i class="ri-file-copy-line"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleSelection(shortCode, os) {
+        // Check if we're mixing OSes
+        if (selectedScripts.size > 0) {
+            const firstScriptCode = selectedScripts.values().next().value;
+            const firstScript = allScripts.find(s => s['short-code'] === firstScriptCode);
+            const firstScriptOS = firstScript.oses.includes('windows') ? 'windows' : 'linux';
+            
+            if (firstScriptOS !== os && !selectedScripts.has(shortCode)) {
+                alert(`Cannot mix Windows and Linux scripts in one command.\nPlease clear your selection first.`);
+                return;
+            }
+        }
+
+        if (selectedScripts.has(shortCode)) {
+            selectedScripts.delete(shortCode);
+        } else {
+            selectedScripts.add(shortCode);
+        }
+        
+        renderScripts(document.getElementById('script-search').value);
+        updateBatchBar();
+    }
+
+    function clearBatch() {
+        selectedScripts.clear();
+        renderScripts(document.getElementById('script-search').value);
+        updateBatchBar();
+    }
+
+    function updateBatchBar() {
+        const bar = document.getElementById('batch-bar');
+        const count = document.getElementById('batch-count');
+        const commandInput = document.getElementById('batch-command');
+        
+        if (selectedScripts.size > 0) {
+            bar.classList.remove('translate-y-full');
+            count.textContent = selectedScripts.size;
+            
+            // Generate batch command
+            const codes = Array.from(selectedScripts).join(' ');
+            const firstScriptCode = selectedScripts.values().next().value;
+            const firstScript = allScripts.find(s => s['short-code'] === firstScriptCode);
+            const isWindows = firstScript.oses.includes('windows');
+            
+            if (isWindows) {
+                commandInput.value = `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\\\w.ps1; & $env:TEMP\\\\w.ps1 ${codes}`;
+            } else {
+                commandInput.value = `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${codes}`;
+            }
+        } else {
+            bar.classList.add('translate-y-full');
+        }
+    }
+
+    function copyBatchCommand(btn) {
+        const command = document.getElementById('batch-command').value;
+        navigator.clipboard.writeText(command).then(() => {
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="ri-check-line"></i><span>Copied!</span>';
+            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            btn.classList.add('bg-green-600', 'hover:bg-green-700');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            }, 2000);
+        });
+    }
+
+    function copyToClipboard(btn, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const icon = btn.querySelector('i');
+            const originalClass = icon.className;
+            
+            icon.className = 'ri-check-line text-green-400';
+            btn.classList.add('border-green-500/50');
+            
+            setTimeout(() => {
+                icon.className = originalClass;
+                btn.classList.remove('border-green-500/50');
+            }, 2000);
+        });
+    }
+</script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+</style>
+{{ end }}
