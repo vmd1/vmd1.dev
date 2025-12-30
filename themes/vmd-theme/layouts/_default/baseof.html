@@ -2,6 +2,7 @@
 <html lang="en">
 {{ partial "head.html" . }}
 <body class="text-gray-300">
+    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-[100] transition-all duration-100" style="width: 0%"></div>
     <div id="spotlight"></div>
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         {{ partial "header.html" . }}
@@ -110,5 +111,26 @@
         }
     </script>
     <script src="{{ "js/spotlight.js" | relURL }}"></script>
+    <script src="{{ "js/code-copy.js" | relURL }}"></script>
+    <script src="{{ "js/progress-bar.js" | relURL }}"></script>
+    <script src="{{ "js/lightbox.js" | relURL }}"></script>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: false, theme: 'dark' });
+      
+      document.addEventListener('DOMContentLoaded', async () => {
+          const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
+          if (mermaidBlocks.length > 0) {
+              mermaidBlocks.forEach(block => {
+                  const pre = block.parentElement;
+                  const div = document.createElement('div');
+                  div.className = 'mermaid';
+                  div.textContent = block.textContent;
+                  pre.replaceWith(div);
+              });
+              await mermaid.run();
+          }
+      });
+    </script>
 </body>
 </html>

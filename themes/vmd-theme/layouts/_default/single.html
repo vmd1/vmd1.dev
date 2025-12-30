@@ -2,6 +2,7 @@
 <div class="space-y-8">
     <!-- Content Card -->
     <article class="card static-card">
+        {{ partial "breadcrumbs.html" . }}
         <header class="mb-8">
             <h1 class="text-3xl font-bold text-gray-100 mb-2">{{ .Title }}</h1>
             <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">

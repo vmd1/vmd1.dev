@@ -1,0 +1,26 @@
+<nav class="flex mb-6 text-sm text-gray-400" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-1 md:space-x-2">
+    <li class="inline-flex items-center">
+      <a href="/" class="inline-flex items-center hover:text-blue-400 transition-colors">
+        <i class="ri-home-line mr-1"></i>
+        Home
+      </a>
+    </li>
+    {{ range .Ancestors.Reverse }}
+    {{ if not .IsHome }}
+    <li>
+      <div class="flex items-center">
+        <i class="ri-arrow-right-s-line text-gray-600 mx-1"></i>
+        <a href="{{ .Permalink }}" class="hover:text-blue-400 transition-colors">{{ .Title }}</a>
+      </div>
+    </li>
+    {{ end }}
+    {{ end }}
+    <li aria-current="page">
+      <div class="flex items-center">
+        <i class="ri-arrow-right-s-line text-gray-600 mx-1"></i>
+        <span class="text-gray-200 font-medium truncate max-w-[200px] md:max-w-none">{{ .Title }}</span>
+      </div>
+    </li>
+  </ol>
+</nav>
