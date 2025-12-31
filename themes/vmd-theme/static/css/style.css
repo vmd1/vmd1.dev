@@ -1,3 +1,50 @@
+/* Reduce gap between navbar icons */
+.navbar-gap > *:not(:last-child) {
+    margin-right: 0.4rem; /* -12px, reduces gap by about 25px from original Tailwind space-x-4 (16px) */
+}
+/* Navbar icon slide and label animation */
+.navbar-anim-link {
+    position: relative;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+}
+.icon-label-group {
+    display: flex;
+    align-items: center;
+}
+.navbar-anim-link .nav-label {
+    opacity: 0;
+    max-width: 0;
+    margin-left: 0;
+    white-space: nowrap;
+    transition: opacity 0.25s, max-width 0.25s, margin-left 0.25s;
+    color: #e0e0e0;
+    font-size: 1rem;
+    font-weight: 600;
+    pointer-events: none;
+}
+.navbar-anim-link.text-gray-100.font-bold .nav-label {
+    opacity: 1;
+    max-width: 120px;
+    margin-left: 0.3rem;
+    pointer-events: auto;
+}
+.navbar-anim-link:hover .nav-label,
+.navbar-anim-link:focus .nav-label {
+    opacity: 1;
+    max-width: 120px;
+    margin-left: 0.3rem;
+    pointer-events: auto;
+}
+.navbar-anim-link i {
+    transition: transform 0.25s;
+}
+.navbar-anim-link:hover i,
+.navbar-anim-link:focus i {
+    transform: translateX(-0.12rem);
+}
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 :root {
