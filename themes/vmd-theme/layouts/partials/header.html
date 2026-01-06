@@ -11,22 +11,22 @@
             <div class="flex items-center space-x-4 mt-4 sm:mt-0">
                 <nav class="flex navbar-gap items-center">
                     <a href="{{ "/" | relURL }}" class="navbar-anim-link {{ if .IsHome }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-home-line text-2xl"></i><span class="nav-label">Home</span></span>
+                        <span class="icon-label-group"><i class="ri-home-line text-2xl"></i><span class="nav-label hidden sm:inline">Home</span></span>
                     </a>
                     <a href="{{ "posts" | relURL }}" class="navbar-anim-link {{ if eq .Section "posts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-article-line text-2xl"></i><span class="nav-label">Posts</span></span>
+                        <span class="icon-label-group"><i class="ri-article-line text-2xl"></i><span class="nav-label hidden sm:inline">Posts</span></span>
                     </a>
                     <a href="{{ "archive" | relURL }}" class="navbar-anim-link {{ if eq .Title "Archive" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-archive-line text-2xl"></i><span class="nav-label">Archive</span></span>
+                        <span class="icon-label-group"><i class="ri-archive-line text-2xl"></i><span class="nav-label hidden sm:inline">Archive</span></span>
                     </a>
                     <a href="{{ "scripts" | relURL }}" class="navbar-anim-link {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label">Scripts</span></span>
+                        <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
                     </a>
                     <a href="#" id="projects-nav-link" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label">Projects</span></span>
+                        <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
                     </a>
                     <button id="search-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
-                        <span class="icon-label-group"><i class="ri-search-line text-2xl"></i><span class="nav-label">Search</span></span>
+                        <span class="icon-label-group"><i class="ri-search-line text-2xl"></i><span class="nav-label hidden sm:inline">Search</span></span>
                     </button>
                 </nav>
                 <div class="text-gray-600">|</div>
