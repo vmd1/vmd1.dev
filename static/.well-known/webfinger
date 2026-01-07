@@ -1,0 +1,11 @@
+{
+    "links": [
+        {
+            "href": "https://authentik.kmnet.uk/application/o/tailscale-vmd1-dev/",
+            "rel": "http://openid.net/specs/connect/1.0/issuer"
+        }
+    ],
+    "subject": "acct:vivaan@vmd1.dev"
+}
+
+
