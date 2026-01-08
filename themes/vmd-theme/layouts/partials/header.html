@@ -16,15 +16,35 @@
                     <a href="{{ "posts" | relURL }}" class="navbar-anim-link {{ if eq .Section "posts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-article-line text-2xl"></i><span class="nav-label hidden sm:inline">Posts</span></span>
                     </a>
-                    <a href="{{ "archive" | relURL }}" class="navbar-anim-link {{ if eq .Title "Archive" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
+                    <!-- Desktop Only Links -->
+                    <a href="{{ "archive" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Archive" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-archive-line text-2xl"></i><span class="nav-label hidden sm:inline">Archive</span></span>
                     </a>
-                    <a href="{{ "scripts" | relURL }}" class="navbar-anim-link {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
+                    <a href="{{ "scripts" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
                     </a>
-                    <a href="#" id="projects-nav-link" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <a href="#" id="projects-nav-link" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
                     </a>
+                    <!-- Mobile Overflow Button -->
+                    <div class="sm:hidden relative">
+                        <button id="mobile-nav-overflow-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="More">
+                            <span class="icon-label-group"><i class="ri-more-2-fill text-2xl"></i></span>
+                        </button>
+                        <div id="mobile-nav-overflow-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-slate-900/95 backdrop-blur-xl rounded-lg border border-gray-700 shadow-xl z-50 w-48">
+                            <div class="flex flex-col space-y-2">
+                                <a href="{{ "archive" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                    <span class="icon-label-group"><i class="ri-archive-line text-xl"></i><span class="nav-label ml-2">Archive</span></span>
+                                </a>
+                                <a href="{{ "scripts" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                    <span class="icon-label-group"><i class="ri-terminal-box-line text-xl"></i><span class="nav-label ml-2">Scripts</span></span>
+                                </a>
+                                <a href="#" id="projects-nav-link-mobile" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                    <span class="icon-label-group"><i class="ri-function-line text-xl"></i><span class="nav-label ml-2">Projects</span></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <button id="search-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
                         <span class="icon-label-group"><i class="ri-search-line text-2xl"></i><span class="nav-label hidden sm:inline">Search</span></span>
                     </button>
@@ -50,6 +70,10 @@
                     <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <i class="ri-mail-line text-2xl"></i>
                     </a>
+                        <!-- Matrix -->
+                        <a href="https://matrix.to/#/@vivaan:vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
+                            <i class="ri-chat-1-line text-2xl"></i>
+                        </a>
                 </div>
 
                 <!-- Mobile Social Button & Menu -->
@@ -72,6 +96,10 @@
                             <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-mail-line text-2xl"></i>
                             </a>
+                                <!-- Matrix -->
+                                <a href="https://matrix.to/#/@vivaan:vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
+                                    <i class="ri-chat-1-line text-2xl"></i>
+                                </a>
                         </div>
                     </div>
                 </div>
@@ -93,6 +121,8 @@
                 const searchInput = document.getElementById('search-input');
                 const mobileSocialToggle = document.getElementById('mobile-social-toggle');
                 const mobileSocialMenu = document.getElementById('mobile-social-menu');
+                const mobileNavOverflowToggle = document.getElementById('mobile-nav-overflow-toggle');
+                const mobileNavOverflowMenu = document.getElementById('mobile-nav-overflow-menu');
 
                 searchToggle.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -101,6 +131,8 @@
                         searchInput.focus();
                         // Close social menu if open
                         if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
+                        // Close nav overflow if open
+                        if (mobileNavOverflowMenu) mobileNavOverflowMenu.classList.add('hidden');
                     }
                 });
 
@@ -110,6 +142,19 @@
                         mobileSocialMenu.classList.toggle('hidden');
                         // Close search if open
                         searchContainer.classList.add('hidden');
+                        // Close nav overflow if open
+                        if (mobileNavOverflowMenu) mobileNavOverflowMenu.classList.add('hidden');
+                    });
+                }
+
+                if (mobileNavOverflowToggle && mobileNavOverflowMenu) {
+                    mobileNavOverflowToggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        mobileNavOverflowMenu.classList.toggle('hidden');
+                        // Close search if open
+                        searchContainer.classList.add('hidden');
+                        // Close social menu if open
+                        if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
                     });
                 }
 
@@ -121,12 +166,22 @@
                     if (mobileSocialToggle && mobileSocialMenu && !mobileSocialToggle.contains(e.target) && !mobileSocialMenu.contains(e.target)) {
                         mobileSocialMenu.classList.add('hidden');
                     }
+                    if (mobileNavOverflowToggle && mobileNavOverflowMenu && !mobileNavOverflowToggle.contains(e.target) && !mobileNavOverflowMenu.contains(e.target)) {
+                        mobileNavOverflowMenu.classList.add('hidden');
+                    }
                 });
 
                 // Prevent closing when clicking inside the search container
                 searchContainer.addEventListener('click', (e) => {
                     e.stopPropagation();
                 });
+
+                // Prevent closing when clicking inside the nav overflow menu
+                if (mobileNavOverflowMenu) {
+                    mobileNavOverflowMenu.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
 
                 // Handle search submission
                 searchInput.addEventListener('keypress', (e) => {
