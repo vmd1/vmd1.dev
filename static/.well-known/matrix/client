@@ -1,5 +1,11 @@
 {
   "m.homeserver": {
     "base_url": "https://matrix.vmd1.dev"
-  }
+  },
+  "org.matrix.msc4143.rtc_foci": [
+    {
+      "type": "livekit",
+      "livekit_service_url": "https://call.vmd1.dev"
+    }
+  ]
 }
