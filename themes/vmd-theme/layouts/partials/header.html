@@ -23,6 +23,15 @@
                     <a href="{{ "scripts" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
                     </a>
+                    <!-- CV Download Button -->
+                    <a href="/CV.pdf" download id="cv-nav-link" class="navbar-anim-link hidden sm:flex items-center text-gray-400 hover:text-gray-100 transition-colors duration-200 relative group" title="Email cv@vmd1.dev for password">
+                        <i class="ri-profile-line text-2xl"></i>
+                        <span class="nav-label overflow-hidden max-w-0 opacity-0 group-hover:max-w-[4rem] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-in-out font-bold whitespace-nowrap">CV</span>
+                        
+                        <span class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max px-3 py-1 bg-slate-900/95 text-xs text-gray-200 rounded shadow-lg border border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                            CV is password protected.<br>Email <b>cv@vmd1.dev</b> for access.
+                        </span>
+                    </a>
                     <a href="#" id="projects-nav-link" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
                     </a>
@@ -38,6 +47,11 @@
                                 </a>
                                 <a href="{{ "scripts" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-terminal-box-line text-xl"></i><span class="nav-label ml-2">Scripts</span></span>
+                                </a>
+                                <!-- CV Download Button (Mobile Overflow) -->
+                                <a href="/CV.pdf" download class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 group flex items-center" title="Email cv@vmd1.dev for password">
+                                    <span class="icon-label-group"><i class="ri-profile-line text-xl"></i></span>
+                                    <span class="nav-label overflow-hidden max-w-0 opacity-0 group-hover:max-w-[4rem] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-in-out font-bold whitespace-nowrap">CV</span>
                                 </a>
                                 <a href="#" id="projects-nav-link-mobile" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-function-line text-xl"></i><span class="nav-label ml-2">Projects</span></span>
