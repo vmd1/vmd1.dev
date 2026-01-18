@@ -1,0 +1,20 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ .Site.Title }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>Recent content on {{ .Site.Title }}</description>
+    <language>en-us</language>
+    {{- range first 6 .Site.RegularPages -}}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
+      <description>{{ .Plain }}</description>
+      {{- range .Params.tags -}}
+      <category>{{ . }}</category>
+      {{- end -}}
+      <guid>{{ .Permalink }}</guid>
+    </item>
+    {{- end -}}
+  </channel>
+</rss>
