@@ -42,11 +42,3 @@ function initCodeCopy() {
 
 document.addEventListener('DOMContentLoaded', initCodeCopy);
 document.addEventListener('page:loaded', initCodeCopy);
-                console.error('Failed to copy:', err);
-                button.innerHTML = '<i class="ri-error-warning-line text-red-400"></i>';
-            }
-        });
-
-        wrapper.appendChild(button);
-    });
-});
