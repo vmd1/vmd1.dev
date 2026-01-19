@@ -1,6 +1,6 @@
 // 3D card tilt effect function
 window.initTilt = function(card) {
-    // Check if empty (some containers might be empty) or already initialized
+    // Check if already initialized to prevent duplicate listeners
     if (card.dataset.tiltInitialized === 'true') return;
     
     card.addEventListener('mousemove', (e) => {
@@ -24,7 +24,8 @@ window.initTilt = function(card) {
 
 function initSpotlight() {
     const spotlight = document.getElementById('spotlight');
-    
+    const cards = document.querySelectorAll('.card');
+
     if (!window.spotlightInitialized) {
         // Spotlight effect - only bind once
         document.addEventListener('mousemove', (e) => {
@@ -33,37 +34,14 @@ function initSpotlight() {
                 spotlight.style.top = `${e.clientY}px`;
             }
         });
-        
-        // Observer for dynamic content
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1) { // ELEMENT_NODE
-                        // Check if the node itself is a card
-                        if (node.classList.contains('card')) {
-                            window.initTilt(node);
-                        }
-                        // Check for cards inside the node
-                        node.querySelectorAll('.card').forEach(card => window.initTilt(card));
-                    }
-                });
-            });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-
         window.spotlightInitialized = true;
     }
 
-    // Initial pass
-    document.querySelectorAll('.card').forEach(card => {
+    // Apply to existing cards 
+    cards.forEach(card => {
         window.initTilt(card);
     });
 }
 
 document.addEventListener('DOMContentLoaded', initSpotlight);
-// page:loaded listener is still good for re-running initial pass if observer missed something during big swap
 document.addEventListener('page:loaded', initSpotlight);
