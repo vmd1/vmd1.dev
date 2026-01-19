@@ -17,18 +17,29 @@ function initTilt(card) {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function initSpotlight() {
     const spotlight = document.getElementById('spotlight');
     const cards = document.querySelectorAll('.card');
 
-    // Spotlight effect
-    document.addEventListener('mousemove', (e) => {
-        if (spotlight) {
-            spotlight.style.left = `${e.clientX}px`;
-            spotlight.style.top = `${e.clientY}px`;
-        }
-    });
+    if (!window.spotlightInitialized) {
+        // Spotlight effect - only bind once
+        document.addEventListener('mousemove', (e) => {
+            if (spotlight) {
+                spotlight.style.left = `${e.clientX}px`;
+                spotlight.style.top = `${e.clientY}px`;
+            }
+        });
+        window.spotlightInitialized = true;
+    }
 
-    // Apply to existing cards
-    cards.forEach(card => initTilt(card));
-});
+    // Apply to existing cards - idempotent if card already has listeners?
+    // Listeners stack, which is bad. We should check if initialized.
+    cards.forEach(card => {
+        if (card.dataset.tiltInitialized) return;
+        initTilt(card);
+        card.dataset.tiltInitialized = "true";
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initSpotlight);
+document.addEventListener('page:loaded', initSpotlight);

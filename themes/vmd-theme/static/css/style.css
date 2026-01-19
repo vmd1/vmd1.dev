@@ -367,3 +367,17 @@ body {
 @media screen and (max-width: 768px) {
     /* Navbar styles for mobile - kept same as desktop for consistency */
 }
+
+/* View Transitions */
+@view-transition {
+  navigation: auto;
+}
+
+header {
+    view-transition-name: page-header;
+}
+
+#main-content {
+    view-transition-name: page-content;
+}
+
