@@ -1,10 +1,7 @@
-function initCodeCopy() {
+document.addEventListener('DOMContentLoaded', () => {
     const codeBlocks = document.querySelectorAll('pre');
 
     codeBlocks.forEach((pre) => {
-        // Check if already wrapped to avoid double wrapping
-        if (pre.parentNode.classList.contains('group') && pre.parentNode.classList.contains('relative')) return;
-
         // Create wrapper
         const wrapper = document.createElement('div');
         wrapper.className = 'relative group';
@@ -31,17 +28,6 @@ function initCodeCopy() {
                     button.innerHTML = '<i class="ri-file-copy-line"></i>';
                 }, 2000);
             } catch (err) {
-                console.error('Failed to copy!', err);
-                button.innerHTML = '<i class="ri-error-warning-line text-red-400"></i>';
-            }
-        });
-
-        wrapper.appendChild(button);
-    });
-}
-
-document.addEventListener('DOMContentLoaded', initCodeCopy);
-document.addEventListener('page:loaded', initCodeCopy);
                 console.error('Failed to copy:', err);
                 button.innerHTML = '<i class="ri-error-warning-line text-red-400"></i>';
             }
