@@ -1,8 +1,5 @@
 // 3D card tilt effect function
-window.initTilt = function(card) {
-    // Check if already initialized to prevent duplicate listeners
-    if (card.dataset.tiltInitialized === 'true') return;
-    
+function initTilt(card) {
     card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -18,8 +15,6 @@ window.initTilt = function(card) {
     card.addEventListener('mouseleave', () => {
         card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
     });
-    
-    card.dataset.tiltInitialized = 'true';
 };
 
 function initSpotlight() {
@@ -37,9 +32,12 @@ function initSpotlight() {
         window.spotlightInitialized = true;
     }
 
-    // Apply to existing cards 
+    // Apply to existing cards - idempotent if card already has listeners?
+    // Listeners stack, which is bad. We should check if initialized.
     cards.forEach(card => {
-        window.initTilt(card);
+        if (card.dataset.tiltInitialized) return;
+        initTilt(card);
+        card.dataset.tiltInitialized = "true";
     });
 }
 
