@@ -2,6 +2,7 @@
 date: "2025-08-11T16:00:32Z"
 draft: false
 title: "How I Accidentally Became an Expert in My School's Network Censorship"
+authors: ["Vivaan M", "Shravan S"]
 ---
 So after some totally innocent poking around at school, I found out our school was using Smoothwall to control our network activity. Now, this wasn’t that hard… especially considering that every time we tried to open something that was blocked it said ‘Smoothwall’ in big green text, but there’s a bit more to this. I wouldn’t suggest trying most of this at your school/work, as I had oversight from the IT department before I started my endeavours.
 
