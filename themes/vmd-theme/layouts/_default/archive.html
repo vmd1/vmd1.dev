@@ -41,7 +41,13 @@
                                 <span>·</span>
                                 <span>{{ .WordCount }} words</span>
                                 <span>·</span>
-                                <span>{{ .Params.author | default $.Site.Params.author.name }}</span>
+                                <span>
+                                    {{ if .Params.authors }}
+                                        {{ delimit .Params.authors ", " }}
+                                    {{ else }}
+                                        {{ .Params.author | default $.Site.Params.author.name }}
+                                    {{ end }}
+                                </span>
                             </div>
                         </div>
                         {{ end }}

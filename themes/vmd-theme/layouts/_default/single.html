@@ -8,7 +8,13 @@
             <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
                 <span>{{ .Date.Format "January 2, 2006" }}</span>
                 <span>·</span>
-                <span>{{ .Params.author | default .Site.Params.author.name }}</span>
+                <span>
+                    {{ if .Params.authors }}
+                        {{ delimit .Params.authors ", " }}
+                    {{ else }}
+                        {{ .Params.author | default .Site.Params.author.name }}
+                    {{ end }}
+                </span>
                 {{ if .Params.tags }}
                 <span class="ml-2">
                     {{ range .Params.tags }}
