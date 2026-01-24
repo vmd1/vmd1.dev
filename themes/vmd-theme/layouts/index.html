@@ -81,35 +81,115 @@
                 const xmlDoc = parser.parseFromString(postsText, "text/xml");
                 const postItems = Array.from(xmlDoc.querySelectorAll("item"));
                 
-                const posts = postItems.map(item => ({
-                    title: item.querySelector("title").textContent,
-                    link: item.querySelector("link").textContent,
-                    date: new Date(item.querySelector("pubDate").textContent),
-                    summary: item.querySelector("description").textContent,
-                    tags: Array.from(item.querySelectorAll("category")).map(c => c.textContent).join(" | ")
-                }));
+                const posts = postItems.map(item => {
+                    const link = item.querySelector("link").textContent;
+                    let section = 'Post';
+                    try {
+                        const urlObj = new URL(link);
+                        // pathname usually starts with /, splitting gives ['', 'section', 'slug', ''] or similar
+                        const parts = urlObj.pathname.split('/').filter(Boolean);
+                        if (parts.length > 0) {
+                            // First part is section
+                            let rawSection = parts[0];
+                            // Format: "white-hat" -> "White Hat"
+                            section = rawSection.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+                        }
+                    } catch (e) {
+                         // Fallback if link parsing fails
+                    }
+
+                    return {
+                        title: item.querySelector("title").textContent,
+                        link: link,
+                        date: new Date(item.querySelector("pubDate").textContent),
+                        summary: item.querySelector("description").textContent,
+                        tags: Array.from(item.querySelectorAll("category")).map(c => c.textContent),
+                        section: section
+                    };
+                });
 
                 const starredIds = new Set(starredRepos.map(repo => repo.id));
                 const projects = ownedRepos.filter(repo => starredIds.has(repo.id));
 
+                /* 
+                   Map tech names (lowercase) to Devicon class names.
+                   Add more mappings as needed.
+                */
+                const techMap = {
+                    "python": "devicon-python-plain",
+                    "javascript": "devicon-javascript-plain",
+                    "typescript": "devicon-typescript-plain",
+                    "html": "devicon-html5-plain",
+                    "css": "devicon-css3-plain",
+                    "scss": "devicon-sass-original",
+                    "sass": "devicon-sass-original",
+                    "docker": "devicon-docker-plain",
+                    "go": "devicon-go-original-wordmark",
+                    "golang": "devicon-go-original-wordmark",
+                    "c++": "devicon-cplusplus-plain",
+                    "cpp": "devicon-cplusplus-plain",
+                    "c": "devicon-c-plain",
+                    "c#": "devicon-csharp-plain",
+                    "csharp": "devicon-csharp-plain",
+                    "java": "devicon-java-plain",
+                    "rust": "devicon-rust-plain",
+                    "vue": "devicon-vuejs-plain",
+                    "react": "devicon-react-original",
+                    "angular": "devicon-angularjs-plain",
+                    "svelte": "devicon-svelte-plain",
+                    "node": "devicon-nodejs-plain",
+                    "nodejs": "devicon-nodejs-plain",
+                    "hugo": "devicon-hugo-plain",
+                    "git": "devicon-git-plain",
+                    "github": "devicon-github-original",
+                    "linux": "devicon-linux-plain",
+                    "bash": "devicon-bash-plain",
+                    "shell": "devicon-bash-plain",
+                    "powershell": "devicon-powershell-plain",
+                    "windows": "devicon-windows8-original",
+                    "azure": "devicon-azure-plain",
+                    "aws": "devicon-amazonwebservices-original",
+                    "gcp": "devicon-googlecloud-plain",
+                    "markdown": "devicon-markdown-original"
+                };
+
+                // Helper to generate icon or badge HTML
+                const getTechHTML = (tech, allowText) => {
+                    const key = tech.toLowerCase().trim();
+                    // Search in map
+                    if (techMap[key]) {
+                        return `<i class="${techMap[key]} text-lg" title="${tech}"></i>`;
+                    }
+                    // Fallback to text badge only if allowed
+                    if (allowText) {
+                        return `<span class="bg-slate-700/50 text-slate-300 px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap">${tech}</span>`;
+                    }
+                    return '';
+                };
+
                 const items = [
                     ...projects.map(r => ({
                         type: 'project',
+                        isProject: true,
                         title: r.full_name,
                         date: new Date(r.created_at),
                         desc: r.description || 'No description available.',
                         link: r.html_url,
                         icon: 'ri-github-line',
-                        meta: `⭐ ${r.stargazers_count} | ${r.language || 'N/A'}`
+                        // Collect languages/topics
+                        technologies: [r.language, ...(r.topics || [])].filter(Boolean),
+                        stars: r.stargazers_count
                     })),
                     ...posts.map(p => ({
-                        type: 'post',
+                        type: p.section, // Use section (folder name)
+                        isProject: false,
                         title: p.title,
                         date: p.date,
                         desc: p.summary,
                         link: p.link,
                         icon: 'ri-article-line',
-                        meta: p.tags || 'Blog Post'
+                        technologies: p.tags,
+                        stars: null
                     }))
                 ].sort((a, b) => b.date - a.date);
 
@@ -131,6 +211,33 @@
                     const isLeft = index % 2 === 0;
                     const truncatedDesc = truncateChars(item.desc, 150);
 
+                    // Generate tech icons/badges
+                    // For posts (isProject=false), we disallow text tags. Use icons only.
+                    let techStackHTML = '';
+                    if (item.technologies && item.technologies.length > 0) {
+                        const techs = item.technologies
+                            .map(t => getTechHTML(t, item.isProject))
+                            .filter(t => t !== ''); // Filter out empty strings
+                        
+                        // Only render container if we have items
+                        if (techs.length > 0) {
+                            techStackHTML = `
+                                <div class="flex flex-wrap gap-2 mt-2">
+                                    ${techs.slice(0, 6).join('')}
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Extra meta info (stars for projects)
+                    let metaInfo = '';
+                    if (item.stars !== null) {
+                         metaInfo = `<span class="flex items-center gap-1 mr-2 text-yellow-500"><i class="ri-star-fill"></i> ${item.stars}</span>`;
+                    } else {
+                        // For posts, maybe showing "Blog Post" text is redundant if we have tags/icons?
+                        // Let's leave it minimal.
+                    }
+
                     const rowEl = document.createElement('div');
                     rowEl.className = `timeline-row flex flex-col md:flex-row w-full ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0`;
                     
@@ -145,9 +252,15 @@
                                     ${item.title}
                                 </h3>
                                 <p class="text-gray-400 text-sm text-truncate-3 leading-relaxed mb-4" title="${item.desc}">${truncatedDesc}</p>
-                                <div class="flex items-center justify-between text-[11px] font-mono text-gray-500">
-                                    <span>${item.meta}</span>
-                                    <i class="${item.icon} text-lg text-blue-500/50"></i>
+                                
+                                <div class="flex items-end justify-between">
+                                    <div class="flex flex-col">
+                                         ${techStackHTML}
+                                    </div>
+                                    <div class="flex items-center text-gray-500 text-[11px] font-mono shrink-0 ml-2">
+                                        ${metaInfo}
+                                        <i class="${item.icon} text-lg text-blue-500/50"></i>
+                                    </div>
                                 </div>
                             </a>
                         </div>
