@@ -1,0 +1,14 @@
+{
+  "fi.mau.bridges": [
+    "https://api.vmd1.dev/v1/bridges/slack",
+    "https://api.vmd1.dev/v1/bridges/signal",
+    "https://api.vmd1.dev/v1/bridges/telegram",
+    "https://api.vmd1.dev/v1/bridges/whatsapp",
+    "https://api.vmd1.dev/v1/bridges/twitter",
+    "https://api.vmd1.dev/v1/bridges/gmessages",
+    "https://api.vmd1.dev/v1/bridges/discord",
+    "https://api.vmd1.dev/v1/bridges/linkedin",
+    "https://api.vmd1.dev/v1/bridges/meta",
+    "https://api.vmd1.dev/v1/bridges/googlechat"
+  ]
+}
