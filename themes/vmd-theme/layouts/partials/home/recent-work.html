@@ -5,7 +5,7 @@
         <div id="timeline-notice" class="max-w-3xl mx-auto"></div>
         <div id="timeline-wrapper" class="relative max-w-5xl mx-auto">
             <!-- Vertical Line (Desktop only) -->
-            <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-500/50 via-purple-500/50 to-pink-500/50"></div>
+            <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-blue-400/40"></div>
             
             <div id="timeline-container" class="space-y-12 md:space-y-0">
                 <div id="timeline-loading" class="flex justify-center py-12">
@@ -41,7 +41,7 @@
     }
     @media (min-width: 768px) {
         .timeline-row:not(:first-child) {
-            margin-top: -2rem;
+            margin-top: -1.25rem;
         }
     }
 </style>
@@ -296,36 +296,36 @@ async function buildTimeline() {
             }
 
             const rowEl = document.createElement('div');
-            rowEl.className = `timeline-row flex flex-col md:flex-row w-full ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0`;
+            rowEl.className = `timeline-row relative flex flex-col md:flex-row w-full ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0`;
             
             rowEl.innerHTML = `
                 <!-- Content Side -->
                 <div class="w-full md:w-[45%] ${isLeft ? 'md:pr-12' : 'md:pl-12'}">
-                    <a href="${item.link}" ${item.type === 'project' ? 'target="_blank"' : ''} class="block card p-6 rounded-2xl bg-slate-900 border border-transparent shadow-none transition-all duration-300 hover:bg-slate-800 hover:border-blue-500/50 group decoration-0">
-                        <span class="text-sm font-semibold text-blue-400 mb-2 block uppercase tracking-wider">
+                    <a href="${item.link}" ${item.type === 'project' ? 'target="_blank"' : ''} class="block card p-6 rounded-2xl bg-slate-900/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-slate-950/30 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/65 hover:border-blue-400/50 hover:shadow-2xl hover:shadow-slate-950/40 group decoration-0">
+                        <span class="inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-300 mb-3">
                             ${item.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${item.type}
                         </span>
-                        <h3 class="text-xl font-bold text-gray-100 mb-3 group-hover:text-blue-400 transition-colors">
+                        <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-blue-300 transition-colors">
                             ${item.title}
                         </h3>
-                        <p class="text-gray-400 text-sm text-truncate-3 leading-relaxed mb-4" title="${item.desc}">${truncatedDesc}</p>
+                        <p class="text-gray-300/90 text-sm text-truncate-3 leading-relaxed mb-4" title="${item.desc}">${truncatedDesc}</p>
                         
                         <div class="flex items-end justify-between">
                             <div class="flex flex-col">
                                  ${techStackHTML}
                             </div>
-                            <div class="flex items-center text-gray-500 text-[11px] font-mono shrink-0 ml-2">
+                            <div class="flex items-center text-gray-400 text-[11px] font-mono shrink-0 ml-2">
                                 ${metaInfo}
-                                <i class="${item.icon} text-lg text-blue-500/50"></i>
+                                <i class="${item.icon} text-lg text-blue-300/70"></i>
                             </div>
                         </div>
                     </a>
                 </div>
 
                 <!-- Center Dot & Line Connectors -->
-                <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-8 h-8 z-20">
-                    <div class="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] border-4 border-slate-900"></div>
-                    <div class="absolute ${isLeft ? 'right-full' : 'left-full'} h-px w-12 bg-gradient-to-r ${isLeft ? 'from-transparent to-blue-500/50' : 'from-blue-500/50 to-transparent'}"></div>
+                <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-10 h-10 z-20">
+                    <div class="w-3.5 h-3.5 rounded-full bg-blue-400 ring-4 ring-slate-900/90"></div>
+                    <div class="absolute ${isLeft ? 'right-full' : 'left-full'} h-px w-14 bg-gradient-to-r ${isLeft ? 'from-transparent to-blue-400/60' : 'from-blue-400/60 to-transparent'}"></div>
                 </div>
 
                 <!-- Spacing Side -->
