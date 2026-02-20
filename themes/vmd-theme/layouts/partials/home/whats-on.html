@@ -1,0 +1,122 @@
+<!-- What's On Section -->
+<section class="card h-full">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-100">What's up?</h2>
+    <div id="whats-on-content" class="prose text-gray-300 leading-relaxed">
+        <p class="text-gray-500">Loading updates...</p>
+    </div>
+
+    <div class="mt-6 pt-4 border-t border-white/10 space-y-4 text-gray-300">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-100">GitHub Activity</h3>
+            <span id="activity-today" class="text-sm text-gray-400">Activity today: loading...</span>
+        </div>
+
+        <div>
+            <h4 class="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-2">Last 3 commits</h4>
+            <ul id="recent-commits" class="space-y-2 text-sm text-gray-300">
+                <li class="text-gray-500">Loading commits...</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-2">Contribution Graph</h4>
+            <img
+                src="https://github-readme-activity-graph.vercel.app/graph?username=vmd1&theme=tokyo-night&area=false&hide_border=true"
+                alt="GitHub contribution graph for vmd1"
+                class="w-full rounded-lg border border-white/10"
+                loading="lazy"
+                decoding="async"
+            >
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const username = 'vmd1';
+        const whatsOnContentEl = document.getElementById('whats-on-content');
+        const activityTodayEl = document.getElementById('activity-today');
+        const recentCommitsEl = document.getElementById('recent-commits');
+
+        if (whatsOnContentEl) {
+            try {
+                const markdownResponse = await fetch('https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md');
+                if (!markdownResponse.ok) throw new Error('Could not load markdown');
+                const markdown = await markdownResponse.text();
+                whatsOnContentEl.innerHTML = marked.parse(markdown || 'No updates yet.');
+            } catch (error) {
+                whatsOnContentEl.innerHTML = '<p class="text-gray-500">Couldn\'t load status updates right now.</p>';
+            }
+        }
+
+        if (!activityTodayEl || !recentCommitsEl) return;
+
+        const escapeHtml = (value) => String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+        try {
+            const eventsResponse = await fetch(`https://api.github.com/users/${username}/events?per_page=100`);
+            if (!eventsResponse.ok) throw new Error('GitHub API unavailable');
+
+            const events = await eventsResponse.json();
+            const todayUtc = new Date().toISOString().slice(0, 10);
+            const todayActivityCount = events.filter((event) =>
+                typeof event.created_at === 'string' && event.created_at.startsWith(todayUtc)
+            ).length;
+
+            activityTodayEl.textContent = `Activity today: ${todayActivityCount} events`;
+
+            const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=6`);
+            if (!reposResponse.ok) throw new Error('Could not load repos');
+            const repos = await reposResponse.json();
+
+            const commitResponses = await Promise.all(
+                repos.map((repo) =>
+                    fetch(`https://api.github.com/repos/${repo.full_name}/commits?author=${username}&per_page=3`)
+                        .then((response) => (response.ok ? response.json() : []))
+                        .catch(() => [])
+                )
+            );
+
+            const commits = commitResponses
+                .flat()
+                .filter((commit) => commit && commit.sha && commit.commit && commit.commit.author)
+                .map((commit) => ({
+                    sha: commit.sha,
+                    message: (commit.commit.message || 'Commit').split('\n')[0],
+                    url: commit.html_url || `https://github.com/${commit.repository?.full_name || ''}/commit/${commit.sha}`,
+                    repo: commit.repository && commit.repository.full_name
+                        ? commit.repository.full_name
+                        : (commit.url?.match(/repos\/(.+?)\/commits/)?.[1] || 'Unknown repo'),
+                    date: commit.commit.author.date
+                }))
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const seen = new Set();
+            const latestThree = commits.filter((commit) => {
+                if (seen.has(commit.sha)) return false;
+                seen.add(commit.sha);
+                return true;
+            }).slice(0, 3);
+            if (latestThree.length === 0) {
+                recentCommitsEl.innerHTML = '<li class="text-gray-500">No recent public commits found.</li>';
+                return;
+            }
+
+            recentCommitsEl.innerHTML = latestThree.map((commit) => (
+                `<li class="leading-relaxed">` +
+                `<a href="${escapeHtml(commit.url)}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">${escapeHtml(commit.message)}</a>` +
+                `<span class="text-gray-500"> · ${escapeHtml(commit.repo)}</span>` +
+                `</li>`
+            )).join('');
+        } catch (error) {
+            activityTodayEl.textContent = 'Activity today: unavailable';
+            recentCommitsEl.innerHTML = '<li class="text-gray-500">Couldn\'t load commit activity right now.</li>';
+        }
+    });
+</script>

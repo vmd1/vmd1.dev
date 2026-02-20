@@ -17,20 +17,8 @@
                         <span class="icon-label-group"><i class="ri-article-line text-2xl"></i><span class="nav-label hidden sm:inline">Posts</span></span>
                     </a>
                     <!-- Desktop Only Links -->
-                    <a href="{{ "archive" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Archive" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-                        <span class="icon-label-group"><i class="ri-archive-line text-2xl"></i><span class="nav-label hidden sm:inline">Archive</span></span>
-                    </a>
                     <a href="{{ "scripts" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
-                    </a>
-                    <!-- CV Download Button -->
-                    <a href="/CV.pdf" download id="cv-nav-link" class="navbar-anim-link hidden sm:flex items-center text-gray-400 hover:text-gray-100 transition-colors duration-200 relative group" title="Email cv@vmd1.dev for password">
-                        <i class="ri-profile-line text-2xl"></i>
-                        <span class="nav-label overflow-hidden max-w-0 opacity-0 group-hover:max-w-[4rem] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-in-out font-bold whitespace-nowrap">CV</span>
-                        
-                        <span class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max px-3 py-1 bg-slate-900/95 text-xs text-gray-200 rounded shadow-lg border border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                            CV is password protected.<br>Email <b>cv@vmd1.dev</b> for access.
-                        </span>
                     </a>
                     <a href="#" id="projects-nav-link" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
@@ -42,16 +30,8 @@
                         </button>
                         <div id="mobile-nav-overflow-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-slate-900/95 backdrop-blur-xl rounded-lg border border-gray-700 shadow-xl z-50 w-48">
                             <div class="flex flex-col space-y-2">
-                                <a href="{{ "archive" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                                    <span class="icon-label-group"><i class="ri-archive-line text-xl"></i><span class="nav-label ml-2">Archive</span></span>
-                                </a>
                                 <a href="{{ "scripts" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-terminal-box-line text-xl"></i><span class="nav-label ml-2">Scripts</span></span>
-                                </a>
-                                <!-- CV Download Button (Mobile Overflow) -->
-                                <a href="/CV.pdf" download class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 group flex items-center" title="Email cv@vmd1.dev for password">
-                                    <span class="icon-label-group"><i class="ri-profile-line text-xl"></i></span>
-                                    <span class="nav-label overflow-hidden max-w-0 opacity-0 group-hover:max-w-[4rem] group-hover:opacity-100 group-hover:ml-2 transition-all duration-300 ease-in-out font-bold whitespace-nowrap">CV</span>
                                 </a>
                                 <a href="#" id="projects-nav-link-mobile" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-function-line text-xl"></i><span class="nav-label ml-2">Projects</span></span>
@@ -71,14 +51,6 @@
                     <!-- GitHub -->
                     <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <i class="ri-github-line text-2xl"></i>
-                    </a>
-                    <!-- Reddit -->
-                    <a href="https://www.reddit.com/user/vmd1_" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-reddit-line text-2xl"></i>
-                    </a>
-                    <!-- Instagram -->
-                    <a href="https://www.instagram.com/v.md.1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                        <i class="ri-instagram-line text-2xl"></i>
                     </a>
                     <!-- LinkedIn -->
                     <a href="https://www.linkedin.com/in/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
@@ -104,12 +76,6 @@
                         <div class="grid grid-cols-3 gap-4 social-icons justify-items-center">
                             <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-github-line text-2xl"></i>
-                            </a>
-                            <a href="https://www.reddit.com/user/vmd1_" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                                <i class="ri-reddit-line text-2xl"></i>
-                            </a>
-                            <a href="https://www.instagram.com/v.md.1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
-                                <i class="ri-instagram-line text-2xl"></i>
                             </a>
                             <a href="https://www.linkedin.com/in/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-linkedin-box-line text-2xl"></i>
@@ -213,5 +179,6 @@
                         }
                     }
                 });
+
             </script>
         </header>
