@@ -28,6 +28,13 @@
                 decoding="async"
             >
         </div>
+
+        <div class="pt-2">
+            <a id="random-project-link" href="https://github.com/vmd1?tab=repositories" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-gray-200 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
+                <span class="font-semibold">Open a random project</span>
+                <span aria-hidden="true">→</span>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -38,6 +45,7 @@
         const whatsOnContentEl = document.getElementById('whats-on-content');
         const activityTodayEl = document.getElementById('activity-today');
         const recentCommitsEl = document.getElementById('recent-commits');
+        const randomProjectLinkEl = document.getElementById('random-project-link');
 
         if (whatsOnContentEl) {
             try {
@@ -75,6 +83,14 @@
             if (!reposResponse.ok) throw new Error('Could not load repos');
             const repos = await reposResponse.json();
 
+            if (randomProjectLinkEl) {
+                const candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== 'vmd1/vmd1.dev');
+                if (candidateRepos.length > 0) {
+                    const randomRepo = candidateRepos[Math.floor(Math.random() * candidateRepos.length)];
+                    randomProjectLinkEl.href = randomRepo.html_url;
+                }
+            }
+
             const commitResponses = await Promise.all(
                 repos.map((repo) =>
                     fetch(`https://api.github.com/repos/${repo.full_name}/commits?author=${username}&per_page=3`)
@@ -95,6 +111,7 @@
                         : (commit.url?.match(/repos\/(.+?)\/commits/)?.[1] || 'Unknown repo'),
                     date: commit.commit.author.date
                 }))
+                .filter((commit) => commit.repo !== 'vmd1/vmd1.dev')
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const seen = new Set();

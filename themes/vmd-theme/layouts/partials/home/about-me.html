@@ -38,5 +38,14 @@
             </div>
         </div>
     </div>
+
+    {{ range first 1 (.Site.RegularPages.ByDate.Reverse) }}
+    <div class="pt-4">
+        <a href="{{ .RelPermalink }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-gray-200 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
+            <span class="font-semibold">Read my latest post</span>
+            <span aria-hidden="true">→</span>
+        </a>
+    </div>
+    {{ end }}
     </div>
 </section>
