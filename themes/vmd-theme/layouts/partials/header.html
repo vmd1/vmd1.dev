@@ -93,12 +93,10 @@
             </div>
 
             <!-- Search Input Container -->
-            <div id="search-container" class="hidden absolute top-full right-0 mt-2 w-full sm:w-80 px-4 sm:px-0 z-50">
-                <div class="card p-2 bg-slate-900/95 backdrop-blur-xl border border-gray-700">
-                    <div class="relative">
-                        <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="search-input" placeholder="Search posts..." class="w-full bg-slate-800 text-gray-100 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500 border border-gray-700 placeholder-gray-500">
-                    </div>
+            <div id="search-container" class="search-hidden absolute top-full right-0 mt-2 w-full sm:w-80 px-4 sm:px-0 z-50">
+                <div class="search-glassbar relative">
+                    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-300/90"></i>
+                    <input type="text" id="search-input" placeholder="Search posts..." class="w-full text-gray-100 rounded-xl pl-10 pr-4 py-3 bg-transparent border-0 focus:outline-none placeholder-gray-400">
                 </div>
             </div>
 
@@ -111,16 +109,28 @@
                 const mobileNavOverflowToggle = document.getElementById('mobile-nav-overflow-toggle');
                 const mobileNavOverflowMenu = document.getElementById('mobile-nav-overflow-menu');
 
+                const openSearch = () => {
+                    searchContainer.classList.remove('search-hidden');
+                    searchContainer.classList.add('search-open');
+                    searchInput.focus();
+                };
+
+                const closeSearch = () => {
+                    searchContainer.classList.remove('search-open');
+                    searchContainer.classList.add('search-hidden');
+                };
+
                 searchToggle.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    searchContainer.classList.toggle('hidden');
-                    if (!searchContainer.classList.contains('hidden')) {
-                        searchInput.focus();
-                        // Close social menu if open
-                        if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
-                        // Close nav overflow if open
-                        if (mobileNavOverflowMenu) mobileNavOverflowMenu.classList.add('hidden');
+                    if (searchContainer.classList.contains('search-open')) {
+                        closeSearch();
+                        return;
                     }
+                    openSearch();
+                    // Close social menu if open
+                    if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
+                    // Close nav overflow if open
+                    if (mobileNavOverflowMenu) mobileNavOverflowMenu.classList.add('hidden');
                 });
 
                 if (mobileSocialToggle && mobileSocialMenu) {
@@ -128,7 +138,7 @@
                         e.stopPropagation();
                         mobileSocialMenu.classList.toggle('hidden');
                         // Close search if open
-                        searchContainer.classList.add('hidden');
+                        closeSearch();
                         // Close nav overflow if open
                         if (mobileNavOverflowMenu) mobileNavOverflowMenu.classList.add('hidden');
                     });
@@ -139,7 +149,7 @@
                         e.stopPropagation();
                         mobileNavOverflowMenu.classList.toggle('hidden');
                         // Close search if open
-                        searchContainer.classList.add('hidden');
+                        closeSearch();
                         // Close social menu if open
                         if (mobileSocialMenu) mobileSocialMenu.classList.add('hidden');
                     });
@@ -148,7 +158,7 @@
                 // Close when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!searchToggle.contains(e.target) && !searchContainer.contains(e.target)) {
-                        searchContainer.classList.add('hidden');
+                        closeSearch();
                     }
                     if (mobileSocialToggle && mobileSocialMenu && !mobileSocialToggle.contains(e.target) && !mobileSocialMenu.contains(e.target)) {
                         mobileSocialMenu.classList.add('hidden');

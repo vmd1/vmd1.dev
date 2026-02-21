@@ -42,6 +42,8 @@
         });
     </script>
     <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-[100] transition-all duration-100" style="width: 0%"></div>
+    <div id="particles-js" aria-hidden="true"></div>
+    <div id="background-logo" aria-hidden="true"></div>
     <div id="spotlight"></div>
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         {{ partial "header.html" . }}
@@ -152,6 +154,54 @@
     <script src="{{ "js/code-copy.js" | relURL }}"></script>
     <script src="{{ "js/progress-bar.js" | relURL }}"></script>
     <script src="{{ "js/lightbox.js" | relURL }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.particlesJS) return;
+            window.particlesJS('particles-js', {
+                particles: {
+                    number: { value: 130, density: { enable: true, value_area: 900 } },
+                    color: { value: ['#D8C2FF', '#F5A8E6', '#FFC3D2', '#B7C8FF'] },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.42, random: true },
+                    size: { value: 2.8, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 155,
+                        color: '#C8A8FF',
+                        opacity: 0.28,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1.5,
+                        direction: 'none',
+                        random: false,
+                        straight: false,
+                        out_mode: 'out'
+                    }
+                },
+                interactivity: {
+                    detect_on: 'window',
+                    events: {
+                        onhover: { enable: true, mode: 'repulse' },
+                        onclick: { enable: true, mode: 'push' },
+                        resize: true
+                    },
+                    modes: {
+                        repulse: {
+                            distance: 170,
+                            duration: 0.45
+                        },
+                        push: {
+                            particles_nb: 5
+                        }
+                    }
+                },
+                retina_detect: true
+            });
+        });
+    </script>
     <script type="module">
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
       mermaid.initialize({ startOnLoad: false, theme: 'dark' });
