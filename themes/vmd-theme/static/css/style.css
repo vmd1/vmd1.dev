@@ -181,6 +181,13 @@ body {
     animation: random-dice-roll 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.contribution-graph-card {
+    width: 100%;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: transparent;
+}
+
 @keyframes random-dice-roll {
     0% { transform: rotate(0deg) scale(1); }
     35% { transform: rotate(-18deg) scale(1.05); }
