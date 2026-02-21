@@ -31,6 +31,7 @@
 
         <div class="pt-2">
             <a id="random-project-link" href="https://github.com/vmd1?tab=repositories" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-gray-200 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
+                <i id="random-project-dice" class="ri-dice-line random-project-dice" aria-hidden="true"></i>
                 <span class="font-semibold">Open a random project</span>
                 <span aria-hidden="true">→</span>
             </a>
@@ -46,6 +47,60 @@
         const activityTodayEl = document.getElementById('activity-today');
         const recentCommitsEl = document.getElementById('recent-commits');
         const randomProjectLinkEl = document.getElementById('random-project-link');
+        const randomProjectDiceEl = document.getElementById('random-project-dice');
+        let candidateRepos = [];
+        let currentRandomRepoUrl = '';
+        let randomHoverTimeoutId = null;
+        let randomHoverIntervalId = null;
+
+        const pickRandomProject = () => {
+            if (!randomProjectLinkEl || candidateRepos.length === 0) return;
+
+            let randomRepo = candidateRepos[Math.floor(Math.random() * candidateRepos.length)];
+            if (candidateRepos.length > 1) {
+                while (randomRepo.html_url === currentRandomRepoUrl) {
+                    randomRepo = candidateRepos[Math.floor(Math.random() * candidateRepos.length)];
+                }
+            }
+
+            currentRandomRepoUrl = randomRepo.html_url;
+            randomProjectLinkEl.href = randomRepo.html_url;
+            randomProjectLinkEl.setAttribute('data-repo', randomRepo.full_name || '');
+        };
+
+        const rollDiceAndShuffle = () => {
+            if (randomProjectDiceEl) {
+                randomProjectDiceEl.classList.remove('rolling');
+                void randomProjectDiceEl.offsetWidth;
+                randomProjectDiceEl.classList.add('rolling');
+            }
+            pickRandomProject();
+        };
+
+        const clearRandomHoverTimers = () => {
+            if (randomHoverTimeoutId) {
+                clearTimeout(randomHoverTimeoutId);
+                randomHoverTimeoutId = null;
+            }
+            if (randomHoverIntervalId) {
+                clearInterval(randomHoverIntervalId);
+                randomHoverIntervalId = null;
+            }
+        };
+
+        if (randomProjectLinkEl) {
+            randomProjectLinkEl.addEventListener('mouseenter', () => {
+                clearRandomHoverTimers();
+                randomHoverTimeoutId = setTimeout(() => {
+                    rollDiceAndShuffle();
+                    randomHoverIntervalId = setInterval(rollDiceAndShuffle, 1500);
+                }, 1500);
+            });
+
+            randomProjectLinkEl.addEventListener('mouseleave', () => {
+                clearRandomHoverTimers();
+            });
+        }
 
         if (whatsOnContentEl) {
             try {
@@ -84,10 +139,9 @@
             const repos = await reposResponse.json();
 
             if (randomProjectLinkEl) {
-                const candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== 'vmd1/vmd1.dev');
+                candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== 'vmd1/vmd1.dev');
                 if (candidateRepos.length > 0) {
-                    const randomRepo = candidateRepos[Math.floor(Math.random() * candidateRepos.length)];
-                    randomProjectLinkEl.href = randomRepo.html_url;
+                    pickRandomProject();
                 }
             }
 
