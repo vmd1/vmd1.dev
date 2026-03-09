@@ -1,5 +1,5 @@
 # Stage 1: Build the Hugo site
-FROM --platform=$BUILDPLATFORM klakegg/hugo:ext-alpine AS builder
+FROM klakegg/hugo:ext-alpine AS builder
 
 WORKDIR /src
 COPY . .
