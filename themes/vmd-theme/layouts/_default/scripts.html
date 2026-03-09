@@ -142,11 +142,11 @@
             const isSelected = selectedScripts.has(script['short-code']);
             
             // Generate command
-            let command = '';
+            let scriptCommand = '';
             if (isWindows) {
-                command = `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\\\w.ps1; & $env:TEMP\\\\w.ps1 ${script['short-code']}`;
+                scriptCommand = `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\\\w.ps1; & $env:TEMP\\\\w.ps1 ${script['short-code']}`;
             } else {
-                command = `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${script['short-code']}`;
+                scriptCommand = `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${script['short-code']}`;
             }
 
             return `
@@ -177,9 +177,9 @@
 
                     <div class="relative" onclick="event.stopPropagation()">
                         <div class="bg-slate-900 rounded-lg p-3 font-mono text-xs text-gray-300 break-all pr-10 h-20 overflow-y-auto custom-scrollbar">
-                            ${command}
+                            ${scriptCommand}
                         </div>
-                        <button onclick="copyToClipboard(this, '${command.replace(/'/g, "\\'")}')" 
+                        <button onclick="copyToClipboard(this, '${scriptCommand.replace(/'/g, "\\'")}')" 
                             class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-800 text-gray-400 hover:text-white hover:bg-slate-700 transition-all border border-slate-700"
                             title="Copy command">
                             <i class="ri-file-copy-line"></i>
