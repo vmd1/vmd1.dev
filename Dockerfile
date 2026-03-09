@@ -5,7 +5,7 @@ WORKDIR /src
 COPY . .
 
 # Build the site
-RUN hugo --gc --minify
+RUN hugo --gc
 
 # Stage 2: Serve the site with Nginx
 FROM nginx:alpine
