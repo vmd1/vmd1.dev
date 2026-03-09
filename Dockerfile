@@ -1,5 +1,5 @@
 # Stage 1: Build the Hugo site
-FROM klakegg/hugo:ext-alpine AS builder
+FROM hugomods/hugo:exts-alpine AS builder
 
 WORKDIR /src
 COPY . .
