@@ -1,5 +1,5 @@
 ---
-date: '2025-03-17T12:01:27Z'
+date: '2026-03-17T12:01:27Z'
 draft: false
 title: 'Self-hosting an all-in-one chat app'
 tags:

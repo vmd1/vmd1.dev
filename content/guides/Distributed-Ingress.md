@@ -1,5 +1,5 @@
 ---
-date: '2025-03-17T12:00:32Z'
+date: '2026-03-17T12:00:32Z'
 draft: false
 title: 'Distributed Ingress'
 tags:
