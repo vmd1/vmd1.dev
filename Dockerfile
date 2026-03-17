@@ -13,8 +13,8 @@ FROM nginx:alpine
 # Copy the built site from the builder stage
 COPY --from=builder /src/public /usr/share/nginx/html
 
-# Copy a custom Nginx configuration if needed, or use default
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy a custom Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
