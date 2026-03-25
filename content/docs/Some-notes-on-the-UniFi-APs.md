@@ -1,7 +1,7 @@
 ---
 date: '2025-07-23T14:30:00Z'
 draft: false
-title: 'Some Notes on the UniFi APs'
+title: 'Some Notes on my UniFi APs'
 tags:
 - Lab
 - Networking
