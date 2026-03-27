@@ -13,8 +13,8 @@
     <!-- Posts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         {{ range .Site.RegularPages }}
-        <a href="{{ .RelPermalink }}" class="block p-6 bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors duration-200">
-            <h3 class="text-xl font-bold text-gray-100 mb-2">{{ .Title }}</h3>
+        <a href="{{ .RelPermalink }}" class="block card p-6 rounded-2xl bg-slate-900/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-slate-950/30 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/65 hover:border-blue-400/50 hover:shadow-2xl hover:shadow-slate-950/40 group decoration-0">
+            <h3 class="text-xl font-bold text-gray-100 mb-2 group-hover:text-blue-300 transition-colors">{{ .Title }}</h3>
             <p class="text-gray-400 text-truncate-3">{{ .Summary | truncate 120 }}</p>
             <div class="mt-2 text-sm text-gray-500">{{ .Date.Format "January 2, 2006" }}</div>
         </a>
