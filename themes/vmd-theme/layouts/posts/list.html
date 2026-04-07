@@ -1,7 +1,9 @@
 {{ define "main" }}
 <div class="card static-card p-8">
     <!-- Title -->
-    <h2 class="text-2xl font-semibold text-gray-100 mb-8 text-center">{{ .Title }}</h2>
+    <header class="mb-8 text-center">
+        <h2 class="text-2xl font-semibold text-gray-100">{{ .Title }}</h2>
+    </header>
 
     <div class="flex justify-center mb-8">
         <a href="{{ "archive" | relURL }}" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-gray-200 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
@@ -9,6 +11,8 @@
             <span class="font-semibold">Open Archive</span>
         </a>
     </div>
+
+    <div class="mb-8 border-b border-gray-700"></div>
 
     <!-- Posts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

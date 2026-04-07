@@ -20,7 +20,7 @@
                     <a href="{{ "scripts" | relURL }}" class="navbar-anim-link hidden sm:flex {{ if eq .Title "Scripts" }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
                     </a>
-                    <a href="#" id="projects-nav-link" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <a href="{{ "projects" | relURL }}" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
                     </a>
                     <!-- Mobile Overflow Button -->
@@ -33,7 +33,7 @@
                                 <a href="{{ "scripts" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-terminal-box-line text-xl"></i><span class="nav-label ml-2">Scripts</span></span>
                                 </a>
-                                <a href="#" id="projects-nav-link-mobile" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                                <a href="{{ "projects" | relURL }}" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                     <span class="icon-label-group"><i class="ri-function-line text-xl"></i><span class="nav-label ml-2">Projects</span></span>
                                 </a>
                             </div>
