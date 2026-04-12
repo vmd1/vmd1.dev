@@ -206,18 +206,6 @@ body {
     box-shadow: none;
 }
 
-#spotlight {
-    position: fixed;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--primary-color) 0%, rgba(132, 94, 194, 0) 60%);
-    pointer-events: none;
-    transform: translate(-50%, -50%);
-    z-index: -1;
-    opacity: 0.3;
-}
-
 /* Custom styles to handle text truncation with ellipsis */
 .text-truncate-4 {
     display: -webkit-box;
@@ -309,15 +297,15 @@ body {
 
 .prose blockquote {
     border-left: 4px solid var(--primary-color);
-    padding-left: 1rem;
+    padding-left: 0.75rem;
     font-style: italic;
     color: #9ca3af; /* text-gray-400 */
     background: rgba(132, 94, 194, 0.1);
-    padding: 1rem;
+    padding: 0.32rem 0.75rem;
     border-radius: 0 0.5rem 0.5rem 0;
 }
 
-.prose code {
+.post-content code {
     color: var(--highlight-color);
     background: rgba(0, 0, 0, 0.3);
     padding: 0.2em 0.4em;
@@ -325,67 +313,88 @@ body {
     font-size: 0.875em;
 }
 
-/* Code Block Styling */
-/* Base pre styling (fallback) */
-.prose pre {
-    background: #1e1e2e !important;
-    padding: 1.5rem !important;
-    border-radius: 0.75rem;
+/* Post code block styling */
+.post-content pre {
+    background: #151a2d !important;
+    padding: 1.1rem !important;
+    border-radius: 0.9rem;
     overflow-x: auto;
     margin-bottom: 2em;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Wrapper for syntax highlighting (overrides syntax.css) */
-.prose .chroma {
-    background: #1e1e2e !important;
-    color: #f8f8f2 !important; /* Dracula foreground */
-    padding: 1.5rem !important;
-    border-radius: 0.75rem;
+.post-content .chroma {
+    background: #151a2d !important;
+    color: #f8f8f2 !important;
+    padding: 1.1rem !important;
+    border-radius: 0.9rem;
     margin-bottom: 2em;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     overflow-x: auto;
 }
 
 /* Reset inner pre styling when inside .chroma (fix for line numbers table) */
-.prose .chroma pre {
+.post-content .chroma pre {
     background: transparent !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
     overflow: visible !important;
+    box-shadow: none !important;
 }
 
-.prose pre code {
+.post-content pre code {
     background: transparent;
     padding: 0;
     color: inherit;
-    font-size: 0.9em;
+    font-size: 0.92em;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, "Courier New", monospace;
 }
 
 /* Line numbers styling */
-.chroma .lntable {
+.post-content .chroma .lntable {
     border-spacing: 0;
     width: 100%;
     display: table;
 }
 
-.chroma .lntd {
+.post-content .chroma .lntd {
     padding: 0;
     vertical-align: top;
 }
 
-.chroma .lntd:first-child {
-    padding-right: 1em;
-    border-right: 1px solid rgba(255,255,255,0.1);
+.post-content .chroma .lntd:first-child {
+    padding-right: 0.95em;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
     user-select: none;
-    width: 1%; /* Shrink to fit content */
+    width: 1%;
+    background: rgba(255, 255, 255, 0.02);
 }
 
-.chroma .ln {
-    color: #6b7280;
+.post-content .chroma .ln {
+    color: #7181b7;
     margin-right: 0;
+}
+
+.post-content .chroma::-webkit-scrollbar,
+.post-content pre::-webkit-scrollbar {
+    height: 9px;
+}
+
+.post-content .chroma::-webkit-scrollbar-track,
+.post-content pre::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+.post-content .chroma::-webkit-scrollbar-thumb,
+.post-content pre::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #7c5cff, #ff6f91);
+    border-radius: 999px;
 }
 
 .prose a {
@@ -406,40 +415,70 @@ body {
     margin: 2em auto;
 }
 
-/* Table of Contents Styling */
-#TableOfContents {
-    font-size: 0.95rem;
+/* Table of contents styling */
+.post-toc {
+    background: rgba(10, 14, 28, 0.66) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-#TableOfContents ul {
+.post-toc h2 {
+    letter-spacing: 0.01em;
+}
+
+.post-toc #TableOfContents {
+    font-size: 0.95rem;
+    max-height: 20rem;
+    overflow-y: auto;
+    padding-right: 0.2rem;
+}
+
+.post-toc #TableOfContents ul {
     list-style-type: none;
     padding-left: 0;
     margin: 0;
 }
 
-#TableOfContents ul ul {
-    padding-left: 1.5rem;
-    margin-top: 0.5rem;
+.post-toc #TableOfContents ul ul {
+    padding-left: 1rem;
+    margin-top: 0.35rem;
+    margin-left: 0.45rem;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#TableOfContents li {
-    margin-bottom: 0.5rem;
+.post-toc #TableOfContents li {
+    margin-bottom: 0.3rem;
 }
 
-#TableOfContents a {
-    color: #9ca3af; /* text-gray-400 */
+.post-toc #TableOfContents a {
+    color: #c2c8da;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
     display: block;
-    padding: 0.2rem 0;
-    border-bottom: none; /* Override prose link style */
+    padding: 0.28rem 0.55rem;
+    border-radius: 0.4rem;
+    border-bottom: none;
 }
 
-#TableOfContents a:hover {
-    color: var(--primary-color);
+.post-toc #TableOfContents a:hover {
+    color: #efe9ff;
     transform: translateX(4px);
+    background: rgba(132, 94, 194, 0.2);
     border-bottom: none;
+}
+
+.post-toc #TableOfContents::-webkit-scrollbar {
+    width: 8px;
+}
+
+.post-toc #TableOfContents::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+.post-toc #TableOfContents::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
 }
 
 

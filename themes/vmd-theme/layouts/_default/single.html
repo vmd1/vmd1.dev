@@ -26,13 +26,13 @@
         </header>
 
         {{ if and (ne .Params.toc false) (in .TableOfContents "<li>") }}
-        <div class="mb-8 p-4 bg-slate-900 rounded-lg">
+        <div class="mb-8 p-4 bg-slate-900 rounded-lg post-toc">
             <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
             {{ .TableOfContents }}
         </div>
         {{ end }}
 
-        <div class="prose prose-invert max-w-none">
+        <div class="prose prose-invert max-w-none post-content">
             {{ .Content }}
         </div>
     </article>
