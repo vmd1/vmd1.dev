@@ -6,39 +6,22 @@
     </div>
 </div>
 
-<div id="comments-container" style="display: none;">
-    <script src="https://giscus.app/client.js"
-            data-repo="vmd1/init0"
-            data-repo-id="R_kgDOOtTSnQ"
-            data-category="Comments"
-            data-category-id="DIC_kwDOOtTSnc4Cu2Vr"
-            data-mapping="title"
-            data-strict="1"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="top"
-            data-theme="{{ "css/giscus.css" | absURL }}"
-            data-lang="en"
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async>
-    </script>
+<div id="comments-container" class="hidden">
+    <div
+        class="giscus-slot"
+        data-repo="vmd1/init0"
+        data-repo-id="R_kgDOOtTSnQ"
+        data-category="Comments"
+        data-category-id="DIC_kwDOOtTSnc4Cu2Vr"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="{{ "css/giscus.css" | absURL }}"
+        data-lang="en"
+        data-loading="eager">
+    </div>
 </div>
-
-<script>
-    // Hide loading spinner and show comments when giscus is ready
-    document.addEventListener('giscus.beforeSend', function() {
-        document.getElementById('comments-loading').style.display = 'none';
-        document.getElementById('comments-container').style.display = 'block';
-    });
-
-    // Also handle the case where giscus loads quickly
-    setTimeout(() => {
-        if (document.querySelector('.giscus')) {
-            document.getElementById('comments-loading').style.display = 'none';
-            document.getElementById('comments-container').style.display = 'block';
-        }
-    }, 2000);
-</script>
 {{- /* to add comments read => https://gohugo.io/content-management/comments/ */ -}}
 {{- /* Comments area end */ -}}
