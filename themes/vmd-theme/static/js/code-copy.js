@@ -11,28 +11,60 @@
             if (!codeEl) return;
 
             const wrapper = document.createElement('div');
-            wrapper.className = 'relative group';
+            wrapper.className = 'relative group code-copy-wrap';
 
             pre.parentNode.insertBefore(wrapper, pre);
             wrapper.appendChild(pre);
+            pre.classList.add('copy-enabled');
+            pre.tabIndex = 0;
 
             const button = document.createElement('button');
-            button.className = 'absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded bg-slate-700 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400';
+            button.className = 'code-copy-btn';
             button.innerHTML = '<i class="ri-file-copy-line"></i>';
             button.title = 'Copy code';
+            button.setAttribute('aria-label', 'Copy code block');
 
-            button.addEventListener('click', async () => {
+            const setCopiedState = (state) => {
+                if (state === 'ok') {
+                    button.innerHTML = '<i class="ri-check-line"></i>';
+                    button.classList.add('copied');
+                    button.classList.remove('error');
+                } else if (state === 'error') {
+                    button.innerHTML = '<i class="ri-error-warning-line"></i>';
+                    button.classList.add('error');
+                    button.classList.remove('copied');
+                } else {
+                    button.innerHTML = '<i class="ri-file-copy-line"></i>';
+                    button.classList.remove('copied', 'error');
+                }
+            };
+
+            const copyCode = async () => {
                 const code = codeEl.innerText;
                 try {
                     await navigator.clipboard.writeText(code);
-                    button.innerHTML = '<i class="ri-check-line text-green-400"></i>';
-                    setTimeout(() => {
-                        button.innerHTML = '<i class="ri-file-copy-line"></i>';
-                    }, 2000);
+                    setCopiedState('ok');
+                    window.setTimeout(() => setCopiedState('idle'), 1500);
                 } catch (err) {
                     console.error('Failed to copy:', err);
-                    button.innerHTML = '<i class="ri-error-warning-line text-red-400"></i>';
+                    setCopiedState('error');
+                    window.setTimeout(() => setCopiedState('idle'), 1800);
                 }
+            };
+
+            button.addEventListener('click', async () => {
+                await copyCode();
+            });
+
+            pre.addEventListener('click', async (event) => {
+                if (event.target && event.target.closest('button')) return;
+                await copyCode();
+            });
+
+            pre.addEventListener('keydown', async (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                await copyCode();
             });
 
             wrapper.appendChild(button);

@@ -3,8 +3,13 @@
     const SPA_CACHE_TTL_MS = 5 * 60 * 1000;
     const SPA_CACHE_LIMIT = 20;
     const SPA_CACHE_KEY = 'spa-page-cache-v1';
+    const GITHUB_CACHE_PREFIX = 'github-fetch-cache-v1:';
+    const GITHUB_DEFAULT_TTL_MS = 10 * 60 * 1000;
+    const GITHUB_STALE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
     const pageCache = new Map();
     const pageFetches = new Map();
+    const githubRequestCache = new Map();
+    const githubMemoryCache = new Map();
     const runtimeConfig = (window.__VMD_CONFIG__ && window.__VMD_CONFIG__.profile) || {};
 
     function getProfileConfig(key, fallback) {
@@ -13,6 +18,97 @@
             return value;
         }
         return fallback;
+    }
+
+    function isGitHubResourceUrl(url) {
+        try {
+            const host = new URL(url, window.location.href).hostname.toLowerCase();
+            return host === 'api.github.com' || host === 'raw.githubusercontent.com' || host === 'github.com';
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function getGitHubCacheKey(url) {
+        return `${GITHUB_CACHE_PREFIX}${normalizeCacheUrl(url)}`;
+    }
+
+    function readGitHubCache(url) {
+        const key = getGitHubCacheKey(url);
+        const inMemory = githubMemoryCache.get(key);
+        if (inMemory && typeof inMemory.cachedAt === 'number') {
+            return inMemory;
+        }
+
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed.cachedAt !== 'number') return null;
+            githubMemoryCache.set(key, parsed);
+            return parsed;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function writeGitHubCache(url, value) {
+        const key = getGitHubCacheKey(url);
+        githubMemoryCache.set(key, value);
+
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+            // Ignore storage failures (quota/private mode).
+        }
+    }
+
+    async function fetchGitHubResource(url, options) {
+        const opts = options || {};
+        const responseType = opts.responseType === 'text' ? 'text' : 'json';
+        const ttlMs = Number.isFinite(opts.ttlMs) ? opts.ttlMs : GITHUB_DEFAULT_TTL_MS;
+        const normalizedUrl = normalizeCacheUrl(url);
+        const now = Date.now();
+
+        const cached = readGitHubCache(normalizedUrl);
+        if (cached && cached.type === responseType && now - cached.cachedAt <= ttlMs) {
+            return { data: cached.data, source: 'cache' };
+        }
+
+        const inflightKey = `${responseType}:${normalizedUrl}`;
+        const inflight = githubRequestCache.get(inflightKey);
+        if (inflight) return inflight;
+
+        const request = fetch(normalizedUrl)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`GitHub fetch failed (${response.status})`);
+                }
+
+                const data = responseType === 'text'
+                    ? await response.text()
+                    : await response.json();
+
+                writeGitHubCache(normalizedUrl, {
+                    type: responseType,
+                    cachedAt: Date.now(),
+                    data
+                });
+
+                return { data, source: 'network' };
+            })
+            .catch((error) => {
+                if (cached && cached.type === responseType && now - cached.cachedAt <= GITHUB_STALE_TTL_MS) {
+                    return { data: cached.data, source: 'stale' };
+                }
+                throw error;
+            })
+            .finally(() => {
+                githubRequestCache.delete(inflightKey);
+            });
+
+        githubRequestCache.set(inflightKey, request);
+        return request;
     }
 
     function ensureTransitionStyles() {
@@ -922,10 +1018,11 @@
         };
 
         try {
-            const response = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`);
-            if (!response.ok) throw new Error('GitHub API request failed');
-
-            const repos = (await response.json()).filter((repo) => !repo.fork);
+            const { data: reposData } = await fetchGitHubResource(
+                `https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`,
+                { responseType: 'json', ttlMs: 20 * 60 * 1000 }
+            );
+            const repos = reposData.filter((repo) => !repo.fork);
             if (statusEl) statusEl.remove();
 
             if (!repos.length) {
@@ -1045,9 +1142,15 @@
         if (whatsOnContentEl) {
             try {
                 await loadScriptOnce('https://cdn.jsdelivr.net/npm/marked/marked.min.js', () => typeof window.marked !== 'undefined');
-                const markdownResponse = await fetch(whatsOnMarkdownUrl);
-                if (!markdownResponse.ok) throw new Error('Could not load markdown');
-                const markdown = await markdownResponse.text();
+                let markdown = '';
+                if (isGitHubResourceUrl(whatsOnMarkdownUrl)) {
+                    const result = await fetchGitHubResource(whatsOnMarkdownUrl, { responseType: 'text', ttlMs: 5 * 60 * 1000 });
+                    markdown = result.data || '';
+                } else {
+                    const markdownResponse = await fetch(whatsOnMarkdownUrl);
+                    if (!markdownResponse.ok) throw new Error('Could not load markdown');
+                    markdown = await markdownResponse.text();
+                }
                 whatsOnContentEl.innerHTML = window.marked.parse(markdown || 'No updates yet.');
             } catch (error) {
                 whatsOnContentEl.innerHTML = '<p class="text-gray-500">Couldn\'t load status updates right now.</p>';
@@ -1151,19 +1254,20 @@
         };
 
         try {
-            const eventsResponse = await fetch(`https://api.github.com/users/${username}/events?per_page=100`);
-            if (!eventsResponse.ok) throw new Error('GitHub API unavailable');
-
-            const events = await eventsResponse.json();
+            const { data: events } = await fetchGitHubResource(
+                `https://api.github.com/users/${username}/events?per_page=100`,
+                { responseType: 'json', ttlMs: 5 * 60 * 1000 }
+            );
             const todayUtc = new Date().toISOString().slice(0, 10);
             const todayActivityCount = events.filter((event) => typeof event.created_at === 'string' && event.created_at.startsWith(todayUtc)).length;
 
             renderContributionGraph(events);
             activityTodayEl.textContent = `Activity today: ${todayActivityCount} events`;
 
-            const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=6`);
-            if (!reposResponse.ok) throw new Error('Could not load repos');
-            const repos = await reposResponse.json();
+            const { data: repos } = await fetchGitHubResource(
+                `https://api.github.com/users/${username}/repos?sort=pushed&per_page=6`,
+                { responseType: 'json', ttlMs: 10 * 60 * 1000 }
+            );
 
             if (randomProjectLinkEl) {
                 candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== excludedRepoFullName);
@@ -1172,8 +1276,11 @@
 
             const commitResponses = await Promise.all(
                 repos.map((repo) =>
-                    fetch(`https://api.github.com/repos/${repo.full_name}/commits?author=${username}&per_page=3`)
-                        .then((response) => (response.ok ? response.json() : []))
+                    fetchGitHubResource(
+                        `https://api.github.com/repos/${repo.full_name}/commits?author=${username}&per_page=3`,
+                        { responseType: 'json', ttlMs: 5 * 60 * 1000 }
+                    )
+                        .then((result) => result.data)
                         .catch(() => [])
                 )
             );
@@ -1237,40 +1344,24 @@
             let githubNotice = '';
 
             try {
-                const ownedResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`);
-                if (!ownedResponse.ok) throw new Error('GitHub API unavailable');
-                ownedRepos = await ownedResponse.json();
+                const ownedResult = await fetchGitHubResource(
+                    `https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`,
+                    { responseType: 'json', ttlMs: 20 * 60 * 1000 }
+                );
+                ownedRepos = ownedResult.data;
 
-                const starredResponse = await fetch(`https://api.github.com/users/${username}/starred?per_page=100`);
-                if (!starredResponse.ok) throw new Error('GitHub starred API unavailable');
-                const starredRepos = await starredResponse.json();
+                const starredResult = await fetchGitHubResource(
+                    `https://api.github.com/users/${username}/starred?per_page=100`,
+                    { responseType: 'json', ttlMs: 20 * 60 * 1000 }
+                );
+                const starredRepos = starredResult.data;
                 starredRepoIds = new Set(starredRepos.map((repo) => repo.id));
 
-                localStorage.setItem('timeline_owned_repos_cache', JSON.stringify({
-                    updatedAt: Date.now(),
-                    repos: ownedRepos
-                }));
-                localStorage.setItem('timeline_starred_repo_ids_cache', JSON.stringify({
-                    updatedAt: Date.now(),
-                    ids: Array.from(starredRepoIds)
-                }));
-            } catch (githubError) {
-                try {
-                    const cachedOwned = JSON.parse(localStorage.getItem('timeline_owned_repos_cache') || 'null');
-                    const cachedStarred = JSON.parse(localStorage.getItem('timeline_starred_repo_ids_cache') || 'null');
-                    const hasOwned = cachedOwned && Array.isArray(cachedOwned.repos) && cachedOwned.repos.length > 0;
-                    const hasStarred = cachedStarred && Array.isArray(cachedStarred.ids) && cachedStarred.ids.length > 0;
-
-                    if (hasOwned && hasStarred) {
-                        ownedRepos = cachedOwned.repos;
-                        starredRepoIds = new Set(cachedStarred.ids);
-                        githubNotice = 'GitHub API is rate-limited, showing cached starred project data.';
-                    } else {
-                        githubNotice = 'GitHub API is rate-limited, showing posts only (starred project data unavailable).';
-                    }
-                } catch (cacheError) {
-                    githubNotice = 'GitHub API is rate-limited, showing posts only (starred project data unavailable).';
+                if (ownedResult.source !== 'network' || starredResult.source !== 'network') {
+                    githubNotice = '';
                 }
+            } catch (githubError) {
+                githubNotice = 'GitHub API is unavailable, showing posts only (project data unavailable).';
             }
 
             const postsText = await postsResponse.text();
@@ -1560,7 +1651,7 @@
             spaNavigate(url.toString());
         });
 
-        document.addEventListener('mouseover', maybePrefetchFromEvent, { passive: true });
+        document.addEventListener('pointerenter', maybePrefetchFromEvent, { passive: true, capture: true });
         document.addEventListener('focusin', maybePrefetchFromEvent);
         document.addEventListener('touchstart', maybePrefetchFromEvent, { passive: true });
 
