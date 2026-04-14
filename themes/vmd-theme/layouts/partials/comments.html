@@ -7,12 +7,13 @@
 </div>
 
 <div id="comments-container" class="hidden">
+    {{ $giscus := .Site.Params.comments.giscus }}
     <div
         class="giscus-slot"
-        data-repo="vmd1/init0"
-        data-repo-id="R_kgDOOtTSnQ"
-        data-category="Comments"
-        data-category-id="DIC_kwDOOtTSnc4Cu2Vr"
+        data-repo="{{ $giscus.repo }}"
+        data-repo-id="{{ $giscus.repoId }}"
+        data-category="{{ $giscus.category }}"
+        data-category-id="{{ $giscus.categoryId }}"
         data-mapping="pathname"
         data-strict="0"
         data-reactions-enabled="1"

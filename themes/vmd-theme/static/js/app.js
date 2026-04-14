@@ -5,6 +5,15 @@
     const SPA_CACHE_KEY = 'spa-page-cache-v1';
     const pageCache = new Map();
     const pageFetches = new Map();
+    const runtimeConfig = (window.__VMD_CONFIG__ && window.__VMD_CONFIG__.profile) || {};
+
+    function getProfileConfig(key, fallback) {
+        const value = runtimeConfig[key];
+        if (typeof value === 'string' && value.trim().length > 0) {
+            return value;
+        }
+        return fallback;
+    }
 
     function ensureTransitionStyles() {
         if (document.getElementById('spa-transition-styles')) return;
@@ -568,9 +577,10 @@
         const servicesEl = document.getElementById('down-services');
         if (!alertEl || !servicesEl) return;
 
-        const statusPageSlug = 'vmd1-dev';
-        const statusApi = `https://up.vmd1.dev/api/status-page/${statusPageSlug}`;
-        const heartbeatApi = `https://up.vmd1.dev/api/status-page/heartbeat/${statusPageSlug}`;
+        const statusPageBaseUrl = getProfileConfig('statusPageBaseUrl', 'https://up.vmd1.dev').replace(/\/$/, '');
+        const statusPageSlug = getProfileConfig('statusPageSlug', 'vmd1-dev');
+        const statusApi = `${statusPageBaseUrl}/api/status-page/${encodeURIComponent(statusPageSlug)}`;
+        const heartbeatApi = `${statusPageBaseUrl}/api/status-page/heartbeat/${encodeURIComponent(statusPageSlug)}`;
 
         try {
             const [configRes, heartbeatRes] = await Promise.all([
@@ -696,6 +706,7 @@
         const grid = document.getElementById('scripts-grid');
         const searchInput = document.getElementById('script-search');
         if (!grid || !searchInput) return;
+        const scriptsBaseUrl = getProfileConfig('scriptsBaseUrl', 'https://sc.vmd1.dev').replace(/\/$/, '');
 
         let allScripts = [];
         let currentFilter = 'all';
@@ -732,8 +743,8 @@
                 const osName = isWindows ? 'Windows' : 'Linux';
                 const isSelected = selectedScripts.has(script['short-code']);
                 const scriptCommand = isWindows
-                    ? `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\w.ps1; & $env:TEMP\\w.ps1 ${script['short-code']}`
-                    : `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${script['short-code']}`;
+                    ? `irm ${scriptsBaseUrl}/w -OutFile $env:TEMP\\w.ps1; & $env:TEMP\\w.ps1 ${script['short-code']}`
+                    : `curl ${scriptsBaseUrl}/l -o /tmp/l && bash /tmp/l ${script['short-code']}`;
                 const escapedCommand = scriptCommand.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
                 return `
@@ -793,8 +804,8 @@
                 const isWindows = firstScript && firstScript.oses.includes('windows');
 
                 commandInput.value = isWindows
-                    ? `irm https://sc.vmd1.dev/w -OutFile $env:TEMP\\w.ps1; & $env:TEMP\\w.ps1 ${codes}`
-                    : `curl https://sc.vmd1.dev/l -o /tmp/l && bash /tmp/l ${codes}`;
+                    ? `irm ${scriptsBaseUrl}/w -OutFile $env:TEMP\\w.ps1; & $env:TEMP\\w.ps1 ${codes}`
+                    : `curl ${scriptsBaseUrl}/l -o /tmp/l && bash /tmp/l ${codes}`;
             } else {
                 bar.classList.add('translate-y-full');
             }
@@ -875,7 +886,7 @@
             });
         });
 
-        fetch('https://sc.vmd1.dev/scripts.json')
+        fetch(`${scriptsBaseUrl}/scripts.json`)
             .then((response) => response.json())
             .then((data) => {
                 allScripts = data;
@@ -893,7 +904,7 @@
         const gridEl = document.getElementById('projects-grid');
         if (!gridEl) return;
 
-        const username = 'vmd1';
+        const username = getProfileConfig('githubUsername', 'vmd1');
 
         const formatDate = (value) => {
             const date = new Date(value);
@@ -964,7 +975,10 @@
     }
 
     async function initWhatsOn() {
-        const username = 'vmd1';
+        const username = getProfileConfig('githubUsername', 'vmd1');
+        const whatsOnMarkdownUrl = getProfileConfig('whatsOnMarkdownUrl', 'https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md');
+        const excludedRepoFullName = getProfileConfig('excludedRepoFullName', 'vmd1/vmd1.dev');
+        const contributionGraphLabel = getProfileConfig('contributionGraphLabel', "Vivaan's contribution graph");
         const whatsOnContentEl = document.getElementById('whats-on-content');
         const activityTodayEl = document.getElementById('activity-today');
         const recentCommitsEl = document.getElementById('recent-commits');
@@ -1031,7 +1045,7 @@
         if (whatsOnContentEl) {
             try {
                 await loadScriptOnce('https://cdn.jsdelivr.net/npm/marked/marked.min.js', () => typeof window.marked !== 'undefined');
-                const markdownResponse = await fetch('https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md');
+                const markdownResponse = await fetch(whatsOnMarkdownUrl);
                 if (!markdownResponse.ok) throw new Error('Could not load markdown');
                 const markdown = await markdownResponse.text();
                 whatsOnContentEl.innerHTML = window.marked.parse(markdown || 'No updates yet.');
@@ -1125,7 +1139,7 @@
             }).join('');
 
             contributionGraphEl.innerHTML = `
-                <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Vivaan's contribution graph" class="w-full h-auto">
+                <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(contributionGraphLabel)}" class="w-full h-auto">
                     ${horizontalGrid}
                     ${verticalGrid}
                     <polyline points="${points}" fill="none" stroke="#8eb5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -1152,7 +1166,7 @@
             const repos = await reposResponse.json();
 
             if (randomProjectLinkEl) {
-                candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== 'vmd1/vmd1.dev');
+                candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== excludedRepoFullName);
                 if (candidateRepos.length > 0) pickRandomProject();
             }
 
@@ -1176,7 +1190,7 @@
                         : (commit.url && commit.url.match(/repos\/(.+?)\/commits/) ? commit.url.match(/repos\/(.+?)\/commits/)[1] : 'Unknown repo'),
                     date: commit.commit.author.date
                 }))
-                .filter((commit) => commit.repo !== 'vmd1/vmd1.dev')
+                .filter((commit) => commit.repo !== excludedRepoFullName)
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const seen = new Set();
@@ -1211,7 +1225,7 @@
         const noticeContainer = document.getElementById('timeline-notice');
         if (!container) return;
 
-        const username = 'vmd1';
+        const username = getProfileConfig('githubUsername', 'vmd1');
         if (noticeContainer) noticeContainer.innerHTML = '';
 
         try {

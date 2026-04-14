@@ -1,9 +1,14 @@
         <!-- Header Section -->
         <header class="flex flex-col sm:flex-row justify-between items-center card navbar-card relative">
+            {{ $profile := .Site.Params.profile }}
+            {{ $githubUrl := printf "https://github.com/%s" $profile.githubUsername }}
+            {{ $linkedinUrl := $profile.linkedinUrl }}
+            {{ $email := $profile.email }}
+            {{ $matrixUrl := printf "https://matrix.to/#/%s" $profile.matrixId }}
             <!-- Logo and name container -->
             <a href="{{ "/" | relURL }}" class="flex items-center">
                 <!-- Logo -->
-                <img src="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg" alt="vmd1 logo" class="w-12 h-12 mr-4 rounded-full">
+                <img src="{{ $profile.logoUrl }}" alt="{{ $profile.logoAlt }}" class="w-12 h-12 mr-4 rounded-full">
                 <h1 class="text-4xl font-extrabold text-gray-100">
                     {{ .Site.Title }}
                 </h1>
@@ -49,19 +54,19 @@
                 <div class="hidden sm:flex space-x-4 social-icons">
                     <!-- Social media icons using Remixicon -->
                     <!-- GitHub -->
-                    <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <a href="{{ $githubUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <i class="ri-github-line text-2xl"></i>
                     </a>
                     <!-- LinkedIn -->
-                    <a href="https://www.linkedin.com/in/<username>" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <a href="{{ $linkedinUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <i class="ri-linkedin-box-line text-2xl"></i>
                     </a>
                     <!-- Email -->
-                    <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                    <a href="mailto:{{ $email }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                         <i class="ri-mail-line text-2xl"></i>
                     </a>
                         <!-- Matrix -->
-                        <a href="https://matrix.to/#/@vivaan:vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
+                        <a href="{{ $matrixUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
                             <i class="ri-chat-1-line text-2xl"></i>
                         </a>
                 </div>
@@ -74,17 +79,17 @@
                     
                     <div id="mobile-social-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-slate-900/95 backdrop-blur-xl rounded-lg border border-gray-700 shadow-xl z-50 w-48">
                         <div class="grid grid-cols-3 gap-4 social-icons justify-items-center">
-                            <a href="https://github.com/vmd1" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                            <a href="{{ $githubUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-github-line text-2xl"></i>
                             </a>
-                            <a href="https://www.linkedin.com/in/<username>" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                            <a href="{{ $linkedinUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-linkedin-box-line text-2xl"></i>
                             </a>
-                            <a href="mailto:me@vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
+                            <a href="mailto:{{ $email }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200">
                                 <i class="ri-mail-line text-2xl"></i>
                             </a>
                                 <!-- Matrix -->
-                                <a href="https://matrix.to/#/@vivaan:vmd1.dev" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
+                                <a href="{{ $matrixUrl }}" class="text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix">
                                     <i class="ri-chat-1-line text-2xl"></i>
                                 </a>
                         </div>

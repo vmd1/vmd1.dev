@@ -1,13 +1,17 @@
 <head>
+    {{ $profile := .Site.Params.profile }}
+    {{ $googleTagId := .Site.Params.analytics.googleTagId }}
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z0H0P60H5S"></script>
+    {{ with $googleTagId }}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-Z0H0P60H5S');
+    gtag('config', '{{ . }}');
     </script>
+    {{ end }}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ if .IsHome }}{{ .Site.Title }}{{ else if eq .Section "" }}{{ .Title }} - {{ .Site.Title }}{{ else }}{{ .Title }} - Init0 - {{ .Site.Title }}{{ end }}</title>
@@ -30,7 +34,7 @@
     <meta property="twitter:image" content="{{ if .Params.cover.image }}{{ .Params.cover.image | absURL }}{{ else }}{{ index .Site.Params.images 0 }}{{ end }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg">
+    <link rel="icon" type="image/svg+xml" href="{{ $profile.logoUrl }}">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <!-- Use Inter font from Google Fonts -->

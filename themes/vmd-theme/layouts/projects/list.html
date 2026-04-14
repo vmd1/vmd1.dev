@@ -1,8 +1,10 @@
 {{ define "main" }}
+{{ $profile := .Site.Params.profile }}
+{{ $githubUrl := printf "https://github.com/%s" $profile.githubUsername }}
 <div class="card static-card min-h-[60vh] space-y-8">
     <header class="flex flex-col items-center gap-4 border-b border-gray-700 pb-6 text-center">
         <h1 class="text-3xl font-bold text-gray-100">{{ .Title }}</h1>
-        <a href="https://github.com/vmd1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-100 transition-colors">
+        <a href="{{ $githubUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-100 transition-colors">
             <i class="ri-github-line text-lg"></i>
             <span>View on GitHub</span>
         </a>

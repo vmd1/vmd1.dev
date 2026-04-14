@@ -12,6 +12,30 @@ params:
   author:
     name: "Vivaan M"
     email: "me@vmd1.dev"
+  profile:
+    logoUrl: "https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg"
+    logoAlt: "vmd1 logo"
+    githubUsername: "vmd1"
+    linkedinUrl: "https://www.linkedin.com/in/vmd1"
+    email: "me@vmd1.dev"
+    matrixId: "@vivaan:vmd1.dev"
+    statusPageBaseUrl: "https://up.vmd1.dev"
+    statusPageSlug: "vmd1-dev"
+    infrastructureName: "vmd1 Infrastructure"
+    scriptsBaseUrl: "https://sc.vmd1.dev"
+    whatsOnMarkdownUrl: "https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md"
+    excludedRepoFullName: "vmd1/vmd1.dev"
+    contributionGraphLabel: "Vivaan's contribution graph"
+    aboutIntro: "I'm Vivaan, a teen dev who builds secure, self-hosted systems, and breaks them (ethically) for fun. This is my portfolio page where I dump my projects, write-ups, and blog posts about what I'm learning along the way."
+    aboutCurrent: "Right now, I'm working on a few open-source projects - mostly related to security tools and automation. I love digging into code, figuring out how stuff works under the hood, and then building (or breaking) things just to see what happens."
+  analytics:
+    googleTagId: "G-Z0H0P60H5S"
+  comments:
+    giscus:
+      repo: "vmd1/init0"
+      repoId: "R_kgDOOtTSnQ"
+      category: "Comments"
+      categoryId: "DIC_kwDOOtTSnc4Cu2Vr"
 
 markup:
   goldmark:
