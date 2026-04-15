@@ -1,5 +1,6 @@
 baseURL: 'https://vmd1.dev/'
-relativeURLs: true
+relativeURLs: false
+canonifyURLs: true
 languageCode: 'en-us'
 title: 'vmd1'
 theme: 'vmd-theme'
