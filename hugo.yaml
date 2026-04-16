@@ -1,6 +1,6 @@
 baseURL: 'https://vmd1.dev/'
-relativeURLs: false
-canonifyURLs: true
+#relativeURLs: false
+#canonifyURLs: true
 languageCode: 'en-us'
 title: 'vmd1'
 theme: 'vmd-theme'
@@ -10,6 +10,12 @@ params:
   description: "Vivaan M's portfolio and blog. Exploring programming, security, and technology."
   keywords: "programming, security, cybersecurity, blog, portfolio, vmd1, vivaan m"
   images: ["https://cdn.848226.xyz/v1/vmd1/media/logo/logo.png"] # Fallback image for social sharing
+  postsGridSections:
+    - "docs"
+    - "foundation"
+    - "guides"
+    - "posts"
+    - "updates"
   author:
     name: "Vivaan M"
     email: "me@vmd1.dev"

@@ -10,7 +10,8 @@
     </div>
 
     <div class="space-y-12">
-        {{ $posts := where .Site.RegularPages "Section" "ne" "" }}
+        {{ $visibleSections := .Site.Params.postsGridSections | default (slice "docs" "foundation" "guides" "posts" "updates") }}
+        {{ $posts := where .Site.RegularPages "Section" "in" $visibleSections }}
         {{ range $posts.GroupByDate "2006" }}
         <div class="year-group">
             <h2 class="text-2xl font-bold text-gray-200 mb-6 flex items-start">
