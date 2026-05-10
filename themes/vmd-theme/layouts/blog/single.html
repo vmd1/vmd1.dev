@@ -9,7 +9,7 @@
                 {{ if .Params.tags }}
                 <span class="ml-2">
                     {{ range .Params.tags }}
-                    <span class="inline-block bg-slate-900/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-slate-800/65 hover:border-blue-400/50">#{{ . }}</span>
+                    <span class="inline-block bg-zinc-950/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-zinc-900/65 hover:border-white/20">#{{ . }}</span>
                     {{ end }}
                 </span>
                 {{ end }}
@@ -17,7 +17,7 @@
         </header>
 
         {{ if and (ne .Params.toc false) (in .TableOfContents "<li>") }}
-        <div class="mb-8 p-4 bg-slate-900 rounded-lg">
+        <div class="mb-8 p-4 bg-zinc-950 rounded-lg">
             <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
             {{ .TableOfContents }}
         </div>

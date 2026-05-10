@@ -12,29 +12,29 @@
             <div>
                 <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Languages & Web</p>
                 <div class="flex flex-wrap gap-2">
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Python</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">HTML</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">JavaScript</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">CSS</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Bash</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Python</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">HTML</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">JavaScript</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">CSS</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Bash</span>
                 </div>
             </div>
 
             <div>
                 <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Infra & Ops</p>
                 <div class="flex flex-wrap gap-2">
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Git</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Docker</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Networking</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Linux System Administration</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Git</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Docker</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Networking</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Linux System Administration</span>
                 </div>
             </div>
 
             <div>
                 <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">Hardware & Platforms</p>
                 <div class="flex flex-wrap gap-2">
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">Raspberry Pi</span>
-                    <span class="skill-chip px-3 py-1 rounded-full bg-slate-800/70 border border-slate-700 text-gray-200 text-sm">ESP32</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">Raspberry Pi</span>
+                    <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">ESP32</span>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
     {{ $latestVisiblePost := first 1 (where .Site.RegularPages.ByDate.Reverse "Section" "in" $visibleSections) }}
     {{ range $latestVisiblePost }}
     <div class="pt-4">
-        <a href="{{ .RelPermalink }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800/50 hover:bg-slate-700 text-gray-200 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300">
+        <a href="{{ .RelPermalink }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-800 text-gray-200 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300">
             <span class="font-semibold">Read my latest post</span>
             <span aria-hidden="true">→</span>
         </a>

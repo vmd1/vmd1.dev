@@ -5,12 +5,12 @@
         <div id="timeline-notice" class="max-w-3xl mx-auto"></div>
         <div id="timeline-wrapper" class="relative max-w-5xl mx-auto">
             <!-- Vertical Line (Desktop only) -->
-            <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-blue-400/40"></div>
+            <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-zinc-500/40"></div>
             
             <div id="timeline-container" class="space-y-12 md:space-y-0">
                 <div id="timeline-loading" class="flex justify-center py-12">
                     <div class="flex flex-col items-center gap-4">
-                        <div class="w-12 h-12 border-4 border-gray-700 border-t-blue-500 rounded-full animate-spin"></div>
+                        <div class="w-12 h-12 border-4 border-gray-700 border-t-zinc-200 rounded-full animate-spin"></div>
                         <p class="text-gray-400">Syncing history...</p>
                     </div>
                 </div>
@@ -18,12 +18,12 @@
         </div>
         
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 pb-6">
-            <a href="{{ "posts" | relURL }}" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-800/50 hover:bg-slate-700 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300 group">
+            <a href="{{ "posts" | relURL }}" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300 group">
                 <i class="ri-article-line text-xl group-hover:scale-110 transition-transform"></i>
                 <span class="font-semibold">Show All Posts</span>
             </a>
             
-            <a href="{{ "projects" | relURL }}" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-800/50 hover:bg-slate-700 hover:text-blue-400 border border-slate-700 hover:border-blue-500/50 transition-all duration-300 group">
+            <a href="{{ "projects" | relURL }}" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300 group">
                 <i class="ri-github-line text-xl group-hover:scale-110 transition-transform"></i>
                 <span class="font-semibold">Show All Projects</span>
             </a>

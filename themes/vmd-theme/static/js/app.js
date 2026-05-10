@@ -1,5 +1,6 @@
 (function () {
     const SPA_SHELL_SELECTOR = '#spa-shell';
+    const SPA_MAIN_SELECTOR = '#spa-main';
     const SPA_CACHE_TTL_MS = 5 * 60 * 1000;
     const SPA_CACHE_LIMIT = 20;
     const SPA_CACHE_KEY = 'spa-page-cache-v1';
@@ -117,24 +118,24 @@
         const style = document.createElement('style');
         style.id = 'spa-transition-styles';
         style.textContent = `
-            #spa-shell.spa-shell-leave {
+            #spa-main.spa-main-leave {
                 transform: translateY(4px) scale(0.995);
                 transition: transform 150ms ease;
             }
 
-            #spa-shell.spa-shell-enter {
+            #spa-main.spa-main-enter {
                 transform: translateY(10px) scale(0.995);
             }
 
-            #spa-shell.spa-shell-enter-active {
+            #spa-main.spa-main-enter-active {
                 transform: translateY(0);
                 transition: transform 220ms ease;
             }
 
             @media (prefers-reduced-motion: reduce) {
-                #spa-shell.spa-shell-leave,
-                #spa-shell.spa-shell-enter,
-                #spa-shell.spa-shell-enter-active {
+                #spa-main.spa-main-leave,
+                #spa-main.spa-main-enter,
+                #spa-main.spa-main-enter-active {
                     transition: none !important;
                     transform: none !important;
                 }
@@ -327,8 +328,8 @@
                 }
                 const html = await response.text();
                 const doc = parseHtml(html);
-                if (!doc.querySelector(SPA_SHELL_SELECTOR)) {
-                    throw new Error('Missing SPA shell in response');
+                if (!doc.querySelector(SPA_MAIN_SELECTOR)) {
+                    throw new Error('Missing SPA main container in response');
                 }
                 cachePage(key, html);
                 return html;
@@ -350,18 +351,46 @@
         });
     }
 
-    function animateShellEnter(shell) {
-        if (!shell) return;
+    function animateMainEnter(mainContainer) {
+        if (!mainContainer) return;
 
-        shell.classList.add('spa-shell-enter');
+        mainContainer.classList.add('spa-main-enter');
         requestAnimationFrame(() => {
-            shell.classList.add('spa-shell-enter-active');
-            shell.classList.remove('spa-shell-enter');
+            mainContainer.classList.add('spa-main-enter-active');
+            mainContainer.classList.remove('spa-main-enter');
         });
 
         window.setTimeout(() => {
-            shell.classList.remove('spa-shell-enter-active');
+            mainContainer.classList.remove('spa-main-enter-active');
         }, 240);
+    }
+
+    function getNavKeyFromPath(pathname) {
+        const normalized = String(pathname || '/').replace(/\/+$/, '') || '/';
+        if (normalized === '/') return 'home';
+        if (normalized === '/posts') return 'posts';
+        if (normalized === '/scripts') return 'scripts';
+        if (normalized === '/projects') return 'projects';
+        return null;
+    }
+
+    function syncNavbarState(url) {
+        const currentUrl = new URL(url, window.location.href);
+        const activeKey = getNavKeyFromPath(currentUrl.pathname);
+        const navLinks = document.querySelectorAll('a[data-nav-key]');
+
+        navLinks.forEach((link) => {
+            const key = link.dataset.navKey;
+            const isActive = Boolean(activeKey) && key === activeKey;
+
+            link.classList.remove('text-gray-100', 'font-bold', 'text-gray-400', 'hover:text-gray-100');
+            if (isActive) {
+                link.classList.add('text-gray-100', 'font-bold');
+            } else {
+                link.classList.add('text-gray-400', 'hover:text-gray-100');
+            }
+            link.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
     }
 
     function scrollAfterNavigation(url, scrollToTop) {
@@ -834,7 +863,7 @@
 
             grid.innerHTML = filteredScripts.map((script) => {
                 const isWindows = script.oses.includes('windows');
-                const osColor = isWindows ? 'text-blue-400 bg-blue-400/10' : 'text-purple-400 bg-purple-400/10';
+                const osColor = 'text-gray-300 bg-white/5';
                 const osIcon = isWindows ? 'ri-windows-fill' : 'ri-qq-fill';
                 const osName = isWindows ? 'Windows' : 'Linux';
                 const isSelected = selectedScripts.has(script['short-code']);
@@ -844,10 +873,10 @@
                 const escapedCommand = scriptCommand.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
                 return `
-                    <div class="block card p-6 rounded-2xl bg-slate-900/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-slate-950/30 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/65 hover:border-blue-400/50 hover:shadow-2xl hover:shadow-slate-950/40 h-full group relative ${isSelected ? 'ring-2 ring-blue-500' : ''}" onclick="toggleSelection('${script['short-code']}', '${isWindows ? 'windows' : 'linux'}')">
+                    <div class="block card p-6 rounded-2xl bg-zinc-950/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-900/65 hover:border-white/20 hover:shadow-2xl hover:shadow-black/40 h-full group relative ${isSelected ? 'ring-2 ring-white/20' : ''}" onclick="toggleSelection('${script['short-code']}', '${isWindows ? 'windows' : 'linux'}')">
                         <div class="absolute bottom-4 right-4 z-10">
-                            <div class="w-6 h-6 rounded border ${isSelected ? 'bg-blue-600 border-blue-600' : 'border-slate-600 bg-slate-800'} flex items-center justify-center transition-colors">
-                                ${isSelected ? '<i class="ri-check-line text-white text-sm"></i>' : ''}
+                            <div class="w-6 h-6 rounded border ${isSelected ? 'bg-white border-white' : 'border-zinc-700 bg-zinc-900'} flex items-center justify-center transition-colors">
+                                ${isSelected ? '<i class="ri-check-line text-black text-sm"></i>' : ''}
                             </div>
                         </div>
 
@@ -858,23 +887,23 @@
                                     ${osName}
                                 </span>
                             </div>
-                            <a href="${script.url}" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors z-20 relative" title="View Source" onclick="event.stopPropagation()">
+                            <a href="${script.url}" target="_blank" class="text-gray-400 hover:text-gray-100 transition-colors z-20 relative" title="View Source" onclick="event.stopPropagation()">
                                 <i class="ri-external-link-line"></i>
                             </a>
                         </div>
 
                         <h3 class="text-xl font-bold text-gray-100 mb-2">${script.name}</h3>
-                        <div class="flex items-center gap-2 text-sm text-gray-400 mb-4 font-mono bg-slate-900/50 px-2 py-1 rounded w-fit">
+                        <div class="flex items-center gap-2 text-sm text-gray-400 mb-4 font-mono bg-zinc-950/50 px-2 py-1 rounded w-fit">
                             <i class="ri-terminal-box-line"></i>
                             ${script['short-code']}
                         </div>
 
                         <div class="relative" onclick="event.stopPropagation()">
-                            <div class="bg-slate-900/70 rounded-lg p-3 font-mono text-xs text-gray-300 break-all pr-10 h-20 overflow-y-auto custom-scrollbar border border-white/5">
+                            <div class="bg-zinc-950/70 rounded-lg p-3 font-mono text-xs text-gray-300 break-all pr-10 h-20 overflow-y-auto custom-scrollbar border border-white/5">
                                 ${scriptCommand}
                             </div>
                             <button onclick="copyToClipboard(this, '${escapedCommand}')"
-                                class="absolute top-2 right-2 p-1.5 rounded-md bg-slate-800/80 text-gray-400 hover:text-white hover:bg-slate-700 transition-all border border-slate-700"
+                                class="absolute top-2 right-2 p-1.5 rounded-md bg-zinc-900/80 text-gray-400 hover:text-white hover:bg-zinc-800 transition-all border border-zinc-800"
                                 title="Copy command">
                                 <i class="ri-file-copy-line"></i>
                             </button>
@@ -937,12 +966,12 @@
             navigator.clipboard.writeText(command).then(() => {
                 const originalContent = btn.innerHTML;
                 btn.innerHTML = '<i class="ri-check-line"></i><span>Copied!</span>';
-                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.remove('bg-zinc-950', 'hover:bg-zinc-800');
                 btn.classList.add('bg-green-600', 'hover:bg-green-700');
 
                 window.setTimeout(() => {
                     btn.innerHTML = originalContent;
-                    btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    btn.classList.add('bg-zinc-950', 'hover:bg-zinc-800');
                     btn.classList.remove('bg-green-600', 'hover:bg-green-700');
                 }, 2000);
             });
@@ -971,11 +1000,11 @@
         document.querySelectorAll('.filter-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach((b) => {
-                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.remove('bg-zinc-950', 'text-white');
                     b.classList.add('text-gray-400');
                 });
                 btn.classList.remove('text-gray-400');
-                btn.classList.add('bg-blue-600', 'text-white');
+                btn.classList.add('bg-zinc-950', 'text-white');
 
                 currentFilter = btn.dataset.os || 'all';
                 renderScripts(searchInput.value);
@@ -1033,30 +1062,30 @@
             gridEl.innerHTML = repos.map((repo) => {
                 const description = repo.description || 'No description available.';
                 const language = repo.language
-                    ? `<span class="inline-flex items-center rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs text-blue-200">${repo.language}</span>`
+                    ? `<span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200">${repo.language}</span>`
                     : '';
 
                 return `
-                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="group block rounded-2xl border border-white/10 bg-slate-900/55 p-6 shadow-lg shadow-slate-950/20 transition-all duration-300 hover:-translate-y-1 hover:border-blue-400/50 hover:bg-slate-800/70 hover:shadow-2xl hover:shadow-slate-950/40">
+                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="group block rounded-2xl border border-white/10 bg-zinc-950/55 p-6 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-zinc-900/70 hover:shadow-2xl hover:shadow-black/40">
                         <div class="flex items-start justify-between gap-4">
                             <div>
-                                <h2 class="text-xl font-semibold text-gray-100 transition-colors group-hover:text-blue-300">${repo.name}</h2>
+                                <h2 class="text-xl font-semibold text-gray-100 transition-colors group-hover:text-gray-100">${repo.name}</h2>
                                 <p class="mt-1 text-sm text-gray-500">${repo.full_name}</p>
                             </div>
-                            <i class="ri-external-link-line text-lg text-gray-500 transition-colors group-hover:text-blue-300"></i>
+                            <i class="ri-external-link-line text-lg text-gray-500 transition-colors group-hover:text-gray-100"></i>
                         </div>
                         <p class="mt-4 text-sm leading-relaxed text-gray-300/90">${description}</p>
                         <div class="mt-5 flex flex-wrap items-center gap-2 text-xs text-gray-400">
                             ${language}
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-800/60 px-3 py-1">
+                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
                                 <i class="ri-star-line"></i>
                                 ${repo.stargazers_count}
                             </span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-800/60 px-3 py-1">
+                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
                                 <i class="ri-git-repository-commits-line"></i>
                                 ${repo.forks_count}
                             </span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-800/60 px-3 py-1">
+                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
                                 <i class="ri-time-line"></i>
                                 Updated ${formatDate(repo.pushed_at)}
                             </span>
@@ -1214,38 +1243,38 @@
             const horizontalGrid = Array.from({ length: 6 }, (_, index) => {
                 const value = (maxValue / 5) * index;
                 const yPos = y(value);
-                return `<line x1="${left}" y1="${yPos}" x2="${width - right}" y2="${yPos}" stroke="rgba(149,174,255,0.14)" stroke-width="1" />`;
+                return `<line x1="${left}" y1="${yPos}" x2="${width - right}" y2="${yPos}" stroke="rgba(161,161,161,0.14)" stroke-width="1" />`;
             }).join('');
 
             const verticalGrid = Array.from({ length: 15 }, (_, index) => {
                 const xPos = left + (index / 14) * plotWidth;
-                return `<line x1="${xPos}" y1="${top}" x2="${xPos}" y2="${height - bottom}" stroke="rgba(149,174,255,0.1)" stroke-width="1" />`;
+                return `<line x1="${xPos}" y1="${top}" x2="${xPos}" y2="${height - bottom}" stroke="rgba(161,161,161,0.1)" stroke-width="1" />`;
             }).join('');
 
             const circles = data.map((value, index) => {
                 const cx = x(index).toFixed(2);
                 const cy = y(value).toFixed(2);
-                return `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#97bbff" />`;
+                return `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#d4d4d8" />`;
             }).join('');
 
             const xLabels = Array.from({ length: days }, (_, index) => {
                 if (index % 2 !== 0 && index !== days - 1) return '';
                 const labelDate = new Date(start);
                 labelDate.setDate(start.getDate() + index);
-                return `<text x="${x(index)}" y="${height - 10}" text-anchor="middle" fill="rgba(208,220,255,0.72)" font-size="9">${labelDate.getDate()}</text>`;
+                return `<text x="${x(index)}" y="${height - 10}" text-anchor="middle" fill="rgba(161,161,161,0.72)" font-size="9">${labelDate.getDate()}</text>`;
             }).join('');
 
             const yLabels = Array.from({ length: 6 }, (_, index) => {
                 const value = Math.round((maxValue / 5) * (5 - index));
                 const yPos = top + (plotHeight / 5) * index + 3;
-                return `<text x="${left - 8}" y="${yPos}" text-anchor="end" fill="rgba(208,220,255,0.72)" font-size="9">${value}</text>`;
+                return `<text x="${left - 8}" y="${yPos}" text-anchor="end" fill="rgba(161,161,161,0.72)" font-size="9">${value}</text>`;
             }).join('');
 
             contributionGraphEl.innerHTML = `
                 <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(contributionGraphLabel)}" class="w-full h-auto">
                     ${horizontalGrid}
                     ${verticalGrid}
-                    <polyline points="${points}" fill="none" stroke="#8eb5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <polyline points="${points}" fill="none" stroke="#a1a1a1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     ${circles}
                     ${xLabels}
                     ${yLabels}
@@ -1314,7 +1343,7 @@
 
             recentCommitsEl.innerHTML = latestThree.map((commit) => (
                 `<li class="leading-relaxed">` +
-                `<a href="${escapeHtml(commit.url)}" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300">${escapeHtml(commit.message)}</a>` +
+                `<a href="${escapeHtml(commit.url)}" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-gray-100">${escapeHtml(commit.message)}</a>` +
                 `<span class="text-gray-500"> · ${escapeHtml(commit.repo)}</span>` +
                 '</li>'
             )).join('');
@@ -1439,7 +1468,7 @@
                     return `<i class="${techMap[key]} text-lg" title="${tech}"></i>`;
                 }
                 if (allowText) {
-                    return `<span class="bg-slate-700/50 text-slate-300 px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap">${tech}</span>`;
+                    return `<span class="bg-zinc-800/50 text-zinc-300 px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap">${tech}</span>`;
                 }
                 return '';
             };
@@ -1512,11 +1541,11 @@
 
                 rowEl.innerHTML = `
                     <div class="w-full md:w-[45%] ${isLeft ? 'md:pr-12' : 'md:pl-12'}">
-                        <a href="${item.link}" ${item.type === 'project' ? 'target="_blank"' : ''} class="block card p-6 rounded-2xl bg-slate-900/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-slate-950/30 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/65 hover:border-blue-400/50 hover:shadow-2xl hover:shadow-slate-950/40 group decoration-0">
-                            <span class="inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-300 mb-3">
+                        <a href="${item.link}" ${item.type === 'project' ? 'target="_blank"' : ''} class="block card p-6 rounded-2xl bg-zinc-950/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-900/65 hover:border-white/20 hover:shadow-2xl hover:shadow-black/40 group decoration-0">
+                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-200 mb-3">
                                 ${item.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${item.type}
                             </span>
-                            <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-blue-300 transition-colors">
+                            <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-gray-100 transition-colors">
                                 ${item.title}
                             </h3>
                             <p class="text-gray-300/90 text-sm text-truncate-3 leading-relaxed mb-4" title="${item.desc}">${truncatedDesc}</p>
@@ -1524,15 +1553,15 @@
                                 <div class="flex flex-col">${techStackHTML}</div>
                                 <div class="flex items-center text-gray-400 text-[11px] font-mono shrink-0 ml-2">
                                     ${metaInfo}
-                                    <i class="${item.icon} text-lg text-blue-300/70"></i>
+                                    <i class="${item.icon} text-lg text-gray-300/70"></i>
                                 </div>
                             </div>
                         </a>
                     </div>
 
                     <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-10 h-10 z-20">
-                        <div class="w-3.5 h-3.5 rounded-full bg-blue-400 ring-4 ring-slate-900/90"></div>
-                        <div class="absolute ${isLeft ? 'right-full' : 'left-full'} h-px w-14 bg-gradient-to-r ${isLeft ? 'from-transparent to-blue-400/60' : 'from-blue-400/60 to-transparent'}"></div>
+                        <div class="w-3.5 h-3.5 rounded-full bg-zinc-300 ring-4 ring-zinc-950/90"></div>
+                        <div class="absolute ${isLeft ? 'right-full' : 'left-full'} h-px w-14 bg-gradient-to-r ${isLeft ? 'from-transparent to-zinc-400/60' : 'from-zinc-400/60 to-transparent'}"></div>
                     </div>
 
                     <div class="hidden md:block w-full md:w-[45%]"></div>
@@ -1584,9 +1613,9 @@
         window.__spaAbortController = controller;
 
         try {
-            const currentShell = document.querySelector(SPA_SHELL_SELECTOR);
-            if (currentShell) {
-                currentShell.classList.add('spa-shell-leave');
+            const currentMain = document.querySelector(SPA_MAIN_SELECTOR);
+            if (currentMain) {
+                currentMain.classList.add('spa-main-leave');
             }
 
             const html = await fetchPageHtml(url, {
@@ -1594,18 +1623,19 @@
                 preferCache: true
             });
             const nextDoc = parseHtml(html);
-            const nextShell = nextDoc.querySelector(SPA_SHELL_SELECTOR);
-            const liveShell = document.querySelector(SPA_SHELL_SELECTOR);
+            const nextMain = nextDoc.querySelector(SPA_MAIN_SELECTOR);
+            const liveMain = document.querySelector(SPA_MAIN_SELECTOR);
 
-            if (!nextShell || !liveShell) {
+            if (!nextMain || !liveMain) {
                 window.location.href = url;
                 return;
             }
 
             parkGiscusFrame();
-            liveShell.replaceWith(nextShell);
+            liveMain.replaceWith(nextMain);
             updateHead(nextDoc);
-            animateShellEnter(nextShell);
+            animateMainEnter(nextMain);
+            syncNavbarState(url);
 
             if (push) {
                 window.history.pushState({}, '', url);
@@ -1616,8 +1646,8 @@
             document.dispatchEvent(new CustomEvent('spa:navigated'));
         } catch (error) {
             if (error.name === 'AbortError') {
-                const shell = document.querySelector(SPA_SHELL_SELECTOR);
-                if (shell) shell.classList.remove('spa-shell-leave');
+                const mainContainer = document.querySelector(SPA_MAIN_SELECTOR);
+                if (mainContainer) mainContainer.classList.remove('spa-main-leave');
                 return;
             }
             window.location.href = url;
@@ -1666,6 +1696,7 @@
         ensureTransitionStyles();
         hydratePageCache();
         cachePage(window.location.href, document.documentElement.outerHTML);
+        syncNavbarState(window.location.href);
 
         window.spaNavigate = spaNavigate;
         bindSpaNavigation();
