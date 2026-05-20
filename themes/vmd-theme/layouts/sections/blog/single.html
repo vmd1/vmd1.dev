@@ -1,0 +1,10 @@
+{{ define "main" }}
+<div class="space-y-8">
+    {{ partial "components/cards/article-card.html" (dict "page" . "linkTags" false) }}
+
+    <!-- Card 2: Comments -->
+    <div class="card static-card">
+        {{ partial "components/comments.html" . }}
+    </div>
+</div>
+{{ end }}
