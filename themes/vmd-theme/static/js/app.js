@@ -1138,7 +1138,7 @@
     async function initWhatsOn() {
         const username = getProfileConfig('githubUsername', 'vmd1');
         const whatsOnMarkdownUrl = getProfileConfig('whatsOnMarkdownUrl', 'https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md');
-        const excludedRepoFullName = getProfileConfig('excludedRepoFullName', 'vmd1/vmd1.dev');
+        const excludedRepositories = getProfileConfig('excludedRepositories', ['vmd1/vmd1.dev']);
         const contributionGraphLabel = getProfileConfig('contributionGraphLabel', "Vivaan's contribution graph");
         const whatsOnContentEl = document.getElementById('whats-on-content');
         const activityTodayEl = document.getElementById('activity-today');
@@ -1334,7 +1334,7 @@
             );
 
             if (randomProjectLinkEl) {
-                candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && repo.full_name !== excludedRepoFullName);
+                candidateRepos = repos.filter((repo) => repo && repo.full_name && !repo.fork && !excludedRepositories.includes(repo.full_name));
                 if (candidateRepos.length > 0) pickRandomProject();
             }
 
@@ -1361,7 +1361,7 @@
                         : (commit.url && commit.url.match(/repos\/(.+?)\/commits/) ? commit.url.match(/repos\/(.+?)\/commits/)[1] : 'Unknown repo'),
                     date: commit.commit.author.date
                 }))
-                .filter((commit) => commit.repo !== excludedRepoFullName)
+                .filter((commit) => !excludedRepositories.includes(commit.repo))
                 .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const seen = new Set();

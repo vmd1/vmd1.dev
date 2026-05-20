@@ -34,7 +34,7 @@
                 statusPageBaseUrl: "{{ $profile.statusPageBaseUrl }}",
                 statusPageSlug: "{{ $profile.statusPageSlug }}",
                 whatsOnMarkdownUrl: "{{ $profile.whatsOnMarkdownUrl }}",
-                excludedRepoFullName: "{{ $profile.excludedRepoFullName }}",
+                excludedRepositories: {{ $profile.excludedRepositories | jsonify }},
                 contributionGraphLabel: "{{ $profile.contributionGraphLabel }}"
             }
         };
