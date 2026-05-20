@@ -1,0 +1,96 @@
+        <!-- Header Section -->
+        <header class="flex flex-col sm:flex-row justify-between items-center card navbar-card relative">
+            {{ $profile := .Site.Params.profile }}
+            {{ $githubUrl := printf "https://github.com/%s" $profile.githubUsername }}
+            {{ $linkedinUrl := $profile.linkedinUrl }}
+            {{ $email := $profile.email }}
+            {{ $matrixUrl := printf "https://matrix.to/#/%s" $profile.matrixId }}
+            {{ $activeNavKey := "" }}
+            {{ if .IsHome }}
+                {{ $activeNavKey = "home" }}
+            {{ else if eq .Section "posts" }}
+                {{ $activeNavKey = "posts" }}
+            {{ else if eq .Title "Scripts" }}
+                {{ $activeNavKey = "scripts" }}
+            {{ else if eq .Title "Projects" }}
+                {{ $activeNavKey = "projects" }}
+            {{ end }}
+            {{ $primaryNavLinks := slice
+                (dict "key" "home" "href" ("/" | relURL) "label" "Home" "icon" "ri-home-line" "labelClass" "nav-label hidden sm:inline")
+                (dict "key" "posts" "href" ("posts" | relURL) "label" "Posts" "icon" "ri-article-line" "labelClass" "nav-label hidden sm:inline")
+                (dict "key" "scripts" "href" ("scripts" | relURL) "label" "Scripts" "icon" "ri-terminal-box-line" "labelClass" "nav-label hidden sm:inline" "displayClass" "hidden sm:flex")
+                (dict "key" "projects" "href" ("projects" | relURL) "label" "Projects" "icon" "ri-function-line" "labelClass" "nav-label hidden sm:inline" "displayClass" "hidden sm:flex")
+            }}
+            {{ $overflowNavLinks := slice
+                (dict "key" "scripts" "href" ("scripts" | relURL) "label" "Scripts" "icon" "ri-terminal-box-line" "labelClass" "nav-label ml-2" "iconSize" "text-xl")
+                (dict "key" "projects" "href" ("projects" | relURL) "label" "Projects" "icon" "ri-function-line" "labelClass" "nav-label ml-2" "iconSize" "text-xl")
+            }}
+            {{ $socialLinks := slice
+                (dict "href" $githubUrl "icon" "ri-github-line" "variantClass" "github")
+                (dict "href" $linkedinUrl "icon" "ri-linkedin-box-line" "variantClass" "linkedin")
+                (dict "href" (printf "mailto:%s" $email) "icon" "ri-mail-line" "variantClass" "mail")
+                (dict "href" $matrixUrl "icon" "ri-chat-1-line" "variantClass" "matrix" "title" "Matrix")
+            }}
+            <!-- Logo and name container -->
+            <a href="{{ "/" | relURL }}" class="flex items-center">
+                <!-- Logo -->
+                <img src="{{ $profile.logoUrl }}" alt="{{ $profile.logoAlt }}" class="w-12 h-12 mr-4 rounded-full">
+                <h1 class="text-4xl font-extrabold text-gray-100">
+                    {{ .Site.Title }}
+                </h1>
+            </a>
+            <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+                <nav class="flex navbar-gap items-center">
+                    {{ range $primaryNavLinks }}
+                        {{ partial "header/nav-link.html" (merge . (dict "activeNavKey" $activeNavKey)) }}
+                    {{ end }}
+                    <!-- Mobile Overflow Button -->
+                    <div class="sm:hidden relative">
+                        <button id="mobile-nav-overflow-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="More">
+                            <span class="icon-label-group"><i class="ri-more-2-fill text-2xl"></i></span>
+                        </button>
+                        <div id="mobile-nav-overflow-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-zinc-950/95 backdrop-blur-xl rounded-lg border border-zinc-800 shadow-xl z-50 w-48">
+                            <div class="flex flex-col space-y-2">
+                                {{ range $overflowNavLinks }}
+                                    {{ partial "header/nav-link.html" (merge . (dict "activeNavKey" $activeNavKey)) }}
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                    <button id="search-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
+                        <span class="icon-label-group"><i class="ri-search-line text-2xl"></i><span class="nav-label hidden sm:inline">Search</span></span>
+                    </button>
+                </nav>
+                <div class="text-gray-600">|</div>
+                
+                <!-- Desktop Social Icons -->
+                <div class="hidden sm:flex space-x-4 social-icons">
+                    {{ range $socialLinks }}
+                        {{ partial "header/social-link.html" . }}
+                    {{ end }}
+                </div>
+
+                <!-- Mobile Social Button & Menu -->
+                <div class="sm:hidden relative">
+                    <button id="mobile-social-toggle" class="text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="Socials">
+                        <i class="ri-share-line text-2xl"></i>
+                    </button>
+                    
+                    <div id="mobile-social-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-zinc-950/95 backdrop-blur-xl rounded-lg border border-zinc-800 shadow-xl z-50 w-48">
+                        <div class="grid grid-cols-3 gap-4 social-icons justify-items-center">
+                            {{ range $socialLinks }}
+                                {{ partial "header/social-link.html" (merge . (dict "iconSize" "text-2xl")) }}
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Input Container -->
+            <div id="search-container" class="search-hidden absolute top-full right-0 mt-2 w-full sm:w-80 px-4 sm:px-0 z-50">
+                <div class="search-glassbar relative">
+                    <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-300/90"></i>
+                    <input type="text" id="search-input" placeholder="Search posts..." class="w-full text-gray-100 rounded-xl pl-10 pr-4 py-3 bg-transparent border-0 focus:outline-none placeholder-gray-400">
+                </div>
+            </div>
+        </header>
