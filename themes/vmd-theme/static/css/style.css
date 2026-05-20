@@ -172,8 +172,21 @@ body {
     pointer-events: auto;
 }
 
-.social-icons a i {
+.social-link i {
     transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-link:hover i {
+    color: var(--color-link-hover);
+    transform: scale(1.2);
+}
+
+.social-link.mail:hover i {
+    color: #daa520;
+}
+
+.social-link.github:hover i {
+    color: #ffffff;
 }
 
 .skill-chip {
@@ -212,15 +225,18 @@ body {
     100% { transform: rotate(0deg) scale(1); }
 }
 
-.social-icons a:hover .ri-github-line { color: #ffffff; transform: scale(1.2); }
-.social-icons a:hover .ri-mail-line { color: #daa520; transform: scale(1.2); }
-
 .card .card {
     box-shadow: none;
 }
 
 .card .card:hover {
     box-shadow: none;
+}
+
+@media (min-width: 768px) {
+    .timeline-row:not(:first-child) {
+        margin-top: -1.25rem;
+    }
 }
 
 /* Custom styles to handle text truncation with ellipsis */

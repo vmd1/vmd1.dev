@@ -21,8 +21,9 @@
     }
 
     window.initProgressBar = initProgressBar;
-    initProgressBar();
-    document.addEventListener('spa:navigated', () => {
+    if (window.registerSpaFeature) {
+        window.registerSpaFeature(initProgressBar);
+    } else {
         initProgressBar();
-    });
+    }
 })();

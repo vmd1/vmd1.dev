@@ -1,0 +1,41 @@
+{{ $page := .page }}
+{{ $linkTags := .linkTags }}
+<article class="card static-card">
+    {{ partial "components/breadcrumbs.html" $page }}
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-100 mb-2">{{ $page.Title }}</h1>
+        <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
+            <span>{{ $page.Date.Format "January 2, 2006" }}</span>
+            <span>·</span>
+            <span>
+                {{ if $page.Params.authors }}
+                    {{ delimit $page.Params.authors ", " }}
+                {{ else }}
+                    {{ $page.Params.author | default $page.Site.Params.author.name }}
+                {{ end }}
+            </span>
+            {{ if $page.Params.tags }}
+            <span class="ml-2">
+                {{ range $page.Params.tags }}
+                {{ if $linkTags }}
+                <a href="{{ "tags" | relURL }}/{{ . | urlize }}" class="inline-block bg-zinc-950/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-zinc-900/65 hover:border-white/20 hover:text-gray-100">#{{ . }}</a>
+                {{ else }}
+                <span class="inline-block bg-zinc-950/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-zinc-900/65 hover:border-white/20">#{{ . }}</span>
+                {{ end }}
+                {{ end }}
+            </span>
+            {{ end }}
+        </div>
+    </header>
+
+    {{ if and (ne $page.Params.toc false) (in $page.TableOfContents "<li>") }}
+    <div class="mb-8 p-4 bg-zinc-950 rounded-lg{{ with .tocClass }} {{ . }}{{ end }}">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
+        {{ $page.TableOfContents }}
+    </div>
+    {{ end }}
+
+    <div class="prose prose-invert max-w-none{{ with .contentClass }} {{ . }}{{ end }}">
+        {{ $page.Content }}
+    </div>
+</article>

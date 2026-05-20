@@ -1,46 +1,11 @@
 {{ define "main" }}
 <div class="space-y-8">
-    <!-- Content Card -->
-    <article class="card static-card">
-        {{ partial "breadcrumbs.html" . }}
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-100 mb-2">{{ .Title }}</h1>
-            <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
-                <span>{{ .Date.Format "January 2, 2006" }}</span>
-                <span>·</span>
-                <span>
-                    {{ if .Params.authors }}
-                        {{ delimit .Params.authors ", " }}
-                    {{ else }}
-                        {{ .Params.author | default .Site.Params.author.name }}
-                    {{ end }}
-                </span>
-                {{ if .Params.tags }}
-                <span class="ml-2">
-                    {{ range .Params.tags }}
-                    <a href="{{ "tags" | relURL }}/{{ . | urlize }}" class="inline-block bg-zinc-950/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-zinc-900/65 hover:border-white/20 hover:text-gray-100">#{{ . }}</a>
-                    {{ end }}
-                </span>
-                {{ end }}
-            </div>
-        </header>
-
-        {{ if and (ne .Params.toc false) (in .TableOfContents "<li>") }}
-        <div class="mb-8 p-4 bg-zinc-950 rounded-lg post-toc">
-            <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
-            {{ .TableOfContents }}
-        </div>
-        {{ end }}
-
-        <div class="prose prose-invert max-w-none post-content">
-            {{ .Content }}
-        </div>
-    </article>
+    {{ partial "components/cards/article-card.html" (dict "page" . "linkTags" true "tocClass" "post-toc" "contentClass" "post-content") }}
 
     <!-- Comments Card (only if not disabled) -->
     {{ if not .Params.disableComments }}
     <div class="card static-card">
-        {{ partial "comments.html" . }}
+        {{ partial "components/comments.html" . }}
     </div>
     {{ end }}
 </div>

@@ -57,8 +57,9 @@
     }
 
     window.initLightbox = initLightbox;
-    initLightbox(document);
-    document.addEventListener('spa:navigated', () => {
+    if (window.registerSpaFeature) {
+        window.registerSpaFeature(initLightbox);
+    } else {
         initLightbox(document);
-    });
+    }
 })();

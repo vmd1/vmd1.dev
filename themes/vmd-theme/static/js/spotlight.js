@@ -29,8 +29,9 @@
     }
 
     window.initSpotlight = initSpotlight;
-    initSpotlight(document);
-    document.addEventListener('spa:navigated', () => {
+    if (window.registerSpaFeature) {
+        window.registerSpaFeature(initSpotlight);
+    } else {
         initSpotlight(document);
-    });
+    }
 })();

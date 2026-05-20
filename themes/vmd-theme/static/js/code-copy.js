@@ -73,8 +73,9 @@
     }
 
     window.initCodeCopy = initCodeCopy;
-    initCodeCopy(document);
-    document.addEventListener('spa:navigated', () => {
+    if (window.registerSpaFeature) {
+        window.registerSpaFeature(initCodeCopy);
+    } else {
         initCodeCopy(document);
-    });
+    }
 })();

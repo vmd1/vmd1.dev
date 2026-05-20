@@ -1,6 +1,5 @@
 (function () {
-    const SPA_SHELL_SELECTOR = '#spa-shell';
-    const SPA_MAIN_SELECTOR = '#spa-main';
+    const SPA_CONTENT_SELECTOR = '#spa-content';
     const SPA_CACHE_TTL_MS = 5 * 60 * 1000;
     const SPA_CACHE_LIMIT = 20;
     const SPA_CACHE_KEY = 'spa-page-cache-v1';
@@ -118,24 +117,24 @@
         const style = document.createElement('style');
         style.id = 'spa-transition-styles';
         style.textContent = `
-            #spa-main.spa-main-leave {
+            #spa-content.spa-main-leave {
                 transform: translateY(4px) scale(0.995);
                 transition: transform 150ms ease;
             }
 
-            #spa-main.spa-main-enter {
+            #spa-content.spa-main-enter {
                 transform: translateY(10px) scale(0.995);
             }
 
-            #spa-main.spa-main-enter-active {
+            #spa-content.spa-main-enter-active {
                 transform: translateY(0);
                 transition: transform 220ms ease;
             }
 
             @media (prefers-reduced-motion: reduce) {
-                #spa-main.spa-main-leave,
-                #spa-main.spa-main-enter,
-                #spa-main.spa-main-enter-active {
+                #spa-content.spa-main-leave,
+                #spa-content.spa-main-enter,
+                #spa-content.spa-main-enter-active {
                     transition: none !important;
                     transform: none !important;
                 }
@@ -257,6 +256,35 @@
         return parser.parseFromString(html, 'text/html');
     }
 
+    function cloneTemplate(templateId) {
+        const template = document.getElementById(templateId);
+        if (!template || !template.content) return null;
+
+        const fragment = template.content.cloneNode(true);
+        return fragment.firstElementChild || null;
+    }
+
+    function setText(root, selector, value) {
+        const node = root && root.querySelector(selector);
+        if (node) {
+            node.textContent = value;
+        }
+    }
+
+    function setHtml(root, selector, value) {
+        const node = root && root.querySelector(selector);
+        if (node) {
+            node.innerHTML = value;
+        }
+    }
+
+    function setAttr(root, selector, name, value) {
+        const node = root && root.querySelector(selector);
+        if (node) {
+            node.setAttribute(name, value);
+        }
+    }
+
     function copyMetaContent(doc, selector) {
         const source = doc.querySelector(selector);
         if (!source) return;
@@ -328,7 +356,7 @@
                 }
                 const html = await response.text();
                 const doc = parseHtml(html);
-                if (!doc.querySelector(SPA_MAIN_SELECTOR)) {
+                if (!doc.querySelector(SPA_CONTENT_SELECTOR)) {
                     throw new Error('Missing SPA main container in response');
                 }
                 cachePage(key, html);
@@ -1011,16 +1039,25 @@
             });
         });
 
-        fetch(`${scriptsBaseUrl}/scripts.json`)
-            .then((response) => response.json())
+        fetch('https://raw.githubusercontent.com/vmd1/scripts/refs/heads/main/scripts.json')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((data) => {
-                allScripts = data;
-                renderScripts(searchInput.value);
-                updateBatchBar();
+                if (Array.isArray(data)) {
+                    allScripts = data;
+                    renderScripts(searchInput.value);
+                    updateBatchBar();
+                } else {
+                    throw new Error('Invalid scripts data format');
+                }
             })
             .catch((error) => {
                 console.error('Error fetching scripts:', error);
-                grid.innerHTML = '<div class="col-span-full text-center py-12 text-red-400"><i class="ri-error-warning-line text-3xl mb-2 inline-block"></i><p>Failed to load scripts. Please try again later.</p></div>';
+                grid.innerHTML = '<div class="col-span-full text-center py-12 text-yellow-500/70"><i class="ri-alert-line text-3xl mb-2 inline-block"></i><p class="text-sm">Scripts library is currently unavailable. This feature requires external data that may not be accessible in your environment.</p></div>';
             });
     }
 
@@ -1046,6 +1083,32 @@
             statusEl.classList.add('text-red-300', 'border-red-500/30', 'bg-red-500/10');
         };
 
+        const renderProjectCard = (repo, formatDate) => {
+            const card = cloneTemplate('project-card-template');
+            if (!card) return null;
+
+            const description = repo.description || 'No description available.';
+            const chips = [];
+
+            card.href = repo.html_url;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+            setText(card, '[data-card-title]', repo.name);
+            setText(card, '[data-card-subtitle]', repo.full_name);
+            setText(card, '[data-card-description]', description);
+            setAttr(card, '[data-card-external]', 'class', 'ri-external-link-line text-lg text-gray-500 transition-colors group-hover:text-gray-100');
+
+            if (repo.language) {
+                chips.push(`<span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200">${repo.language}</span>`);
+            }
+            chips.push(`<span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1"><i class="ri-star-line"></i>${repo.stargazers_count}</span>`);
+            chips.push(`<span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1"><i class="ri-git-repository-commits-line"></i>${repo.forks_count}</span>`);
+            chips.push(`<span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1"><i class="ri-time-line"></i>Updated ${formatDate(repo.pushed_at)}</span>`);
+            setHtml(card, '[data-card-meta]', chips.join(''));
+
+            return card;
+        };
+
         try {
             const { data: reposData } = await fetchGitHubResource(
                 `https://api.github.com/users/${username}/repos?sort=pushed&per_page=100`,
@@ -1059,40 +1122,12 @@
                 return;
             }
 
-            gridEl.innerHTML = repos.map((repo) => {
-                const description = repo.description || 'No description available.';
-                const language = repo.language
-                    ? `<span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200">${repo.language}</span>`
-                    : '';
-
-                return `
-                    <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="group block rounded-2xl border border-white/10 bg-zinc-950/55 p-6 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-zinc-900/70 hover:shadow-2xl hover:shadow-black/40">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <h2 class="text-xl font-semibold text-gray-100 transition-colors group-hover:text-gray-100">${repo.name}</h2>
-                                <p class="mt-1 text-sm text-gray-500">${repo.full_name}</p>
-                            </div>
-                            <i class="ri-external-link-line text-lg text-gray-500 transition-colors group-hover:text-gray-100"></i>
-                        </div>
-                        <p class="mt-4 text-sm leading-relaxed text-gray-300/90">${description}</p>
-                        <div class="mt-5 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-                            ${language}
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
-                                <i class="ri-star-line"></i>
-                                ${repo.stargazers_count}
-                            </span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
-                                <i class="ri-git-repository-commits-line"></i>
-                                ${repo.forks_count}
-                            </span>
-                            <span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-zinc-900/60 px-3 py-1">
-                                <i class="ri-time-line"></i>
-                                Updated ${formatDate(repo.pushed_at)}
-                            </span>
-                        </div>
-                    </a>
-                `;
-            }).join('');
+            repos.forEach((repo) => {
+                const card = renderProjectCard(repo, formatDate);
+                if (card) {
+                    gridEl.appendChild(card);
+                }
+            });
         } catch (error) {
             console.error('Error loading projects:', error);
             renderError('Failed to load projects from GitHub. Please try again later.');
@@ -1517,6 +1552,34 @@
                 return `${str.slice(0, n)}...`;
             };
 
+            const renderHomePostCard = (item, truncatedDesc, techStackHTML, metaInfo) => {
+                const card = cloneTemplate('home-post-card-template');
+                if (!card) return null;
+
+                card.href = item.link;
+                setText(card, '[data-card-badge]', `${item.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${item.type}`);
+                setText(card, '[data-card-title]', item.title);
+                setText(card, '[data-card-description]', truncatedDesc);
+                setHtml(card, '[data-card-techs]', techStackHTML);
+                setHtml(card, '[data-card-meta]', metaInfo);
+                setAttr(card, '[data-card-icon]', 'class', `${item.icon} text-lg text-gray-300/70`);
+
+                return card;
+            };
+
+            const renderHomeProjectCard = (item, truncatedDesc, techStackHTML, metaInfo) => {
+                const card = cloneTemplate('home-project-card-template');
+                if (!card) return null;
+
+                card.href = item.link;
+                setText(card, '[data-card-badge]', `${item.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${item.type}`);
+                setText(card, '[data-card-title]', item.title);
+                setText(card, '[data-card-description]', truncatedDesc);
+                setHtml(card, '[data-card-techs]', techStackHTML);
+                setHtml(card, '[data-card-meta]', metaInfo);
+                return card;
+            };
+
             items.forEach((item, index) => {
                 const isLeft = index % 2 === 0;
                 const truncatedDesc = truncateChars(item.desc, 150);
@@ -1539,33 +1602,26 @@
                 const rowEl = document.createElement('div');
                 rowEl.className = `timeline-row relative flex flex-col md:flex-row w-full ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0`;
 
-                rowEl.innerHTML = `
-                    <div class="w-full md:w-[45%] ${isLeft ? 'md:pr-12' : 'md:pl-12'}">
-                        <a href="${item.link}" ${item.type === 'project' ? 'target="_blank"' : ''} class="block card p-6 rounded-2xl bg-zinc-950/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-900/65 hover:border-white/20 hover:shadow-2xl hover:shadow-black/40 group decoration-0">
-                            <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-200 mb-3">
-                                ${item.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} · ${item.type}
-                            </span>
-                            <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-gray-100 transition-colors">
-                                ${item.title}
-                            </h3>
-                            <p class="text-gray-300/90 text-sm text-truncate-3 leading-relaxed mb-4" title="${item.desc}">${truncatedDesc}</p>
-                            <div class="flex items-end justify-between">
-                                <div class="flex flex-col">${techStackHTML}</div>
-                                <div class="flex items-center text-gray-400 text-[11px] font-mono shrink-0 ml-2">
-                                    ${metaInfo}
-                                    <i class="${item.icon} text-lg text-gray-300/70"></i>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = `w-full md:w-[45%] ${isLeft ? 'md:pr-12' : 'md:pl-12'}`;
 
+                const card = item.isProject
+                    ? renderHomeProjectCard(item, truncatedDesc, techStackHTML, metaInfo)
+                    : renderHomePostCard(item, truncatedDesc, techStackHTML, metaInfo);
+
+                if (card) {
+                    cardWrapper.appendChild(card);
+                }
+
+                rowEl.appendChild(cardWrapper);
+                rowEl.insertAdjacentHTML('beforeend', `
                     <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-10 h-10 z-20">
                         <div class="w-3.5 h-3.5 rounded-full bg-zinc-300 ring-4 ring-zinc-950/90"></div>
                         <div class="absolute ${isLeft ? 'right-full' : 'left-full'} h-px w-14 bg-gradient-to-r ${isLeft ? 'from-transparent to-zinc-400/60' : 'from-zinc-400/60 to-transparent'}"></div>
                     </div>
 
                     <div class="hidden md:block w-full md:w-[45%]"></div>
-                `;
+                `);
 
                 container.appendChild(rowEl);
             });
@@ -1584,11 +1640,6 @@
         } catch (error) {
             console.error('Enhancement initialization error:', error);
         }
-
-        if (window.initSpotlight) window.initSpotlight(root);
-        if (window.initCodeCopy) window.initCodeCopy(root);
-        if (window.initLightbox) window.initLightbox(root);
-        if (window.initProgressBar) window.initProgressBar();
 
         initHeaderControls();
         initComments();
@@ -1613,9 +1664,9 @@
         window.__spaAbortController = controller;
 
         try {
-            const currentMain = document.querySelector(SPA_MAIN_SELECTOR);
-            if (currentMain) {
-                currentMain.classList.add('spa-main-leave');
+            const currentContent = document.querySelector(SPA_CONTENT_SELECTOR);
+            if (currentContent) {
+                currentContent.classList.add('spa-main-leave');
             }
 
             const html = await fetchPageHtml(url, {
@@ -1623,18 +1674,18 @@
                 preferCache: true
             });
             const nextDoc = parseHtml(html);
-            const nextMain = nextDoc.querySelector(SPA_MAIN_SELECTOR);
-            const liveMain = document.querySelector(SPA_MAIN_SELECTOR);
+            const nextContent = nextDoc.querySelector(SPA_CONTENT_SELECTOR);
+            const liveContent = document.querySelector(SPA_CONTENT_SELECTOR);
 
-            if (!nextMain || !liveMain) {
+            if (!nextContent || !liveContent) {
                 window.location.href = url;
                 return;
             }
 
             parkGiscusFrame();
-            liveMain.replaceWith(nextMain);
+            liveContent.innerHTML = nextContent.innerHTML;
             updateHead(nextDoc);
-            animateMainEnter(nextMain);
+            animateMainEnter(liveContent);
             syncNavbarState(url);
 
             if (push) {
@@ -1646,8 +1697,8 @@
             document.dispatchEvent(new CustomEvent('spa:navigated'));
         } catch (error) {
             if (error.name === 'AbortError') {
-                const mainContainer = document.querySelector(SPA_MAIN_SELECTOR);
-                if (mainContainer) mainContainer.classList.remove('spa-main-leave');
+                const contentContainer = document.querySelector(SPA_CONTENT_SELECTOR);
+                if (contentContainer) contentContainer.classList.remove('spa-main-leave');
                 return;
             }
             window.location.href = url;
