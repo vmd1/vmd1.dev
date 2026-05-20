@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta name="generator" content="Hugo 0.152.2">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>vmd1</title>
+	<meta name="description" content="Vivaan M's portfolio and blog. Exploring programming, security, and technology.">
+	<meta name="keywords" content="programming,security,cybersecurity,blog,portfolio,vmd1,vivaan m">
+	<link rel="canonical" href="https://vmd1.dev/">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://vmd1.dev/">
+	<meta property="og:title" content="vmd1">
+	<meta property="og:description" content="Vivaan M's portfolio and blog. Exploring programming, security, and technology.">
+	<meta property="og:image" content="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.png">
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="https://vmd1.dev/">
+	<meta property="twitter:title" content="vmd1">
+	<meta property="twitter:description" content="Vivaan M's portfolio and blog. Exploring programming, security, and technology.">
+	<meta property="twitter:image" content="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.png">
+	<link rel="icon" type="image/svg+xml" href="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg">
+	<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="preconnect" href="https://giscus.app" crossorigin>
+	<link rel="preconnect" href="https://github.com" crossorigin>
+	<link rel="dns-prefetch" href="//giscus.app">
+	<link rel="dns-prefetch" href="//github.com">
+	<link rel="stylesheet" href="https://vmd1.dev/css/syntax.css">
+	<link rel="stylesheet" href="https://vmd1.dev/css/style.css">
+	<link rel="stylesheet" href="https://vmd1.dev/css/giscus.css">
+	<link rel="stylesheet" href="https://vmd1.dev/css/no-inline-code-bg.css">
+	<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+	
+	<!-- Custom scrollbar styles for the timetable container -->
+	<style>
+		.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+		.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+		.custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+		.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+		/* Grid view layout */
+		#exams-container[data-view="grid"] {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 12px;
+		}
+		#exams-container[data-view="grid"] { space-y: 0; }
+		#exams-container[data-view="grid"] .exam-flex {
+			flex-direction: column !important;
+			align-items: flex-start !important;
+		}
+
+		/* Today = red text (unless completed) */
+		.exam-today:not(.exam-completed) .exam-subject { color: #f87171 !important; }
+		.exam-today:not(.exam-completed) .exam-meta { color: #fca5a5 !important; }
+		.exam-today:not(.exam-completed) .board-badge { background: rgba(239,68,68,0.15) !important; color: #f87171 !important; border-color: rgba(239,68,68,0.3) !important; }
+		.exam-today:not(.exam-completed) { border-color: rgba(239,68,68,0.4) !important; background: rgba(100,0,0,0.12) !important; box-shadow: 0 0 12px rgba(239,68,68,0.1); }
+
+		/* Tomorrow = yellow text */
+		.exam-tomorrow:not(.exam-completed) .exam-subject { color: #fcd34d !important; }
+		.exam-tomorrow:not(.exam-completed) .exam-meta { color: #fde68a !important; }
+		.exam-tomorrow:not(.exam-completed) .board-badge { background: rgba(234,179,8,0.15) !important; color: #fcd34d !important; border-color: rgba(234,179,8,0.3) !important; }
+		.exam-tomorrow:not(.exam-completed) { border-color: rgba(234,179,8,0.35) !important; background: rgba(100,80,0,0.10) !important; }
+	</style>
+</head>
+<body class="text-gray-300">
+	<div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-zinc-200 to-zinc-500 z-[100] transition-all duration-100" style="width: 0%"></div>
+	<div id="particles-js" aria-hidden="true"></div>
+	<div id="background-logo" aria-hidden="true"></div>
+
+	<div class="container mx-auto px-4 py-8 max-w-5xl min-h-screen">
+		<header class="flex flex-col sm:flex-row justify-between items-center card navbar-card relative">
+			<a href="https://vmd1.dev/" class="flex items-center">
+				<img src="https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg" alt="vmd1 logo" class="w-12 h-12 mr-4 rounded-full">
+				<h1 class="text-4xl font-extrabold text-gray-100">vmd1</h1>
+			</a>
+
+			<div class="flex items-center space-x-4 mt-4 sm:mt-0">
+				<nav class="flex navbar-gap items-center">
+					<a href="https://vmd1.dev/" data-nav-key="home" class="navbar-anim-link text-gray-100 font-bold transition-colors duration-200">
+						<span class="icon-label-group"><i class="ri-home-line text-2xl"></i><span class="nav-label hidden sm:inline">Home</span></span>
+					</a>
+					<a href="https://vmd1.dev/posts" data-nav-key="posts" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+						<span class="icon-label-group"><i class="ri-article-line text-2xl"></i><span class="nav-label hidden sm:inline">Posts</span></span>
+					</a>
+					<a href="https://vmd1.dev/scripts" data-nav-key="scripts" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
+						<span class="icon-label-group"><i class="ri-terminal-box-line text-2xl"></i><span class="nav-label hidden sm:inline">Scripts</span></span>
+					</a>
+					<a href="https://vmd1.dev/projects" data-nav-key="projects" class="navbar-anim-link hidden sm:flex text-gray-400 hover:text-gray-100 transition-colors duration-200">
+						<span class="icon-label-group"><i class="ri-function-line text-2xl"></i><span class="nav-label hidden sm:inline">Projects</span></span>
+					</a>
+					<div class="sm:hidden relative">
+						<button id="mobile-nav-overflow-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="More">
+							<span class="icon-label-group"><i class="ri-more-2-fill text-2xl"></i></span>
+						</button>
+						<div id="mobile-nav-overflow-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-zinc-950/95 backdrop-blur-xl rounded-lg border border-zinc-800 shadow-xl z-50 w-48">
+							<div class="flex flex-col space-y-2">
+								<a href="https://vmd1.dev/scripts" data-nav-key="scripts" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+									<span class="icon-label-group"><i class="ri-terminal-box-line text-xl"></i><span class="nav-label ml-2">Scripts</span></span>
+								</a>
+								<a href="https://vmd1.dev/projects" data-nav-key="projects" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200">
+									<span class="icon-label-group"><i class="ri-function-line text-xl"></i><span class="nav-label ml-2">Projects</span></span>
+								</a>
+							</div>
+						</div>
+					</div>
+					<button id="search-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
+						<span class="icon-label-group"><i class="ri-search-line text-2xl"></i><span class="nav-label hidden sm:inline">Search</span></span>
+					</button>
+				</nav>
+				<div class="text-gray-600">|</div>
+
+				<div class="hidden sm:flex space-x-4 social-icons">
+					<a href="https://github.com/vmd1" class="social-link github text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-github-line text-2xl"></i></a>
+					<a href="https://www.linkedin.com/in/vmd1" class="social-link linkedin text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-linkedin-box-line text-2xl"></i></a>
+					<a href="mailto:me@vmd1.dev" class="social-link mail text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-mail-line text-2xl"></i></a>
+					<a href="https://matrix.to/#/@vivaan:vmd1.dev" class="social-link matrix text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix"><i class="ri-chat-1-line text-2xl"></i></a>
+				</div>
+
+				<div class="sm:hidden relative">
+					<button id="mobile-social-toggle" class="text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none" title="Socials">
+						<i class="ri-share-line text-2xl"></i>
+					</button>
+
+					<div id="mobile-social-menu" class="hidden absolute right-0 top-full mt-2 p-4 bg-zinc-950/95 backdrop-blur-xl rounded-lg border border-zinc-800 shadow-xl z-50 w-48">
+						<div class="grid grid-cols-3 gap-4 social-icons justify-items-center">
+							<a href="https://github.com/vmd1" class="social-link github text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-github-line text-2xl"></i></a>
+							<a href="https://www.linkedin.com/in/vmd1" class="social-link linkedin text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-linkedin-box-line text-2xl"></i></a>
+							<a href="mailto:me@vmd1.dev" class="social-link mail text-gray-400 hover:text-gray-100 transition-colors duration-200"><i class="ri-mail-line text-2xl"></i></a>
+							<a href="https://matrix.to/#/@vivaan:vmd1.dev" class="social-link matrix text-gray-400 hover:text-gray-100 transition-colors duration-200" title="Matrix"><i class="ri-chat-1-line text-2xl"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="search-container" class="search-hidden absolute top-full right-0 mt-2 w-full sm:w-80 px-4 sm:px-0 z-50">
+				<div class="search-glassbar relative">
+					<i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-300/90"></i>
+					<input type="text" id="search-input" placeholder="Search posts..." class="w-full text-gray-100 rounded-xl pl-10 pr-4 py-3 bg-transparent border-0 focus:outline-none placeholder-gray-400">
+				</div>
+			</div>
+		</header>
+
+		<main class="mt-8">
+			<section class="card static-card w-full py-8 px-6">
+				<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+					<div>
+						<h1 class="text-3xl font-extrabold text-gray-100 tracking-tight">Summer 2026 GCSEs</h1>
+						<p class="text-sm text-gray-400 mt-1">Candidate: Vivaan Modi (1277) | Year 11 | Reg Group: 11L1</p>
+					</div>
+				</div>
+				<div class="mb-8">
+					<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm text-gray-300 mb-2 font-medium gap-2">
+						<span id="progress-text" class="font-mono text-zinc-400">Loading progress...</span>
+						<span id="countdown-text" class="text-blue-400 font-mono flex items-center gap-1.5 bg-blue-950/20 border border-blue-900/30 px-3 py-1 rounded-lg"></span>
+					</div>
+					<div class="w-full bg-zinc-800 rounded-full h-3 border border-zinc-700/50">
+						<div id="progress-bar" class="bg-gradient-to-r from-blue-600 to-indigo-500 h-3 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+					</div>
+				</div>
+
+				<div id="exams-container" class="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar scroll-smooth" data-view="list">
+					<!-- Populated dynamically via JS -->
+				</div>
+			</section>
+		</main>
+
+		<footer class="mt-12 mb-8 text-center text-gray-500 font-mono text-sm">
+			<p>&copy; 2026 Vivaan M | <a href="mailto:me@vmd1.dev" class="hover:text-gray-100 transition-colors">me@vmd1.dev</a> | <a href="https://matrix.to/#/@vivaan:vmd1.dev" class="hover:text-gray-100 transition-colors">@vivaan:vmd1.dev</a></p>
+			<p>Self-hosted on <a href="https://up.vmd1.dev" class="hover:text-gray-100 transition-colors">vmd1 Infrastructure</a></p>
+		</footer>
+	</div>
+
+	<!-- System JS dependencies -->
+	<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+	<script src="https://vmd1.dev/js/spotlight.js"></script>
+	<script src="https://vmd1.dev/js/feature-runner.js"></script>
+	<script src="https://vmd1.dev/js/progress-bar.js"></script>
+	<script src="https://vmd1.dev/js/lightbox.js"></script>
+	<script>
+		window.__VMD_CONFIG__ = {
+			profile: {
+				githubUsername: "vmd1",
+				scriptsBaseUrl: "https://sc.vmd1.dev",
+				statusPageBaseUrl: "https://up.vmd1.dev",
+				statusPageSlug: "vmd1-dev",
+				whatsOnMarkdownUrl: "https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md",
+				excludedRepositories: '["vmd1/vmd1.dev","vmd1/polytrack"]',
+				contributionGraphLabel: "Vivaan's contribution graph"
+			}
+		};
+	</script>
+	<script src="https://vmd1.dev/js/app.js"></script>
+
+	<!-- Dynamic Timetable Engine with Auto-Scrolling and Interactive Countdown -->
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			const exams = [
+				{ start: "2026-05-07T13:30:00", duration: 45, board: "AQA", subject: "German Paper 1: Listening", room: "Shearly Hall", seat: "F3" },
+				{ start: "2026-05-07T14:20:00", duration: 60, board: "AQA", subject: "German Paper 2: Reading", room: "Shearly Hall", seat: "F3" },
+				{ start: "2026-05-08T13:30:00", duration: 90, board: "OCR", subject: "Economics Paper 1: Introduction to Economics", room: "Shearly Hall", seat: "F4" },
+				{ start: "2026-05-11T09:00:00", duration: 120, board: "OCR", subject: "English Literature Paper 1: Exploring Modern and Literary Heritage", room: "Shearly Hall", seat: "H17" },
+				{ start: "2026-05-12T13:30:00", duration: 105, board: "AQA", subject: "Biology Paper 1", room: "Shearly Hall", seat: "G6" },
+				{ start: "2026-05-13T09:00:00", duration: 90, board: "AQA", subject: "Geography Paper 1", room: "Shearly Hall", seat: "G17" },
+				{ start: "2026-05-14T09:00:00", duration: 90, board: "Edexcel", subject: "Mathematics Paper 1: Non-Calculator", room: "Shearly Hall", seat: "F12" },
+				{ start: "2026-05-14T13:30:00", duration: 75, board: "AQA", subject: "German Paper 3: Writing", room: "Main School Hall", seat: "E8" },
+				{ start: "2026-05-18T09:00:00", duration: 105, board: "AQA", subject: "Chemistry Paper 1", room: "Shearly Hall", seat: "F14" },
+				{ start: "2026-05-19T09:00:00", duration: 120, board: "OCR", subject: "English Literature Paper 2: Exploring Poetry and Shakespeare", room: "Shearly Hall", seat: "F16" },
+				{ start: "2026-05-21T09:00:00", duration: 120, board: "OCR", subject: "English Language Paper 1: Communicating Information and Ideas", room: "Shearly Hall", seat: "E16" },
+				{ start: "2026-05-22T09:00:00", duration: 90, board: "OCR", subject: "Economics Paper 2: National and International Economics", room: "Shearly Hall", seat: "G13" },
+				{ start: "2026-06-02T09:00:00", duration: 105, board: "AQA", subject: "Physics Paper 1", room: "Shearly Hall", seat: "F14" },
+				{ start: "2026-06-03T09:00:00", duration: 90, board: "Edexcel", subject: "Mathematics Paper 2: Calculator", room: "Shearly Hall", seat: "G13" },
+				{ start: "2026-06-03T13:30:00", duration: 90, board: "AQA", subject: "Geography Paper 2", room: "Main School Hall", seat: "B10" },
+				{ start: "2026-06-05T09:00:00", duration: 120, board: "OCR", subject: "English Language Paper 2: Exploring Effects and Impact", room: "Shearly Hall", seat: "F1" },
+				{ start: "2026-06-08T09:00:00", duration: 105, board: "AQA", subject: "Biology Paper 2", room: "Shearly Hall", seat: "G10" },
+				{ start: "2026-06-10T09:00:00", duration: 90, board: "Edexcel", subject: "Mathematics Paper 3: Calculator", room: "Shearly Hall", seat: "F13" },
+				{ start: "2026-06-10T13:30:00", duration: 120, board: "AQA", subject: "Design and Technology", room: "Shearly Hall", seat: "D6" },
+				{ start: "2026-06-11T09:00:00", duration: 90, board: "AQA", subject: "Geography Paper 3", room: "Shearly Hall", seat: "F6" },
+				{ start: "2026-06-12T09:00:00", duration: 105, board: "AQA", subject: "Chemistry Paper 2", room: "Shearly Hall", seat: "G14" },
+				{ start: "2026-06-15T09:00:00", duration: 105, board: "AQA", subject: "Physics Paper 2", room: "Shearly Hall", seat: "F11" }
+			];
+			const container = document.getElementById("exams-container");
+			let hasDoneInitialScroll = false;
+
+			// Computes overall end date of last exam
+			const lastExam = exams[exams.length - 1];
+			const lastExamEnd = new Date(new Date(lastExam.start).getTime() + lastExam.duration * 60000);
+
+			let isGridView = false;
+
+			function toggleView() {
+				isGridView = !isGridView;
+				const btn = document.getElementById("view-toggle");
+				const icon = document.getElementById("view-toggle-icon");
+				const label = document.getElementById("view-toggle-label");
+				if (isGridView) {
+					container.setAttribute("data-view", "grid");
+					container.classList.remove("space-y-3");
+					icon.className = "ri-list-check";
+					label.textContent = "List View";
+				} else {
+					container.setAttribute("data-view", "list");
+					container.classList.add("space-y-3");
+					icon.className = "ri-grid-line";
+					label.textContent = "Grid View";
+				}
+			}
+
+			function isSameDay(d1, d2) {
+				return d1.getFullYear() === d2.getFullYear() &&
+					d1.getMonth() === d2.getMonth() &&
+					d1.getDate() === d2.getDate();
+			}
+
+			function renderExams() {
+				const now = new Date();
+				const tomorrow = new Date(now);
+				tomorrow.setDate(tomorrow.getDate() + 1);
+
+				let completedCount = 0;
+				container.innerHTML = "";
+				let nextExamElement = null;
+
+				exams.forEach(exam => {
+					const startDate = new Date(exam.start);
+					const endDate = new Date(startDate.getTime() + exam.duration * 60000);
+					const isCompleted = now > endDate;
+					const isActive = now >= startDate && now <= endDate;
+					const isToday = isSameDay(startDate, now);
+					const isTomorrow = isSameDay(startDate, tomorrow);
+
+					if (isCompleted) completedCount++;
+
+					const timeStr = startDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+					const completionStr = endDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+					const dateStr = startDate.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" });
+
+					// Determine day-based class
+					const dayClass = isToday ? 'exam-today' : isTomorrow ? 'exam-tomorrow' : '';
+					const completedClass = isCompleted ? 'exam-completed' : '';
+
+					const baseCardClass = `exam-flex flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl border transition-all duration-300 ${dayClass} ${completedClass}`;
+					const cardClass = baseCardClass + ' ' + (
+						isActive ? 'border-blue-500/50 bg-blue-950/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]' :
+						'border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-800/60'
+					) + (isCompleted ? ' opacity-35' : '');
+
+					const examEl = document.createElement("div");
+					examEl.className = cardClass;
+					
+					// Identify first incomplete or running exam element
+					if (!isCompleted && !nextExamElement) {
+						nextExamElement = examEl;
+					}
+
+					examEl.innerHTML = `
+						<div class="flex-1 ${isCompleted ? 'line-through text-zinc-500' : ''}">
+							<div class="flex items-center gap-3 mb-1">
+								<span class="board-badge px-2.5 py-0.5 rounded-md text-xs font-bold ${isCompleted ? 'bg-zinc-800 text-zinc-500' : 'bg-blue-600/20 text-blue-400'} border ${isCompleted ? 'border-zinc-700' : 'border-blue-500/30'} uppercase tracking-wide font-mono">${exam.board}</span>
+								<h3 class="exam-subject text-base font-bold ${isCompleted ? 'text-zinc-500' : 'text-gray-100'}">${exam.subject}</h3>
+							</div>
+							<div class="exam-meta flex flex-wrap gap-x-4 gap-y-1 text-sm ${isCompleted ? 'text-zinc-600' : 'text-gray-400'} mt-2 font-mono">
+								<span class="flex items-center gap-1" title="Date"><i class="ri-calendar-line"></i> ${dateStr}</span>
+								<span class="flex items-center gap-1" title="Completion Duration Frame"><i class="ri-time-line"></i> ${timeStr} – ${completionStr} (${exam.duration}m)</span>
+								<span class="flex items-center gap-1" title="Location"><i class="ri-map-pin-line"></i> ${exam.room}</span>
+								<span class="flex items-center gap-1" title="Seat Location"><i class="ri-user-location-line"></i> Seat ${exam.seat}</span>
+							</div>
+						</div>
+						${isActive ? '<span class="mt-3 sm:mt-0 px-3 py-1 bg-blue-500/20 border border-blue-500/50 text-blue-400 text-xs font-bold rounded-full animate-pulse uppercase tracking-wider font-mono">In Progress</span>' : ''}
+					`;
+					
+					container.appendChild(examEl);
+				});
+
+				// Update Progress Bar & count text
+				const progressPercent = Math.round((completedCount / exams.length) * 100);
+				document.getElementById("progress-bar").style.width = `${progressPercent}%`;
+				document.getElementById("progress-text").textContent = `${completedCount} of ${exams.length} Exams Completed (${progressPercent}%)`;
+
+				// Perform auto-scroll to the next relevant exam once layout settles
+				if (nextExamElement && !hasDoneInitialScroll) {
+					setTimeout(() => {
+						container.scrollTop = nextExamElement.offsetTop - container.offsetTop - 12;
+						hasDoneInitialScroll = true;
+					}, 250);
+				}
+			}
+
+			// live ticking countdown loop (runs every 1 second)
+			function updateCountdown() {
+				const now = new Date();
+				const timeRemainingMs = lastExamEnd - now;
+				const countdownContainer = document.getElementById("countdown-text");
+
+				if (timeRemainingMs > 0) {
+					const secondsTotal = Math.floor(timeRemainingMs / 1000);
+					const days = Math.floor(secondsTotal / (3600 * 24));
+					const hours = Math.floor((secondsTotal % (3600 * 24)) / 3600);
+					const minutes = Math.floor((secondsTotal % 3600) / 60);
+					const seconds = secondsTotal % 60;
+
+					// Format digits
+					const dText = `${days}d`;
+					const hText = String(hours).padStart(2, "0") + "h";
+					const mText = String(minutes).padStart(2, "0") + "m";
+					const sText = String(seconds).padStart(2, "0") + "s";
+
+					countdownContainer.innerHTML = `<i class="ri-timer-flash-line text-blue-400 animate-spin-slow"></i> ${dText} ${hText} ${mText} ${sText} until freedom!`;
+				} else {
+					countdownContainer.innerHTML = "🎉 All exams finished!";
+				}
+			}
+
+			// Run immediate rendering and ticking loops
+			renderExams();
+			updateCountdown();
+
+			// Tick countdown every second
+			setInterval(updateCountdown, 1000);
+
+			// Refresh layout once every minute for active indicators
+			setInterval(renderExams, 60000);
+		});
+	</script>
+</body>
+</html>
