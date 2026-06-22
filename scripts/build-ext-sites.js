@@ -21,9 +21,15 @@ if (!fs.existsSync(sitesDir)) {
   fs.mkdirSync(sitesDir, { recursive: true });
 }
 
-// Helper to run commands
+// Helper to run commands, masking GH_TOKEN if present
 function runCmd(cmd, cwd) {
-  console.log(`Running: ${cmd} in ${cwd || 'current dir'}`);
+  let maskedCmd = cmd;
+  if (process.env.GH_TOKEN) {
+    // Escape regex characters just in case the token has any special characters
+    const escapedToken = process.env.GH_TOKEN.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    maskedCmd = cmd.replace(new RegExp(escapedToken, 'g'), '***');
+  }
+  console.log(`Running: ${maskedCmd} in ${cwd || 'current dir'}`);
   execSync(cmd, { cwd, stdio: 'inherit' });
 }
 
@@ -52,9 +58,14 @@ for (const [key, site] of Object.entries(config)) {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
   
+  let cloneRepoUrl = repo;
+  if (process.env.GH_TOKEN && cloneRepoUrl.startsWith('https://github.com/')) {
+    cloneRepoUrl = cloneRepoUrl.replace('https://github.com/', `https://x-access-token:${process.env.GH_TOKEN}@github.com/`);
+  }
+
   try {
     // Clone repo
-    runCmd(`git clone ${repo} "${tempDir}"`);
+    runCmd(`git clone ${cloneRepoUrl} "${tempDir}"`);
     
     // Check if build command is specified and not empty
     if (command && command.trim() !== '') {
