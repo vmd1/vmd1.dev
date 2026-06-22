@@ -15,7 +15,34 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  hugo-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: Build Hugo Site
+        run: hugo --gc --minify
+
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: hugo-public
+          path: public/
+          retention-days: 1
+
   build:
+    needs: hugo-build
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -34,6 +61,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Download built Hugo site
+        uses: actions/download-artifact@v4
+        with:
+          name: hugo-public
+          path: sites/vmd1.dev
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
