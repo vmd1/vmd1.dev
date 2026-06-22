@@ -31,14 +31,26 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Build Hugo Site
-        run: hugo --gc --minify
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Upload built site
+      - name: Build Hugo Site
+        run: |
+          hugo --gc --minify
+          mkdir -p sites
+          rm -rf sites/vmd1.dev
+          mv public sites/vmd1.dev
+
+      - name: Build External Sites
+        run: node scripts/build-ext-sites.js
+
+      - name: Upload built sites
         uses: actions/upload-artifact@v4
         with:
-          name: hugo-public
-          path: public/
+          name: built-sites
+          path: sites/
           retention-days: 1
 
   build:
@@ -62,11 +74,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Download built Hugo site
+      - name: Download built sites
         uses: actions/download-artifact@v4
         with:
-          name: hugo-public
-          path: sites/vmd1.dev
+          name: built-sites
+          path: sites/
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3

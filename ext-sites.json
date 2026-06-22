@@ -1,0 +1,19 @@
+{
+  "finny.vmd1.dev": {
+    "repo": "https://github.com/vmd1/finny",
+    "build": {
+      "command": "npm run build",
+      "output": "dist"
+    }
+  },
+  "flix4all.cc": {
+    "repo": "https://github.com/vmd1/flix4all",
+    "build": {
+      "command": "npm run build",
+      "output": "dist"
+    }
+  },
+  "sc.vmd1.dev": {
+    "repo": "https://github.com/vmd1/scripts"
+  }
+}
