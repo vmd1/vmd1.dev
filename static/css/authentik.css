@@ -1,0 +1,286 @@
+/*
+===================================================================
+      AUTHENTIK CUSTOM THEME - vmd1.dev STYLE
+===================================================================
+   This stylesheet configures Authentik to use the dark, 
+   glassmorphic design system of vmd1.dev.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    /* Theme Color Overrides */
+    --primary-color: #52525b;
+    --secondary-color: #27272a;
+    --highlight-color: #f5f5f5;
+    --accent-color: #d4d4d8;
+    --background-start: #000000;
+    --color-bg-elevated: #0b0b0b;
+    --color-surface: rgba(8, 8, 8, 0.43);
+    --color-surface-strong: rgba(11, 11, 11, 0.95);
+    --color-surface-subtle: rgba(20, 24, 40, 0.38);
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-strong: rgba(255, 255, 255, 0.18);
+    --color-text: #e5e7eb;
+    --color-text-strong: #f5f5f5;
+    --color-text-muted: #9ca3af;
+    --color-text-subtle: #6b7280;
+    --color-link: #d4d4d8;
+    --color-link-hover: #ffffff;
+    --color-success: #86efac;
+    --color-danger: #fca5a5;
+
+    /* Authentik Specific Overrides */
+    --ak-flow-background: none !important;
+    --ak-social-separator-text: "or";
+
+    /* PatternFly Global Overrides */
+    --pf-global--palette--black-850: #070708 !important;
+    --pf-global--palette--black-900: #000000 !important;
+    --pf-global--BackgroundColor--100: #000000 !important;
+    --pf-global--BackgroundColor--light-100: #000000 !important;
+    --pf-global--BackgroundColor--dark-100: #000000 !important;
+    --pf-global--Color--100: #e5e7eb !important;
+    --pf-global--Color--light-100: #e5e7eb !important;
+    --pf-global--Color--dark-100: #e5e7eb !important;
+    --pf-global--primary-color--100: #d4d4d8 !important;
+    --pf-global--primary-color--200: #ffffff !important;
+    --pf-global--link--Color: #cbd5e1 !important;
+    --pf-global--link--Color--hover: #ffffff !important;
+    --pf-global--BorderColor--100: rgba(255, 255, 255, 0.08) !important;
+    --pf-global--BorderColor--300: rgba(255, 255, 255, 0.18) !important;
+
+    color-scheme: dark !important;
+}
+
+/* Force dark mode */
+@media (prefers-color-scheme: light) {
+    :root {
+        --pf-global--BackgroundColor--100: #000000 !important;
+        --pf-global--BackgroundColor--light-100: #000000 !important;
+        --pf-global--Color--100: #e5e7eb !important;
+        --pf-global--Color--light-100: #e5e7eb !important;
+        --pf-global--Color--dark-100: #e5e7eb !important;
+    }
+}
+
+/* ===================================================================
+   BACKGROUND & WATERMARK
+   =================================================================== */
+body {
+    font-family: 'Inter', sans-serif !important;
+    background-color: var(--background-start) !important;
+    color: var(--color-text) !important;
+}
+
+/* Background watermarked logo matching vmd1.dev */
+body::before,
+.pf-c-background-image::before,
+.pf-v5-c-background-image::before {
+    content: "" !important;
+    position: fixed !important;
+    inset: 0 !important;
+    margin: auto !important;
+    width: min(56vw, 640px) !important;
+    height: min(56vw, 640px) !important;
+    background-image: url('https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    opacity: 0.22 !important;
+    pointer-events: none !important;
+    z-index: -2 !important;
+}
+
+/* Hide Patternfly background filter/images */
+.pf-c-background-image,
+.pf-v5-c-background-image {
+    background-color: transparent !important;
+    background-image: none !important;
+    opacity: 1 !important;
+}
+
+/* ===================================================================
+   LOGIN CARD / CONTAINER
+   =================================================================== */
+.pf-c-login,
+.pf-v5-c-login {
+    background: transparent !important;
+}
+
+.pf-c-login__main,
+.pf-v5-c-login__main {
+    background: var(--color-surface) !important;
+    backdrop-filter: blur(10px) saturate(155%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(155%) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    padding: 2rem !important;
+    color: var(--color-text) !important;
+}
+
+.pf-c-login__main-header,
+.pf-v5-c-login__main-header {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+}
+
+.pf-c-login__main-header-desc,
+.pf-v5-c-login__main-header-desc {
+    color: var(--color-text-muted) !important;
+}
+
+/* Header title */
+.pf-c-title,
+.pf-v5-c-title {
+    color: var(--color-text-strong) !important;
+}
+
+/* ===================================================================
+   INPUTS & FORM CONTROLS
+   =================================================================== */
+.pf-c-form-control,
+.pf-v5-c-form-control {
+    background-color: var(--color-surface-subtle) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 10px !important;
+    color: var(--color-text-strong) !important;
+    padding: 12px 16px !important;
+    height: auto !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.pf-c-form-control:focus,
+.pf-v5-c-form-control:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 1px var(--accent-color) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.pf-c-form__label-text,
+.pf-v5-c-form__label-text {
+    color: var(--color-text-muted) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+/* Checkboxes */
+.pf-c-check__label,
+.pf-v5-c-check__label {
+    color: var(--color-text-muted) !important;
+}
+
+/* ===================================================================
+   BUTTONS
+   =================================================================== */
+.pf-c-button,
+.pf-v5-c-button {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    cursor: pointer !important;
+    text-transform: none !important;
+}
+
+/* Primary buttons (Login, Submit) */
+.pf-c-button.pf-m-primary,
+.pf-v5-c-button.pf-m-primary,
+:host(ak-stage-user-login) button[type="submit"],
+:host(ak-stage-identification) button[type="submit"] {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pf-c-button.pf-m-primary:hover,
+.pf-v5-c-button.pf-m-primary:hover,
+:host(ak-stage-user-login) button[type="submit"]:hover,
+:host(ak-stage-identification) button[type="submit"]:hover {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+.pf-c-button.pf-m-primary:active,
+.pf-v5-c-button.pf-m-primary:active {
+    transform: translateY(0) !important;
+}
+
+/* Secondary buttons */
+.pf-c-button.pf-m-secondary,
+.pf-v5-c-button.pf-m-secondary {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #cbd5e1 !important;
+}
+
+.pf-c-button.pf-m-secondary:hover,
+.pf-v5-c-button.pf-m-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Social Login buttons */
+.pf-c-login__main-footer-links-item,
+.pf-v5-c-login__main-footer-links-item {
+    margin: 8px 0 !important;
+}
+
+.pf-c-login__main-footer-links-item a,
+.pf-v5-c-login__main-footer-links-item a {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    color: var(--color-text) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+}
+
+.pf-c-login__main-footer-links-item a:hover {
+    background-color: rgba(255, 255, 255, 0.09) !important;
+    border-color: var(--color-border-strong) !important;
+    text-decoration: none !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   HELP / LINKS & FOOTER
+   =================================================================== */
+.pf-c-login__main-footer-band,
+.pf-v5-c-login__main-footer-band {
+    color: var(--color-text-muted) !important;
+    font-size: 14px !important;
+}
+
+a,
+.pf-c-button.pf-m-link,
+.pf-v5-c-button.pf-m-link {
+    color: var(--color-link) !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+a:hover,
+.pf-c-button.pf-m-link:hover,
+.pf-v5-c-button.pf-m-link:hover {
+    color: var(--color-link-hover) !important;
+    text-decoration: underline !important;
+}
+
+/* Custom Part mappings for shadow-root components */
+ak-flow-executor::part(locale-select) {
+    background: transparent !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 8px !important;
+    color: var(--color-text-muted) !important;
+}
