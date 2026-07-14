@@ -1,6 +1,6 @@
 ---
 date: 2026-07-13T00:00:00Z
-draft: true
+draft: false
 title: 1. Rebuilding my cluster from scratch
 tags:
 ---
