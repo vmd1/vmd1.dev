@@ -4,7 +4,8 @@
     <link>{{ .Permalink }}</link>
     <description>Recent content on {{ .Site.Title }}</description>
     <language>en-us</language>
-    {{- range first 6 .Site.RegularPages -}}
+    {{- $visibleSections := .Site.Params.postsGridSections | default (slice "docs" "foundation" "guides" "posts" "updates") -}}
+    {{- range first 6 (where .Site.RegularPages "Section" "in" $visibleSections) -}}
     <item>
       <title>{{ .Title }}</title>
       <link>{{ .Permalink }}</link>
