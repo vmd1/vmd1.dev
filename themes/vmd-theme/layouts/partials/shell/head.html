@@ -18,6 +18,8 @@
     <meta name="description" content="{{ if .IsHome }}{{ .Site.Params.description }}{{ else }}{{ .Summary | default .Site.Params.description }}{{ end }}">
     <meta name="keywords" content="{{ if .Params.tags }}{{ delimit .Params.tags ", " }}{{ else }}{{ .Site.Params.keywords }}{{ end }}">
     <link rel="canonical" href="{{ .Permalink }}">
+    {{- $noindex := or .Params.noindex (in (slice "search" "500") .Params.layout) }}
+    <meta name="robots" content="{{ if $noindex }}noindex, nofollow{{ else }}index, follow{{ end }}">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">

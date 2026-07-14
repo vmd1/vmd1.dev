@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /search/?q=
+Disallow: /testing/
+Disallow: /white-hat/
+
+Sitemap: {{ .Site.BaseURL }}sitemap.xml
