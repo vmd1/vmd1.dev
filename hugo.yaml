@@ -16,6 +16,7 @@ params:
     - "guides"
     - "posts"
     - "updates"
+    - "k3s"
   author:
     name: "Vivaan M"
     email: "me@vmd1.dev"
