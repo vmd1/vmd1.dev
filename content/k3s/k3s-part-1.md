@@ -21,7 +21,7 @@ As of now, I have the following hardware:
 	- 2x in AP-Mumbai
 
 ## Planning
-To allow my nodes to communicate across sites, I will be using Tailscale. I initially planned to migrate to NetBird, but my testing showed it wasn't as resilient as Tailscale.
+To allow my nodes to communicate across sites, I will be using Tailscale. I initially planned to migrate to NetBird, but my testing showed it wasn't as resilient as Tailscale - it frequently consumed much more resources, causing crashes, while also dropping packets.
 
 ### Goals
 A couple of goals that I set for myself, so I knew what I was working towards:
@@ -33,7 +33,162 @@ A couple of goals that I set for myself, so I knew what I was working towards:
 We know all of this works now, as this site is being served from there! You can actually see that status of public facing services by going [here](https://up.vmd1.dev).
 
 ### Core components
-To start off, we need to install k3s. As I wished to deploy my custom instance of Traefik, during install, I passed the flag `--disable=traefik` to prevent the default Traefik ingress controller from being installed.
+To start off, we need to install k3s. As I wished to deploy my custom instance of Traefik, during install, I passed the flag `--disable=traefik` to prevent the default Traefik ingress controller from being installed. on the controlplane. After that, I built a simple script to provision my ingress nodes:
+
+```
+#!/bin/bash
+set -euo pipefail
+
+# ─── Configuration Variables ────────────────────────────────────────────────
+# Tailscale
+TAILSCALE_AUTH_KEY="tskey-auth-XXXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+TAILSCALE_HOSTNAME=""          # Leave empty to use the system hostname
+TAILSCALE_EXTRA_ARGS=""        # e.g. "--advertise-tags=tag:ingress --accept-routes"
+
+# K3s
+K3S_SERVER_URL="https://XX.XX.XX.XXX:6443"
+K3S_JOIN_TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+K3S_FLANNEL_IFACE="tailscale0"
+K3S_NODE_LABEL="node-type=ingress"
+K3S_NODE_TAINT="node-role=ingress:NoSchedule"
+
+# DNS
+DNS_SERVERS=("1.1.1.1" "8.8.8.8")
+
+# Firewall — TCP ports to open in Oracle Cloud iptables rules (headless)
+FIREWALL_PORTS=(80 443 53)
+# ────────────────────────────────────────────────────────────────────────────
+
+# ─── Helper ─────────────────────────────────────────────────────────────────
+log()  { echo -e "\n\033[1;34m==>\033[0m \033[1m$*\033[0m"; }
+ok()   { echo -e "\033[1;32m  ✓\033[0m $*"; }
+warn() { echo -e "\033[1;33m  !\033[0m $*"; }
+err()  { echo -e "\033[1;31m  ✗\033[0m $*" >&2; }
+# ────────────────────────────────────────────────────────────────────────────
+
+# ─── Step 1: Install & bring up Tailscale ───────────────────────────────────
+log "Installing Tailscale..."
+curl -fsSL https://tailscale.com/install.sh | sh
+ok "Tailscale installed."
+
+log "Starting Tailscale daemon..."
+sudo systemctl enable --now tailscaled
+ok "tailscaled running."
+
+log "Connecting to Tailscale network (auth key configured)..."
+TS_UP_ARGS="--authkey=${TAILSCALE_AUTH_KEY}"
+[[ -n "${TAILSCALE_HOSTNAME}" ]] && TS_UP_ARGS+=" --hostname=${TAILSCALE_HOSTNAME}"
+[[ -n "${TAILSCALE_EXTRA_ARGS}" ]] && TS_UP_ARGS+=" ${TAILSCALE_EXTRA_ARGS}"
+# shellcheck disable=SC2086
+sudo tailscale up ${TS_UP_ARGS}
+ok "Tailscale connected."
+
+# ─── Step 2: Auto-detect Tailscale IPv4 address ─────────────────────────────
+log "Detecting Tailscale IPv4 address..."
+
+# Give the daemon a moment to assign the address
+RETRIES=12
+NODE_IP=""
+for ((i = 1; i <= RETRIES; i++)); do
+    NODE_IP=$(tailscale ip -4 2>/dev/null || true)
+    if [[ "${NODE_IP}" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+        break
+    fi
+    warn "Address not yet assigned (attempt ${i}/${RETRIES}). Waiting 5 s..."
+    sleep 5
+    NODE_IP=""
+done
+
+if [[ -z "${NODE_IP}" ]]; then
+    err "Could not detect a Tailscale IPv4 address after $((RETRIES * 5)) s."
+    err "Check 'tailscale status' and re-run when connected."
+    exit 1
+fi
+ok "Tailscale IPv4 address: ${NODE_IP}"
+
+# ─── Step 3: Fix DNS (disable systemd-resolved, use static resolv.conf) ─────
+log "Reconfiguring DNS..."
+sudo systemctl disable --now systemd-resolved
+sudo rm -f /etc/resolv.conf
+
+# Build nameserver block from DNS_SERVERS array
+RESOLV_CONTENT=""
+for ns in "${DNS_SERVERS[@]}"; do
+    RESOLV_CONTENT+="nameserver ${ns}\n"
+done
+printf "%b" "${RESOLV_CONTENT}" | sudo tee /etc/resolv.conf > /dev/null
+ok "DNS configured: ${DNS_SERVERS[*]}"
+
+# ─── Step 4: Open Oracle Cloud firewall ports ───────────────────────────────
+OPENED=()   # track for status summary
+
+log "Opening Oracle Cloud firewall ports: ${FIREWALL_PORTS[*]}..."
+for PORT in "${FIREWALL_PORTS[@]}"; do
+    if [[ "${PORT}" =~ ^[0-9]+$ ]] && (( PORT >= 1 && PORT <= 65535 )); then
+        echo "  Opening port ${PORT}..."
+        sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport "${PORT}" -j ACCEPT
+        OPENED+=("${PORT}")
+    else
+        warn "Skipping '${PORT}': not a valid port number (1-65535)."
+    fi
+done
+
+# Persist iptables rules
+if command -v netfilter-persistent &> /dev/null; then
+    log "Saving rules via netfilter-persistent..."
+    sudo netfilter-persistent save
+elif command -v service &> /dev/null && service --status-all 2>&1 | grep -q iptables; then
+    log "Saving rules via iptables-services..."
+    sudo service iptables save
+else
+    warn "Could not find a tool to persist iptables rules."
+    warn "Rules will be lost on reboot unless netfilter-persistent is installed."
+fi
+
+[[ ${#OPENED[@]} -gt 0 ]] && ok "Opened ports: ${OPENED[*]}"
+
+# ─── Step 5: Join the K3s cluster as an ingress agent ───────────────────────
+log "Joining K3s cluster at ${K3S_SERVER_URL}..."
+echo "  Node IP:       ${NODE_IP}"
+echo "  Flannel iface: ${K3S_FLANNEL_IFACE}"
+echo "  Node label:    ${K3S_NODE_LABEL}"
+echo "  Node taint:    ${K3S_NODE_TAINT}"
+
+K3S_JOIN_STATUS="success"
+curl -sfL https://get.k3s.io \
+  | K3S_URL="${K3S_SERVER_URL}" \
+    K3S_TOKEN="${K3S_JOIN_TOKEN}" \
+    INSTALL_K3S_EXEC="agent \
+      --node-ip=${NODE_IP} \
+      --flannel-iface=${K3S_FLANNEL_IFACE} \
+      --node-label=${K3S_NODE_LABEL} \
+      --node-taint=${K3S_NODE_TAINT}" \
+    sh - || K3S_JOIN_STATUS="failed"
+
+[[ "${K3S_JOIN_STATUS}" == "success" ]] \
+    && ok "Node successfully joined the cluster!" \
+    || err "K3s join failed — check the output above for details."
+
+# ─── Status Summary ──────────────────────────────────────────────────────────
+NODE_NAME=$(hostname -s 2>/dev/null || echo "unknown")
+PUBLIC_IP=$(curl -fsSL --max-time 5 https://api.ipify.org 2>/dev/null || echo "unavailable")
+EXPOSED_PORTS=$( [[ ${#OPENED[@]} -gt 0 ]] && echo "${OPENED[*]}" || echo "none" )
+[[ "${K3S_JOIN_STATUS}" == "success" ]] && JOIN_ICON="✓ joined" || JOIN_ICON="✗ failed"
+
+echo -e "
+\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m
+\033[1m  Provisioning Status\033[0m
+\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m
+  Node name:       ${NODE_NAME}
+  Tailscale IP:    ${NODE_IP}
+  Public IP:       ${PUBLIC_IP}
+  K3s join state:  ${JOIN_ICON}
+  Exposed ports:   ${EXPOSED_PORTS}
+\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m"
+
+log "Provisioning complete."
+
+```
 
 Before we go any further, we need to deploy some core services that are shared between different applications. These were:
 - Redis

@@ -1,0 +1,483 @@
+/*
+===================================================================
+      UPTIME KUMA CUSTOM THEME - vmd1.dev STYLE
+===================================================================
+   Paste the entire contents of this file into the "Custom CSS"
+   box on your Uptime Kuma status page editor and hit Save.
+
+   Design system mirrors vmd1.dev:
+     - Pure-black background (#000)
+     - Glassmorphic cards (backdrop-filter blur)
+     - Inter typeface
+     - Watermark SVG logo (opacity 0.22)
+     - Zinc/slate colour palette
+     - Subtle white-border, inset-highlight shadows
+===================================================================
+*/
+
+/* ===================================================================
+   GOOGLE FONTS
+   =================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* ===================================================================
+   DESIGN TOKENS
+   =================================================================== */
+:root {
+    --vmd-primary:           #52525b;
+    --vmd-secondary:         #27272a;
+    --vmd-highlight:         #f5f5f5;
+    --vmd-accent:            #d4d4d8;
+    --vmd-bg:                #000000;
+    --vmd-bg-elevated:       #0b0b0b;
+    --vmd-surface:           rgba(8, 8, 8, 0.43);
+    --vmd-surface-strong:    rgba(11, 11, 11, 0.95);
+    --vmd-surface-subtle:    rgba(20, 24, 40, 0.38);
+    --vmd-border:            rgba(255, 255, 255, 0.08);
+    --vmd-border-strong:     rgba(255, 255, 255, 0.18);
+    --vmd-text:              #e5e7eb;
+    --vmd-text-strong:       #f5f5f5;
+    --vmd-text-muted:        #9ca3af;
+    --vmd-text-subtle:       #6b7280;
+    --vmd-link:              #d4d4d8;
+    --vmd-link-hover:        #ffffff;
+    --vmd-success:           #86efac;
+    --vmd-danger:            #fca5a5;
+    --vmd-warning:           #fcd34d;
+    --vmd-shadow-card:       0 8px 24px 0 rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18);
+    --vmd-shadow-card-hover: 0 10px 28px 0 rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+/* ===================================================================
+   BASE — BACKGROUND, FONT, COLOUR
+   =================================================================== */
+* {
+    font-family: 'Inter', sans-serif !important;
+    box-sizing: border-box;
+}
+
+body,
+body.dark {
+    background-color: var(--vmd-bg) !important;
+    color: var(--vmd-text) !important;
+}
+
+/* Watermark logo — same dimensions & opacity as vmd1.dev */
+body::before {
+    content: "" !important;
+    position: fixed !important;
+    inset: 0 !important;
+    margin: auto !important;
+    width: min(56vw, 640px) !important;
+    height: min(56vw, 640px) !important;
+    background-image: url('https://cdn.848226.xyz/v1/vmd1/media/logo/logo.svg') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    opacity: 0.22 !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* ===================================================================
+   NAVBAR / HEADER BAR
+   =================================================================== */
+nav,
+.nav,
+header,
+.top-bar,
+#app > header,
+.navbar {
+    background: var(--vmd-surface) !important;
+    backdrop-filter: blur(10px) saturate(155%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(155%) !important;
+    border-bottom: 1px solid var(--vmd-border) !important;
+    box-shadow: var(--vmd-shadow-card) !important;
+    color: var(--vmd-text) !important;
+}
+
+/* ===================================================================
+   CARDS / SHADOW BOXES  (group containers only)
+   =================================================================== */
+.shadow-box,
+.group-item {
+    background: var(--vmd-surface) !important;
+    backdrop-filter: blur(10px) saturate(155%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(155%) !important;
+    border: 1px solid var(--vmd-border) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--vmd-shadow-card) !important;
+    color: var(--vmd-text) !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+
+.shadow-box:hover,
+.group-item:hover {
+    box-shadow: var(--vmd-shadow-card-hover) !important;
+    border-color: var(--vmd-border-strong) !important;
+}
+
+/* ===================================================================
+   INDIVIDUAL MONITOR ROWS  (flat, no card of their own)
+   =================================================================== */
+.monitor-item,
+.item {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-bottom: 1px solid var(--vmd-border) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+    transition: background 0.15s ease !important;
+}
+
+/* Last monitor in a group — no divider line */
+.monitor-item:last-child,
+.item:last-child {
+    border-bottom: none !important;
+}
+
+.monitor-item:hover,
+.item:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+}
+
+/* ===================================================================
+   GROUP HEADERS
+   =================================================================== */
+.group-name,
+h2,
+h3,
+.section-title {
+    color: var(--vmd-text-strong) !important;
+    font-weight: 700 !important;
+}
+
+/* ===================================================================
+   MONITOR NAME & DESCRIPTION TEXT
+   =================================================================== */
+.monitor-name,
+.name {
+    color: var(--vmd-text-strong) !important;
+    font-weight: 600 !important;
+}
+
+.monitor-description,
+.description,
+.info-text,
+small,
+.small-text {
+    color: var(--vmd-text-muted) !important;
+}
+
+/* ===================================================================
+   STATUS BADGES
+   =================================================================== */
+
+/* Up / Operational */
+.badge.bg-success,
+.badge-success,
+.status-up,
+.badge.up,
+.text-success {
+    background-color: rgba(134, 239, 172, 0.12) !important;
+    color: var(--vmd-success) !important;
+    border: 1px solid rgba(134, 239, 172, 0.3) !important;
+    border-radius: 999px !important;
+}
+
+/* Down / Outage */
+.badge.bg-danger,
+.badge-danger,
+.status-down,
+.badge.down,
+.text-danger {
+    background-color: rgba(252, 165, 165, 0.12) !important;
+    color: var(--vmd-danger) !important;
+    border: 1px solid rgba(252, 165, 165, 0.3) !important;
+    border-radius: 999px !important;
+}
+
+/* Degraded / Warning */
+.badge.bg-warning,
+.badge-warning,
+.status-warning,
+.text-warning {
+    background-color: rgba(252, 211, 77, 0.12) !important;
+    color: var(--vmd-warning) !important;
+    border: 1px solid rgba(252, 211, 77, 0.3) !important;
+    border-radius: 999px !important;
+}
+
+/* ===================================================================
+   UPTIME BARS (heartbeat)
+   =================================================================== */
+.heartbeat-bar > div,
+.beat,
+.bar {
+    border-radius: 4px !important;
+    transition: opacity 0.2s ease !important;
+}
+
+/* ===================================================================
+   BUTTONS
+   =================================================================== */
+.btn,
+button,
+[type="button"],
+[type="submit"] {
+    font-family: 'Inter', sans-serif !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    cursor: pointer !important;
+}
+
+.btn-primary,
+button.primary,
+[type="submit"] {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-primary:hover,
+button.primary:hover,
+[type="submit"]:hover {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+}
+
+.btn-secondary,
+button.secondary {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #cbd5e1 !important;
+}
+
+.btn-secondary:hover,
+button.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   FORM INPUTS
+   =================================================================== */
+input,
+select,
+textarea,
+.form-control {
+    background-color: var(--vmd-surface-subtle) !important;
+    border: 1px solid var(--vmd-border) !important;
+    border-radius: 10px !important;
+    color: var(--vmd-text-strong) !important;
+    padding: 10px 14px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus {
+    border-color: var(--vmd-accent) !important;
+    box-shadow: 0 0 0 1px var(--vmd-accent) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    outline: none !important;
+}
+
+label {
+    color: var(--vmd-text-muted) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+/* ===================================================================
+   LINKS
+   =================================================================== */
+a {
+    color: var(--vmd-link) !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+a:hover {
+    color: var(--vmd-link-hover) !important;
+    text-decoration: underline !important;
+}
+
+/* ===================================================================
+   OVERALL STATUS BANNER
+   =================================================================== */
+.status-page-header,
+.overall-status,
+.header-top {
+    background: var(--vmd-surface) !important;
+    backdrop-filter: blur(10px) saturate(155%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(155%) !important;
+    border: 1px solid var(--vmd-border) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--vmd-shadow-card) !important;
+    color: var(--vmd-text-strong) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.overall-status .status-label,
+.status-string {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: var(--vmd-text-strong) !important;
+}
+
+/* ===================================================================
+   INCIDENT / MAINTENANCE NOTICES
+   =================================================================== */
+.incident-box,
+.maintenance-box,
+.alert {
+    background: var(--vmd-surface-subtle) !important;
+    border: 1px solid var(--vmd-border) !important;
+    border-radius: 14px !important;
+    color: var(--vmd-text) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* ===================================================================
+   FOOTER
+   =================================================================== */
+footer,
+.footer,
+.powered-by {
+    color: var(--vmd-text-muted) !important;
+    background: transparent !important;
+    border-top: 1px solid var(--vmd-border) !important;
+    margin-top: 2rem !important;
+}
+
+footer a,
+.footer a {
+    color: var(--vmd-link) !important;
+}
+
+footer a:hover,
+.footer a:hover {
+    color: var(--vmd-link-hover) !important;
+}
+
+/* ===================================================================
+   SCROLLBAR  (webkit)
+   =================================================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--vmd-primary), var(--vmd-accent));
+    border-radius: 999px;
+}
+
+/* ===================================================================
+   TABLES  (uptime % breakdown etc.)
+   =================================================================== */
+table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+
+th {
+    color: var(--vmd-text-muted) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.5rem 0.75rem !important;
+    border-bottom: 1px solid var(--vmd-border) !important;
+}
+
+td {
+    color: var(--vmd-text) !important;
+    padding: 0.5rem 0.75rem !important;
+    border-bottom: 1px solid var(--vmd-border) !important;
+}
+
+tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* ===================================================================
+   MODAL / DIALOG
+   =================================================================== */
+.modal-content,
+[role="dialog"],
+.dialog {
+    background: var(--vmd-surface-strong) !important;
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+    border: 1px solid var(--vmd-border-strong) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    color: var(--vmd-text) !important;
+}
+
+.modal-backdrop,
+.overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+}
+
+/* ===================================================================
+   TOOLTIP
+   =================================================================== */
+.tooltip,
+.tooltip-inner {
+    background: var(--vmd-surface-strong) !important;
+    border: 1px solid var(--vmd-border-strong) !important;
+    border-radius: 10px !important;
+    color: var(--vmd-text-strong) !important;
+    font-size: 13px !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4) !important;
+}
+
+/* ===================================================================
+   PING CHART / RESPONSE TIME CHART
+   =================================================================== */
+.chart-wrapper,
+canvas {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+}
+
+/* ===================================================================
+   RESPONSIVE TWEAKS
+   =================================================================== */
+@media (max-width: 768px) {
+    .shadow-box,
+    .card,
+    .monitor-item,
+    .item {
+        border-radius: 14px !important;
+    }
+
+    body::before {
+        width: min(80vw, 360px) !important;
+        height: min(80vw, 360px) !important;
+    }
+}
