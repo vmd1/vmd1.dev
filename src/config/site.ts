@@ -20,7 +20,6 @@ export const profile = {
   email: 'me@vmd1.dev',
   matrixId: '@vivaan:vmd1.dev',
   statusPageBaseUrl: 'https://up.vmd1.dev',
-  statusPageSlug: 'vmd1-dev',
   infrastructureName: 'vmd1 Infrastructure',
   scriptsBaseUrl: 'https://sc.vmd1.dev',
   scriptsIndexUrl: 'https://raw.githubusercontent.com/vmd1/scripts/refs/heads/main/scripts.json',
