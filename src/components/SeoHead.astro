@@ -1,0 +1,53 @@
+---
+import { site, profile } from '../config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  keywords?: string;
+  /** Root-relative path, used to build the canonical URL. */
+  path: string;
+  type?: 'website' | 'article';
+  image?: string;
+  noindex?: boolean;
+  /** Social-card title; defaults to `title`. */
+  socialTitle?: string;
+}
+
+const {
+  title,
+  description = site.description,
+  keywords = site.keywords,
+  path,
+  type = 'website',
+  image = site.image,
+  noindex = false,
+  socialTitle,
+} = Astro.props;
+
+const canonical = new URL(path, Astro.site).href;
+const cardTitle = socialTitle ?? title;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={cardTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={image} />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonical} />
+<meta property="twitter:title" content={cardTitle} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={image} />
+
+<link rel="icon" type="image/svg+xml" href={profile.logoUrl} />
+<link rel="alternate" type="application/rss+xml" title={site.title} href="/index.xml" />

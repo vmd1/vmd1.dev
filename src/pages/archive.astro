@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+import { getPostPages, type Page } from '../lib/content';
+import { formatDate } from '../lib/text';
+
+const posts = await getPostPages();
+
+const monthName = (date: Date) => date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+
+/** Pages grouped year → month, newest first (posts arrive sorted by date). */
+const years = [...Map.groupBy(posts, (page) => page.date.getUTCFullYear())].map(([year, yearPages]) => ({
+  year,
+  count: yearPages.length,
+  months: [...Map.groupBy(yearPages, (page) => monthName(page.date))].map(([month, pages]) => ({ month, pages })),
+}));
+const authorOf = (page: Page) => (page.authors.length ? page.authors.join(', ') : site.author.name);
+---
+
+<BaseLayout title={`Archive - ${site.title}`} socialTitle="Archive" path="/archive/">
+  <div class="card static-card min-h-[60vh]">
+    <div class="flex items-center justify-between mb-8 border-b border-gray-700 pb-4">
+      <h1 class="text-3xl font-bold text-gray-100 flex items-center gap-3">
+        Archive
+        <a href="/index.xml" class="text-gray-400 hover:text-white transition-colors" title="RSS Feed">
+          <i class="ri-rss-fill text-xl"></i>
+        </a>
+      </h1>
+    </div>
+
+    <div class="space-y-12">
+      {
+        years.map(({ year, count, months }) => (
+          <div>
+            <h2 class="text-2xl font-bold text-gray-200 mb-6 flex items-start">
+              {year}
+              <span class="text-sm text-gray-500 ml-2 font-normal relative -top-1">{count}</span>
+            </h2>
+            <div class="space-y-8 ml-2 md:ml-4 border-l-2 border-gray-800 pl-4 md:pl-6">
+              {months.map(({ month, pages }) => (
+                <div>
+                  <h3 class="text-xl font-semibold text-gray-300 mb-4 flex items-start">
+                    {month}
+                    <span class="text-xs text-gray-500 ml-2 font-normal relative -top-1">{pages.length}</span>
+                  </h3>
+                  <div class="space-y-6">
+                    {pages.map((page) => (
+                      <div class="group">
+                        <a href={page.url} class="block">
+                          <h4 class="text-lg font-medium text-gray-100 group-hover:text-[var(--primary-color)] transition-colors">{page.title}</h4>
+                        </a>
+                        <div class="text-sm text-gray-500 mt-1 flex flex-wrap items-center gap-x-2">
+                          <span>{formatDate(page.date)}</span><span>·</span>
+                          <span>{page.readingMinutes} min</span><span>·</span>
+                          <span>{page.wordCount} words</span><span>·</span>
+                          <span>{authorOf(page)}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

@@ -1,3 +1,0 @@
-<a href="{{ .href }}" class="social-link{{ with .variantClass }} {{ . }}{{ end }} text-gray-400 hover:text-gray-100 transition-colors duration-200"{{ with .title }} title="{{ . }}"{{ end }}{{ if .external }} target="_blank" rel="noopener noreferrer"{{ end }}>
-    <i class="{{ .icon }} {{ .iconSize | default "text-2xl" }}"></i>
-</a>

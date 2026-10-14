@@ -1,0 +1,21 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { site } from '../../../config/site';
+import { getTags, type Tag } from '../../../lib/content';
+
+export const getStaticPaths = (async () =>
+  (await getTags()).map((tag) => ({ params: { tag: tag.slug }, props: { tag } }))) satisfies GetStaticPaths;
+
+const { tag } = Astro.props as { tag: Tag };
+---
+
+<BaseLayout title={`${tag.name} - Init0 - ${site.title}`} socialTitle={tag.name} path={`/tags/${tag.slug}/`}>
+  <section class="card static-card">
+    <h2 class="text-2xl font-semibold mb-8 text-gray-100 text-center">#{tag.name}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {tag.pages.map((page) => <PostCard href={page.url} title={page.title} summary={page.summary} date={page.date} />)}
+    </div>
+  </section>
+</BaseLayout>

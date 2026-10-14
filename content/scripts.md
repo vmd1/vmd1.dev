@@ -1,4 +1,0 @@
----
-title: "Scripts"
-layout: "scripts"
----

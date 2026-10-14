@@ -1,9 +1,0 @@
-{
-  "contacts": [
-    {
-      "email_address": "me@vmd1.dev",
-      "matrix_id": "@vivaan:vmd1.dev",
-      "role": "m.role.admin"
-    }
-  ]
-}

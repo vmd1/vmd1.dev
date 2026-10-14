@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+
+interface Props {
+  code: string;
+  heading: string;
+  message: string;
+  path: string;
+}
+const { code, heading, message, path } = Astro.props;
+---
+
+<BaseLayout title={`${code} ${heading} - ${site.title}`} socialTitle={`${code} ${heading}`} path={path} noindex>
+  <div class="flex items-center justify-center min-h-[50vh]">
+    <div class="card text-center max-w-lg w-full">
+      <h1 class="text-6xl font-bold text-gray-100 mb-4">{code}</h1>
+      <h2 class="text-2xl font-semibold text-gray-300 mb-6">{heading}</h2>
+      <p class="text-gray-400 mb-8">{message}</p>
+      <a href="/" class="inline-block px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-gray-100 rounded-lg transition-colors duration-200">Go Home</a>
+    </div>
+  </div>
+</BaseLayout>

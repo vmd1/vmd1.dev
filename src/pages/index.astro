@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import DowntimeAlert from '../components/DowntimeAlert.astro';
+import AboutMe from '../components/home/AboutMe.astro';
+import WhatsOn from '../components/home/WhatsOn.astro';
+import RecentWork from '../components/home/RecentWork.astro';
+import { site } from '../config/site';
+import { getPostPages } from '../lib/content';
+
+const posts = await getPostPages();
+---
+
+<BaseLayout title={site.title} path="/" activeNav="home">
+  <DowntimeAlert />
+  <div class="flex flex-col md:flex-row gap-8 mb-8">
+    <div class="w-full md:w-1/2"><AboutMe latestPostUrl={posts[0]?.url} /></div>
+    <div class="w-full md:w-1/2"><WhatsOn /></div>
+  </div>
+  <RecentWork posts={posts.slice(0, 6)} />
+</BaseLayout>
