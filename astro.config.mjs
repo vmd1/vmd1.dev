@@ -5,7 +5,7 @@ import rehypeCodeCopy from './src/lib/rehype-code-copy.ts';
 
 export default defineConfig({
   site: SITE_URL,
-  trailingSlash: 'always',
+  trailingSlash: 'ignore',
   build: { format: 'directory' },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   markdown: {
