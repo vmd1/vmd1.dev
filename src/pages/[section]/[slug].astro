@@ -1,0 +1,34 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Comments from '../../components/Comments.astro';
+import { site } from '../../config/site';
+import { getAllPages, type Page } from '../../lib/content';
+import { buildToc } from '../../lib/toc';
+
+export const getStaticPaths = (async () => {
+  const pages = await getAllPages();
+  return pages.map((page) => ({ params: { section: page.section, slug: page.slug }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Page };
+const { Content, headings } = await render(page.entry);
+---
+
+<BaseLayout
+  title={`${page.title} - Init0 - ${site.title}`}
+  socialTitle={page.title}
+  description={page.summary || site.description}
+  keywords={page.tags.length ? page.tags.join(', ') : site.keywords}
+  path={page.url}
+  type="article"
+>
+  <div class="space-y-8">
+    <ArticleCard page={page} toc={buildToc(headings)}>
+      <Content />
+    </ArticleCard>
+    <Comments />
+  </div>
+</BaseLayout>

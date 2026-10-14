@@ -1,6 +1,0 @@
-<footer class="mt-12 mb-8 text-center text-gray-500 font-mono text-sm">
-    {{ $profile := .Site.Params.profile }}
-    {{ $matrixUrl := printf "https://matrix.to/#/%s" $profile.matrixId }}
-    <p>&copy; {{ now.Format "2006" }} {{ .Site.Params.author.name }} | <a href="mailto:{{ $profile.email }}" class="hover:text-gray-100 transition-colors">{{ $profile.email }}</a> | <a href="{{ $matrixUrl }}" class="hover:text-gray-100 transition-colors">{{ $profile.matrixId }}</a></p>
-    <p> Self-hosted on <a href="{{ $profile.statusPageBaseUrl }}" class="hover:text-gray-100 transition-colors">{{ $profile.infrastructureName }}</a></p>
-</footer>

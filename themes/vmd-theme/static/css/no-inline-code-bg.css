@@ -1,5 +1,0 @@
-/* Hide literal backticks in inline code blocks, but keep styling */
-.prose code:not(pre code)::before,
-.prose code:not(pre code)::after {
-    content: none !important;
-}

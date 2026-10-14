@@ -1,0 +1,55 @@
+---
+import { titleCase, truncate } from '../../lib/text';
+import type { Page } from '../../lib/content';
+
+interface Props {
+  posts: Page[];
+}
+
+const timelinePosts = Astro.props.posts.map((page) => ({
+  title: page.title,
+  url: page.url,
+  date: page.date.toISOString(),
+  summary: truncate(page.plain, 150),
+  tags: page.tags,
+  section: titleCase(page.section),
+}));
+const button =
+  'flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300 group';
+---
+
+<section class="mb-12">
+  <div class="card static-card">
+    <h2 class="text-3xl font-bold mb-12 text-gray-100 text-center">Recent Work</h2>
+    <div id="timeline-notice" class="max-w-3xl mx-auto"></div>
+    <div class="relative max-w-5xl mx-auto">
+      <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-zinc-500/40"></div>
+
+      <div id="timeline-container" class="space-y-12 md:space-y-0">
+        <div class="flex justify-center py-12">
+          <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-gray-700 border-t-zinc-200 rounded-full animate-spin"></div>
+            <p class="text-gray-400">Syncing history...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 pb-6">
+      <a href="/posts/" class={button}>
+        <i class="ri-article-line text-xl group-hover:scale-110 transition-transform"></i>
+        <span class="font-semibold">Show All Posts</span>
+      </a>
+      <a href="/projects/" class={button}>
+        <i class="ri-github-line text-xl group-hover:scale-110 transition-transform"></i>
+        <span class="font-semibold">Show All Projects</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script id="timeline-posts" type="application/json" is:inline set:html={JSON.stringify(timelinePosts)} />
+
+<script>
+  import '../../scripts/features/recent-work';
+</script>

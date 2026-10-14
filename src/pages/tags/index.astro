@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { site } from '../../config/site';
+import { getTags } from '../../lib/content';
+
+const tags = await getTags();
+---
+
+<BaseLayout title={`Tags - Init0 - ${site.title}`} socialTitle="Tags" path="/tags/">
+  <section class="card static-card">
+    <h2 class="text-2xl font-semibold mb-8 text-gray-100 text-center">#Tags</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {
+        tags.map((tag) => (
+          <PostCard href={`/tags/${tag.slug}/`} title={tag.name} meta={`${tag.pages.length} ${tag.pages.length === 1 ? 'post' : 'posts'}`} />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

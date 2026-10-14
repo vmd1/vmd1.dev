@@ -1,4 +1,0 @@
-{{ $isActive := eq .activeNavKey .key }}
-<a href="{{ .href }}" data-nav-key="{{ .key }}" class="navbar-anim-link{{ with .displayClass }} {{ . }}{{ end }} {{ if $isActive }}text-gray-100 font-bold{{ else }}text-gray-400 hover:text-gray-100{{ end }} transition-colors duration-200">
-    <span class="icon-label-group"><i class="{{ .icon }} {{ .iconSize | default "text-2xl" }}"></i><span class="{{ .labelClass }}">{{ .label }}</span></span>
-</a>

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+
+const link =
+  'inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-800 text-gray-200 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300';
+---
+
+<BaseLayout title={`404 Page Not Found - ${site.title}`} socialTitle="404 Page Not Found" path="/404.html" noindex>
+  <div class="flex items-center justify-center min-h-[55vh]">
+    <div class="card static-card text-center max-w-2xl w-full">
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">Error</p>
+      <h1 class="text-8xl sm:text-9xl font-extrabold text-gray-100 leading-none mb-2 select-none">404</h1>
+      <h2 class="text-2xl font-semibold text-gray-300 mb-4">Lost in the lab</h2>
+      <p class="text-gray-400 mb-2">That page doesn't exist, or it has moved.</p>
+      <p class="font-mono text-sm text-gray-500 mb-8 break-all">
+        <span id="missing-path"></span>
+      </p>
+
+      <div id="suggestions" class="hidden text-left mb-8">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-3">Maybe you were looking for</h3>
+        <ul id="suggestion-list" class="space-y-2"></ul>
+      </div>
+
+      <form action="/search/" method="get" class="search-glassbar relative max-w-md mx-auto mb-8">
+        <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-300/90"></i>
+        <input type="text" name="q" placeholder="Search posts..." autocomplete="off" required class="w-full text-gray-100 rounded-xl pl-10 pr-4 py-3 bg-transparent border-0 focus:outline-none placeholder-gray-400" />
+      </form>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <a href="/" class={link}><i class="ri-home-line"></i><span class="font-semibold">Go home</span></a>
+        <a href="/posts/" class={link}><i class="ri-article-line"></i><span class="font-semibold">Browse posts</span></a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import '../scripts/features/not-found';
+</script>

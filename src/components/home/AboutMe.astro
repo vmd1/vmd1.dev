@@ -1,0 +1,51 @@
+---
+import { profile } from '../../config/site';
+
+interface Props {
+  latestPostUrl?: string;
+}
+const { latestPostUrl } = Astro.props;
+
+const skills = [
+  { group: 'Languages & Web', items: ['Python', 'HTML', 'JavaScript', 'CSS', 'Bash'] },
+  { group: 'Infra & Ops', items: ['Git', 'Docker', 'Networking', 'Linux System Administration'] },
+  { group: 'Hardware & Platforms', items: ['Raspberry Pi', 'ESP32'] },
+];
+---
+
+<section class="card h-full">
+  <h2 class="text-2xl font-semibold mb-4 text-gray-100">Hi!</h2>
+  <div class="space-y-4 text-gray-400 leading-relaxed">
+    <p>{profile.aboutIntro}</p>
+    <p class="mt-4">{profile.aboutCurrent}</p>
+
+    <div class="pt-2">
+      <h3 class="text-lg font-semibold text-gray-200 mb-3">Skills</h3>
+      <div class="space-y-3">
+        {
+          skills.map(({ group, items }) => (
+            <div>
+              <p class="text-xs uppercase tracking-wider text-gray-500 mb-2">{group}</p>
+              <div class="flex flex-wrap gap-2">
+                {items.map((item) => (
+                  <span class="skill-chip px-3 py-1 rounded-full bg-zinc-900/70 border border-zinc-800 text-gray-200 text-sm">{item}</span>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      latestPostUrl && (
+        <div class="pt-4">
+          <a href={latestPostUrl} class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-800 text-gray-200 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300">
+            <span class="font-semibold">Read my latest post</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>

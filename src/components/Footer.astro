@@ -1,0 +1,14 @@
+---
+import { profile, site } from '../config/site';
+---
+
+<footer class="mt-12 mb-8 text-center text-gray-500 font-mono text-sm">
+  <p>
+    &copy; {new Date().getFullYear()} {site.author.name} |
+    <a href={`mailto:${profile.email}`} class="hover:text-gray-100 transition-colors">{profile.email}</a> |
+    <a href={`https://matrix.to/#/${profile.matrixId}`} class="hover:text-gray-100 transition-colors">{profile.matrixId}</a>
+  </p>
+  <p>
+    Self-hosted on <a href={profile.statusPageBaseUrl} class="hover:text-gray-100 transition-colors">{profile.infrastructureName}</a>
+  </p>
+</footer>

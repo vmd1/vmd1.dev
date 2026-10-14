@@ -1,0 +1,58 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import TocList from './TocList.astro';
+import { site } from '../config/site';
+import { formatDate } from '../lib/text';
+import { sectionTitle, type Page } from '../lib/content';
+import type { TocNode } from '../lib/toc';
+import { urlize } from '../lib/text';
+
+interface Props {
+  page: Page;
+  toc: TocNode[];
+}
+const { page, toc } = Astro.props;
+const showToc = page.entry.data.toc && toc.length > 0;
+---
+
+<article class="card static-card">
+  <Breadcrumbs trail={[{ label: sectionTitle(page.section), href: `/${page.section}/` }]} current={page.title} />
+
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-100 mb-2">{page.title}</h1>
+    <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
+      <span>{formatDate(page.date)}</span>
+      <span>·</span>
+      <span>{page.authors.length ? page.authors.join(', ') : site.author.name}</span>
+      {
+        page.tags.length > 0 && (
+          <span class="ml-2">
+            {page.tags.map((tag) => (
+              <a
+                href={`/tags/${urlize(tag)}/`}
+                class="inline-block bg-zinc-950/55 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 text-xs font-semibold text-gray-300 mr-2 transition-all duration-300 hover:bg-zinc-900/65 hover:border-white/20 hover:text-gray-100"
+              >
+                #{tag}
+              </a>
+            ))}
+          </span>
+        )
+      }
+    </div>
+  </header>
+
+  {
+    showToc && (
+      <div class="mb-8 p-4 bg-zinc-950 rounded-lg post-toc">
+        <h2 class="text-xl font-semibold text-gray-100 mb-2">Table of Contents</h2>
+        <nav aria-label="Table of contents">
+          <TocList nodes={toc} />
+        </nav>
+      </div>
+    )
+  }
+
+  <div class="prose prose-invert max-w-none post-content">
+    <slot />
+  </div>
+</article>

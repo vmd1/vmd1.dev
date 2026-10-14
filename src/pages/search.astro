@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout title={`Search Results - ${site.title}`} socialTitle="Search Results" path="/search/" noindex>
+  <div class="card static-card min-h-[60vh]">
+    <h1 class="text-3xl font-bold text-gray-100 mb-8">Search Results</h1>
+
+    <div id="search-results" class="space-y-6" data-search-index="/index.json">
+      <div class="text-center text-gray-400 py-12">
+        <i class="ri-loader-4-line text-4xl animate-spin mb-4 inline-block"></i>
+        <p>Searching...</p>
+      </div>
+    </div>
+
+    <template id="search-result-template">
+      <a href="" class="block p-6 bg-zinc-950/50 rounded-lg hover:bg-zinc-900 transition-colors duration-200 border border-zinc-800">
+        <h3 class="text-xl font-bold text-gray-100 mb-2 result-title"></h3>
+        <div class="text-sm text-gray-500 mb-2 result-date"></div>
+        <p class="text-gray-400 text-sm result-summary"></p>
+      </a>
+    </template>
+  </div>
+</BaseLayout>
+
+<script>
+  import '../scripts/features/search';
+</script>

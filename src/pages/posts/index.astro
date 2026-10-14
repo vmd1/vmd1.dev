@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { site } from '../../config/site';
+import { getPostPages } from '../../lib/content';
+
+const posts = await getPostPages();
+---
+
+<BaseLayout title={`All Posts - Init0 - ${site.title}`} socialTitle="All Posts" path="/posts/" activeNav="posts">
+  <div class="card static-card p-8">
+    <header class="mb-8 text-center">
+      <h2 class="text-2xl font-semibold text-gray-100">All Posts</h2>
+    </header>
+
+    <div class="flex justify-center mb-8">
+      <a href="/archive/" class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-800 text-gray-200 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300">
+        <i class="ri-archive-line text-lg"></i>
+        <span class="font-semibold">Open Archive</span>
+      </a>
+    </div>
+
+    <div class="mb-8 border-b border-gray-700"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {posts.map((page) => <PostCard href={page.url} title={page.title} summary={page.summary} date={page.date} />)}
+    </div>
+  </div>
+</BaseLayout>
