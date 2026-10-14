@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { site } from '../../config/site';
+import { noindexSections, site } from '../../config/site';
 import { getAllPages, getListedPages, sectionTitle, type Page } from '../../lib/content';
 
 export const getStaticPaths = (async () => {
@@ -18,7 +18,7 @@ const { section, pages } = Astro.props as { section: string; pages: Page[] };
 const title = sectionTitle(section);
 ---
 
-<BaseLayout title={`${title} - Init0 - ${site.title}`} socialTitle={title} path={`/${section}/`}>
+<BaseLayout title={`${title} - Init0 - ${site.title}`} socialTitle={title} path={`/${section}/`} noindex={(noindexSections as readonly string[]).includes(section)}>
   <section class="card static-card">
     <h2 class="text-2xl font-semibold mb-8 text-gray-100 text-center">#{title}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

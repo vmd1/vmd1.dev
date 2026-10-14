@@ -4,7 +4,7 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import Comments from '../../components/Comments.astro';
-import { site } from '../../config/site';
+import { noindexSections, site } from '../../config/site';
 import { getAllPages, type Page } from '../../lib/content';
 import { buildToc } from '../../lib/toc';
 
@@ -24,6 +24,7 @@ const { Content, headings } = await render(page.entry);
   keywords={page.tags.length ? page.tags.join(', ') : site.keywords}
   path={page.url}
   type="article"
+  noindex={(noindexSections as readonly string[]).includes(page.section)}
 >
   <div class="space-y-8">
     <ArticleCard page={page} toc={buildToc(headings)}>
