@@ -1,5 +1,5 @@
 baseURL: 'https://vmd1.dev/'
-#relativeURLs: false
+relativeURLs: true
 #canonifyURLs: true
 languageCode: 'en-us'
 title: 'vmd1'
