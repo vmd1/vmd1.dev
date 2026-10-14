@@ -4,7 +4,6 @@ import { ClientRouter } from 'astro:transitions';
 import SeoHead from '../components/SeoHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ScrollRuler from '../components/ScrollRuler.astro';
 import { site, type NavKey } from '../config/site';
 
 interface Props {
@@ -43,11 +42,10 @@ const { activeNav, ...seo } = Astro.props;
     <div id="reading-progress" transition:persist class="fixed top-0 left-0 h-1 bg-linear-to-r from-zinc-200 to-zinc-500 z-[100] transition-all duration-100" style="width: 0%"></div>
     <div id="particles-js" transition:persist aria-hidden="true"></div>
     <div id="background-logo" aria-hidden="true"></div>
-    <ScrollRuler />
 
     <div class="container mx-auto px-4 py-8 max-w-5xl">
       <Header active={activeNav} />
-      <main id="main">
+      <main>
         <slot />
       </main>
       <Footer />

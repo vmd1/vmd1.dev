@@ -18,7 +18,7 @@ npm run check    # type-check .astro and .ts files
 | `src/lib/` | Build-time helpers: content queries (`content.ts`), text utilities, feeds, table of contents, the code-block rehype plugin. |
 | `src/pages/` | Routes, including the RSS feeds, `index.json` search index, sitemap and robots.txt. |
 | `src/components/`, `src/layouts/` | UI. |
-| `src/scripts/` | Browser code. `ui/` is page chrome (header, ruler, tilt, lightbox, code copy), `features/` is one module per page feature (search, scripts library, projects, home widgets); each is imported by the component or page that needs it. |
+| `src/scripts/` | Browser code. `ui/` is page chrome (header, tilt, lightbox, code copy), `features/` is one module per page feature (search, scripts library, projects, home widgets); each is imported by the component or page that needs it. |
 | `src/styles/global.css` | Design tokens and the few custom styles that Tailwind utilities do not cover. |
 | `public/` | Files served as-is. `css/authentik.css` and `css/uptime-kuma.css` are loaded by those external services. |
 
