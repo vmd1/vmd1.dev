@@ -10,6 +10,11 @@
 
 @theme {
   --font-sans: 'Inter', sans-serif;
+
+  /* Text colour scale. Headings use text-gray-100; everything else uses one of these. */
+  --color-body: var(--color-gray-300); /* paragraphs, descriptions, summaries */
+  --color-meta: var(--color-gray-400); /* dates, authors, labels, breadcrumbs */
+  --color-muted: var(--color-gray-500); /* placeholders, loading text, footer */
 }
 
 /* Design tokens ------------------------------------------------------------ */
@@ -35,8 +40,6 @@
   --shadow-card-hover: 0 10px 28px 0 rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   --shadow-glass: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --shadow-glass-hover: 0 14px 34px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  --shadow-chip: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-chip-hover: 0 6px 16px rgba(255, 255, 255, 0.12);
 }
 
 /* Tailwind v3 defaults this site was designed against. */
@@ -200,18 +203,6 @@
   }
 
   /* Home ----------------------------------------------------------------- */
-  .skill-chip {
-    display: inline-flex;
-    align-items: center;
-    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: var(--shadow-chip);
-  }
-  .skill-chip:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-chip-hover);
-  }
-
   .random-project-dice {
     display: inline-block;
     font-size: 0.9rem;
@@ -219,13 +210,6 @@
   }
   .random-project-dice.rolling {
     animation: random-dice-roll 360ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .contribution-graph-card {
-    width: 100%;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    background: transparent;
   }
 
   @media (min-width: 768px) {

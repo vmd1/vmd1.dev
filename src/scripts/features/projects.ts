@@ -15,12 +15,12 @@ function projectCard(repo: Repo): string {
       <div class="flex items-start justify-between gap-4">
         <div>
           <h2 class="text-xl font-semibold text-gray-100">${escapeHtml(repo.name)}</h2>
-          <p class="mt-1 text-sm text-gray-500">${escapeHtml(repo.full_name)}</p>
+          <p class="mt-1 text-sm text-meta">${escapeHtml(repo.full_name)}</p>
         </div>
-        <i class="ri-external-link-line text-lg text-gray-500 transition-colors group-hover:text-gray-100"></i>
+        <i class="ri-external-link-line text-lg text-muted transition-colors group-hover:text-gray-100"></i>
       </div>
-      <p class="mt-4 text-sm leading-relaxed text-gray-300/90">${escapeHtml(repo.description || 'No description available.')}</p>
-      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs text-gray-400">
+      <p class="mt-4 text-sm leading-relaxed text-body">${escapeHtml(repo.description || 'No description available.')}</p>
+      <div class="mt-5 flex flex-wrap items-center gap-2 text-xs text-meta">
         ${repo.language ? chip(escapeHtml(repo.language), 'bg-white/5 text-gray-200') : ''}
         ${chip(`<i class="ri-star-line"></i>${repo.stargazers_count}`)}
         ${chip(`<i class="ri-git-repository-commits-line"></i>${repo.forks_count}`)}
@@ -42,7 +42,7 @@ onPageLoad(async () => {
     status?.remove();
     grid.innerHTML = repos.length
       ? repos.map(projectCard).join('')
-      : '<p class="text-gray-400">No repositories found.</p>';
+      : '<p class="text-body">No repositories found.</p>';
   } catch (error) {
     console.error('Error loading projects:', error);
     if (status) {

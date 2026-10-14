@@ -7,13 +7,13 @@ import { profile, site } from '../../config/site';
   <div class="card static-card min-h-[60vh] space-y-8">
     <header class="flex flex-col items-center gap-4 border-b border-gray-700 pb-6 text-center">
       <h1 class="text-3xl font-bold text-gray-100">Projects</h1>
-      <a href={`https://github.com/${profile.githubUsername}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-100 transition-colors">
+      <a href={`https://github.com/${profile.githubUsername}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm text-meta hover:text-gray-100 transition-colors">
         <i class="ri-github-line text-lg"></i>
         <span>View on GitHub</span>
       </a>
     </header>
 
-    <div id="projects-status" class="rounded-xl border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-sm text-gray-400">
+    <div id="projects-status" class="rounded-xl border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-sm text-meta">
       Loading GitHub repositories...
     </div>
     <div id="projects-grid" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"></div>

@@ -14,7 +14,7 @@ interface SearchEntry {
 
 const dateFormat = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-function message(container: HTMLElement, text: string, className = 'text-gray-400'): void {
+function message(container: HTMLElement, text: string, className = 'text-body'): void {
   const p = document.createElement('p');
   p.className = className;
   p.textContent = text;

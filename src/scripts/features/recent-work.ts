@@ -89,10 +89,10 @@ function card(item: TimelineItem): string {
     <a href="${escapeHtml(item.link)}"${external} class="block card p-6 rounded-2xl bg-zinc-950/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-900/65 hover:border-white/20 hover:shadow-2xl hover:shadow-black/40 group decoration-0">
       <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-200 mb-3">${escapeHtml(monthDay.format(item.date))} · ${escapeHtml(item.type)}</span>
       <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-gray-100 transition-colors">${escapeHtml(item.title)}</h3>
-      <p class="text-gray-300/90 text-sm text-truncate-3 leading-relaxed mb-4">${escapeHtml(truncate(item.description, 150))}</p>
+      <p class="text-body text-sm text-truncate-3 leading-relaxed mb-4">${escapeHtml(truncate(item.description, 150))}</p>
       <div class="flex items-end justify-between gap-3">
         <div class="flex flex-wrap gap-2">${techStack(item)}</div>
-        <div class="flex items-center text-gray-400 text-[11px] font-mono shrink-0 ml-2">
+        <div class="flex items-center text-meta text-[11px] font-mono shrink-0 ml-2">
           <span class="flex items-center gap-1 mr-2">${stars}</span>
           <i class="${item.icon} text-lg text-gray-300/70"></i>
         </div>

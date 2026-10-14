@@ -20,7 +20,7 @@ const showToc = page.entry.data.toc && toc.length > 0;
 
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-gray-100 mb-2">{page.title}</h1>
-    <div class="text-gray-400 text-sm flex flex-wrap items-center gap-x-2">
+    <div class="text-meta text-sm flex flex-wrap items-center gap-x-2">
       <span>{formatDate(page.date)}</span>
       <span>·</span>
       <span>{page.authors.length ? page.authors.join(', ') : site.author.name}</span>

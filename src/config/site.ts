@@ -54,7 +54,6 @@ export const noindexSections = ['testing', 'white-hat'] as const;
 export const nav = [
   { key: 'home', href: '/', label: 'Home', icon: 'ri-home-line', overflow: false },
   { key: 'posts', href: '/posts/', label: 'Posts', icon: 'ri-article-line', overflow: false },
-  { key: 'scripts', href: '/scripts/', label: 'Scripts', icon: 'ri-terminal-box-line', overflow: true },
   { key: 'projects', href: '/projects/', label: 'Projects', icon: 'ri-function-line', overflow: true },
 ] as const;
 

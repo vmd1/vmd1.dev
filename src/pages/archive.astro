@@ -34,14 +34,14 @@ const authorOf = (page: Page) => (page.authors.length ? page.authors.join(', ') 
           <div>
             <h2 class="text-2xl font-bold text-gray-200 mb-6 flex items-start">
               {year}
-              <span class="text-sm text-gray-500 ml-2 font-normal relative -top-1">{count}</span>
+              <span class="text-sm text-muted ml-2 font-normal relative -top-1">{count}</span>
             </h2>
             <div class="space-y-8 ml-2 md:ml-4 border-l-2 border-gray-800 pl-4 md:pl-6">
               {months.map(({ month, pages }) => (
                 <div>
                   <h3 class="text-xl font-semibold text-gray-300 mb-4 flex items-start">
                     {month}
-                    <span class="text-xs text-gray-500 ml-2 font-normal relative -top-1">{pages.length}</span>
+                    <span class="text-xs text-muted ml-2 font-normal relative -top-1">{pages.length}</span>
                   </h3>
                   <div class="space-y-6">
                     {pages.map((page) => (
@@ -49,7 +49,7 @@ const authorOf = (page: Page) => (page.authors.length ? page.authors.join(', ') 
                         <a href={page.url} class="block">
                           <h4 class="text-lg font-medium text-gray-100 group-hover:text-[var(--primary-color)] transition-colors">{page.title}</h4>
                         </a>
-                        <div class="text-sm text-gray-500 mt-1 flex flex-wrap items-center gap-x-2">
+                        <div class="text-sm text-meta mt-1 flex flex-wrap items-center gap-x-2">
                           <span>{formatDate(page.date)}</span><span>·</span>
                           <span>{page.readingMinutes} min</span><span>·</span>
                           <span>{page.wordCount} words</span><span>·</span>

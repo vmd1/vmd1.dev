@@ -8,7 +8,7 @@ import { site } from '../config/site';
     <h1 class="text-3xl font-bold text-gray-100 mb-8">Search Results</h1>
 
     <div id="search-results" class="space-y-6" data-search-index="/index.json">
-      <div class="text-center text-gray-400 py-12">
+      <div class="text-center text-muted py-12">
         <i class="ri-loader-4-line text-4xl animate-spin mb-4 inline-block"></i>
         <p>Searching...</p>
       </div>
@@ -17,8 +17,8 @@ import { site } from '../config/site';
     <template id="search-result-template">
       <a href="" class="block p-6 bg-zinc-950/50 rounded-lg hover:bg-zinc-900 transition-colors duration-200 border border-zinc-800">
         <h3 class="text-xl font-bold text-gray-100 mb-2 result-title"></h3>
-        <div class="text-sm text-gray-500 mb-2 result-date"></div>
-        <p class="text-gray-400 text-sm result-summary"></p>
+        <div class="text-sm text-meta mb-2 result-date"></div>
+        <p class="text-body text-sm result-summary"></p>
       </a>
     </template>
   </div>

@@ -9,16 +9,16 @@ const link =
 <BaseLayout title={`404 Page Not Found - ${site.title}`} socialTitle="404 Page Not Found" path="/404.html" noindex>
   <div class="flex items-center justify-center min-h-[55vh]">
     <div class="card static-card text-center max-w-2xl w-full">
-      <p class="font-mono text-xs uppercase tracking-[0.3em] text-gray-500 mb-4">Error</p>
+      <p class="font-mono text-xs uppercase tracking-[0.3em] text-meta mb-4">Error</p>
       <h1 class="text-8xl sm:text-9xl font-extrabold text-gray-100 leading-none mb-2 select-none">404</h1>
       <h2 class="text-2xl font-semibold text-gray-300 mb-4">Lost in the lab</h2>
-      <p class="text-gray-400 mb-2">That page doesn't exist, or it has moved.</p>
-      <p class="font-mono text-sm text-gray-500 mb-8 break-all">
+      <p class="text-body mb-2">That page doesn't exist, or it has moved.</p>
+      <p class="font-mono text-sm text-meta mb-8 break-all">
         <span id="missing-path"></span>
       </p>
 
       <div id="suggestions" class="hidden text-left mb-8">
-        <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-3">Maybe you were looking for</h3>
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-meta mb-3">Maybe you were looking for</h3>
         <ul id="suggestion-list" class="space-y-2"></ul>
       </div>
 
