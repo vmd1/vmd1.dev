@@ -203,15 +203,6 @@
   }
 
   /* Home ----------------------------------------------------------------- */
-  .random-project-dice {
-    display: inline-block;
-    font-size: 0.9rem;
-    line-height: 1;
-  }
-  .random-project-dice.rolling {
-    animation: random-dice-roll 360ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
   @media (min-width: 768px) {
     .timeline-row:not(:first-child) {
       margin-top: -1.25rem;
@@ -471,11 +462,4 @@
 .post-toc nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.24);
   border-radius: 999px;
-}
-
-@keyframes random-dice-roll {
-  0% { transform: rotate(0deg) scale(1); }
-  35% { transform: rotate(-18deg) scale(1.05); }
-  65% { transform: rotate(16deg) scale(1.05); }
-  100% { transform: rotate(0deg) scale(1); }
 }
