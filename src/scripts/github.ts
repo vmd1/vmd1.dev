@@ -102,5 +102,10 @@ export const githubUrls = {
   ownRepos: (user: string, perPage = 100) => `${API}/users/${user}/repos?sort=pushed&per_page=${perPage}`,
   starred: (user: string) => `${API}/users/${user}/starred?per_page=100`,
   events: (user: string) => `${API}/users/${user}/events?per_page=100`,
+  orgs: (user: string) => `${API}/users/${user}/orgs`,
+  orgRepos: (org: string) => `${API}/orgs/${org}/repos?type=public&sort=pushed&per_page=100`,
+  /** Commits authored by `user` in any public repository, including ones they only contribute to. */
+  authoredCommits: (user: string, perPage = 20) =>
+    `${API}/search/commits?q=author:${user}&sort=author-date&order=desc&per_page=${perPage}`,
   commits: (fullName: string, user: string) => `${API}/repos/${fullName}/commits?author=${user}&per_page=3`,
 };

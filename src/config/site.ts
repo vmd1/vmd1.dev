@@ -23,13 +23,10 @@ export const profile = {
   infrastructureName: 'vmd1 Infrastructure',
   scriptsBaseUrl: 'https://sc.vmd1.dev',
   scriptsIndexUrl: 'https://raw.githubusercontent.com/vmd1/scripts/refs/heads/main/scripts.json',
-  whatsOnMarkdownUrl: 'https://raw.githubusercontent.com/vmd1/vmd1/refs/heads/main/whats-on.md',
   excludedRepositories: ['vmd1/vmd1.dev', 'vmd1/polytrack'],
   contributionGraphLabel: "Vivaan's contribution graph",
   aboutIntro:
-    "I'm Vivaan, a teen dev who builds secure, self-hosted systems, and breaks them (ethically) for fun. This is my portfolio page where I dump my projects, write-ups, and blog posts about what I'm learning along the way.",
-  aboutCurrent:
-    "Right now, I'm working on a few open-source projects - mostly related to security tools and automation. I love digging into code, figuring out how stuff works under the hood, and then building (or breaking) things just to see what happens.",
+    "I'm Vivaan, a dev who builds secure, self-hosted systems, and breaks them (ethically) for fun. This is my portfolio page where I dump my projects, write-ups, and blog posts about what I'm learning along the way.",
 } as const;
 
 export const giscus = {

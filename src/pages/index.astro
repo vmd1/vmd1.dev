@@ -10,9 +10,9 @@ const posts = await getPostPages();
 ---
 
 <BaseLayout title={site.title} path="/" activeNav="home">
-  <div class="flex flex-col md:flex-row gap-8 mb-8">
-    <div class="w-full md:w-1/2"><AboutMe latestPostUrl={posts[0]?.url} /></div>
-    <div class="w-full md:w-1/2"><WhatsOn /></div>
+  <div class="grid gap-8 mb-8 md:grid-cols-2 md:items-stretch">
+    <AboutMe latestPost={posts[0]} />
+    <WhatsOn />
   </div>
-  <RecentWork posts={posts.slice(0, 6)} />
+  <RecentWork posts={posts.slice(0, 4)} />
 </BaseLayout>

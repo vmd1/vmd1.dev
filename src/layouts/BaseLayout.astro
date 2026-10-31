@@ -33,6 +33,11 @@ const { activeNav, ...seo } = Astro.props;
       gtag('js', new Date());
       gtag('config', id);
     </script>
+    <script is:inline>
+      // Scroll-reveal start states only apply once this flag is set, so content never stays hidden without JS.
+      document.documentElement.classList.add('js');
+      document.addEventListener('astro:after-swap', () => document.documentElement.classList.add('js'));
+    </script>
     <SeoHead {...seo} />
     <link rel="preconnect" href="https://giscus.app" crossorigin />
     <link rel="preconnect" href="https://github.com" crossorigin />
@@ -59,4 +64,5 @@ const { activeNav, ...seo } = Astro.props;
   import '../scripts/ui/tilt';
   import '../scripts/ui/lightbox';
   import '../scripts/ui/code-copy';
+  import '../scripts/ui/motion';
 </script>

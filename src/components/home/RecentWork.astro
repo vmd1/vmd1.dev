@@ -18,12 +18,13 @@ const button =
   'flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900/50 hover:bg-zinc-800 hover:text-gray-100 border border-zinc-800 hover:border-white/20 transition-all duration-300 group';
 ---
 
-<section class="mb-12">
+<section class="mb-12" data-rise style="--i:4">
   <div class="card static-card">
     <h2 class="text-3xl font-bold mb-12 text-gray-100 text-center">Recent Work</h2>
     <div id="timeline-notice" class="max-w-3xl mx-auto"></div>
     <div class="relative max-w-5xl mx-auto">
-      <div id="timeline-line" class="hidden absolute left-1/2 transform -translate-x-1/2 w-px h-full bg-zinc-500/40"></div>
+      <div id="timeline-line" class="hidden absolute left-1/2 -translate-x-1/2 top-0 w-px h-full bg-white"></div>
+      <div class="hidden md:flex justify-center mb-8" aria-hidden="true"><span class="tl-dot tl-dot-start is-in"></span></div>
 
       <div id="timeline-container" class="space-y-12 md:space-y-0">
         <div class="flex justify-center py-12">
@@ -35,14 +36,16 @@ const button =
       </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12 pb-6">
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-14 pb-2">
       <a href="/posts/" class={button}>
         <i class="ri-article-line text-xl group-hover:scale-110 transition-transform"></i>
         <span class="font-semibold">Show All Posts</span>
+        <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </a>
       <a href="/projects/" class={button}>
         <i class="ri-github-line text-xl group-hover:scale-110 transition-transform"></i>
         <span class="font-semibold">Show All Projects</span>
+        <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </a>
     </div>
   </div>

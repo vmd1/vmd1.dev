@@ -23,7 +23,7 @@ function closeMenus(except?: string): void {
 document.addEventListener('click', (event) => {
   const target = event.target as Element;
 
-  if (target.closest('#search-toggle')) {
+  if (target.closest('#search-toggle, [data-search-toggle]')) {
     const isOpen = $('#search-container')?.classList.contains('search-open');
     setSearchOpen(!isOpen);
     if (!isOpen) closeMenus();

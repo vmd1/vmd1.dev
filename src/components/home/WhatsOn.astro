@@ -1,22 +1,14 @@
-<section class="card h-full">
-  <h2 class="text-2xl font-semibold mb-4 text-gray-100">What's up?</h2>
-  <div id="whats-on-content" class="prose prose-invert text-body leading-relaxed">
-    <p class="text-muted">Loading updates...</p>
-  </div>
+<section class="card h-full flex flex-col" data-rise style="--i:1">
+  <h2 class="text-3xl font-bold mb-1 text-gray-100">Recent Activity</h2>
+  <p id="activity-today" class="text-sm text-meta mb-6">Activity today: loading...</p>
 
-  <div class="mt-6 pt-4 border-t border-white/10 space-y-4 text-body">
-    <div class="flex items-center justify-between">
-      <h3 class="text-lg font-semibold text-gray-100">GitHub Activity</h3>
-      <span id="activity-today" class="text-sm text-meta">Activity today: loading...</span>
-    </div>
-
+  <div class="text-body">
     <div>
       <h4 class="text-sm font-semibold uppercase tracking-wide text-meta mb-2">Last 3 commits</h4>
       <ul id="recent-commits" class="space-y-2 text-sm text-body">
         <li class="text-muted">Loading commits...</li>
       </ul>
     </div>
-
 
   </div>
 </section>

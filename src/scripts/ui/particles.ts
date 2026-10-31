@@ -11,7 +11,7 @@ declare global {
 
 const config = {
   particles: {
-    number: { value: 130, density: { enable: true, value_area: 900 } },
+    number: { value: window.matchMedia('(max-width: 768px)').matches ? 70 : 130, density: { enable: true, value_area: 900 } },
     color: { value: ['#D8C2FF', '#F5A8E6', '#FFC3D2', '#B7C8FF'] },
     shape: { type: 'circle' },
     opacity: { value: 0.42, random: true },
@@ -45,6 +45,8 @@ let started = false;
 document.addEventListener('astro:page-load', async () => {
   if (started) return;
   started = true;
+  // The backdrop is pure decoration: skip it entirely for people who ask for less motion.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   try {
     await loadLibrary();
     window.particlesJS?.('particles-js', config);

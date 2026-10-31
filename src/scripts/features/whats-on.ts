@@ -1,8 +1,7 @@
-/** Home "What's up?" card: status markdown, today's activity, recent commits */
-import { marked } from 'marked';
+/** Home "What's up?" card: today's GitHub activity and recent commits */
 import { profile } from '../../config/site';
 import { escapeHtml } from '../../lib/text';
-import { fetchGitHub, githubUrls, type Repo } from '../github';
+import { fetchGitHub, githubUrls } from '../github';
 import { onPageLoad } from '../lifecycle';
 
 interface GitHubEvent {
@@ -13,33 +12,30 @@ interface GitHubEvent {
 interface GitHubCommit {
   sha: string;
   html_url?: string;
-  url?: string;
   commit?: { message?: string; author?: { date: string } };
+  repository?: { full_name: string };
 }
 
 const MINUTE = 60 * 1000;
+const relative = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+function timeAgo(iso: string | undefined): string {
+  const then = iso ? Date.parse(iso) : NaN;
+  if (Number.isNaN(then)) return '';
+  const minutes = Math.round((then - Date.now()) / MINUTE);
+  if (Math.abs(minutes) < 60) return relative.format(minutes, 'minute');
+  const hours = Math.round(minutes / 60);
+  if (Math.abs(hours) < 48) return relative.format(hours, 'hour');
+  return relative.format(Math.round(hours / 24), 'day');
+}
 
 onPageLoad(async () => {
-  const content = document.getElementById('whats-on-content');
   const activity = document.getElementById('activity-today');
   const commitsList = document.getElementById('recent-commits');
-  if (!content || !activity || !commitsList) return;
+  if (!activity || !commitsList) return;
 
   const user = profile.githubUsername;
   const excluded: readonly string[] = profile.excludedRepositories;
-
-  // Status markdown and GitHub activity load independently.
-  const loadStatus = async () => {
-    try {
-      const { data } = await fetchGitHub<string>(profile.whatsOnMarkdownUrl, {
-        responseType: 'text',
-        ttlMs: 5 * MINUTE,
-      });
-      content.innerHTML = await marked.parse(data || 'No updates yet.');
-    } catch {
-      content.innerHTML = '<p class="text-muted">Couldn\'t load status updates right now.</p>';
-    }
-  };
 
   const loadActivity = async () => {
     try {
@@ -47,29 +43,21 @@ onPageLoad(async () => {
       const today = new Date().toISOString().slice(0, 10);
       activity.textContent = `Activity today: ${events.filter((e) => e.created_at?.startsWith(today)).length} events`;
 
-      const { data: repos } = await fetchGitHub<Repo[]>(githubUrls.ownRepos(user, 6), { ttlMs: 10 * MINUTE });
-      const perRepo = await Promise.all(
-        repos.map((repo) =>
-          fetchGitHub<GitHubCommit[]>(githubUrls.commits(repo.full_name, user), { ttlMs: 5 * MINUTE })
-            .then(({ data }) => data.map((commit) => ({ commit, repo: repo.full_name })))
-            .catch(() => []),
-        ),
-      );
-
-      const seen = new Set<string>();
-      const latest = perRepo
-        .flat()
-        .filter(({ commit, repo }) => commit.sha && commit.commit?.author && !excluded.includes(repo))
-        .sort((a, b) => Date.parse(b.commit.commit!.author!.date) - Date.parse(a.commit.commit!.author!.date))
-        .filter(({ commit }) => !seen.has(commit.sha) && seen.add(commit.sha))
-        .slice(0, 3);
+      const { data: found } = await fetchGitHub<{ items: GitHubCommit[] }>(githubUrls.authoredCommits(user), {
+        ttlMs: 5 * MINUTE,
+      });
+      const latest = found.items
+        .filter((commit) => commit.sha && commit.repository && !excluded.includes(commit.repository.full_name))
+        .slice(0, 3)
+        .map((commit) => ({ commit, repo: commit.repository!.full_name }));
 
       commitsList.innerHTML = latest.length
         ? latest
-            .map(({ commit, repo }) => {
+            .map(({ commit, repo }, index) => {
               const message = (commit.commit?.message || 'Commit').split('\n')[0];
               const url = commit.html_url || `https://github.com/${repo}/commit/${commit.sha}`;
-              return `<li class="leading-relaxed"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="text-body hover:text-gray-100">${escapeHtml(message)}</a><span class="text-muted"> · ${escapeHtml(repo)}</span></li>`;
+              const ago = timeAgo(commit.commit?.author?.date);
+              return `<li class="leading-relaxed" data-rise style="--i:${index + 4}"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="text-body hover:text-gray-100 transition-colors">${escapeHtml(message)}</a><span class="text-muted"> · ${escapeHtml(repo)}${ago ? ` · ${escapeHtml(ago)}` : ''}</span></li>`;
             })
             .join('')
         : '<li class="text-muted">No recent public commits found.</li>';
@@ -79,5 +67,5 @@ onPageLoad(async () => {
     }
   };
 
-  await Promise.all([loadStatus(), loadActivity()]);
+  await loadActivity();
 });
