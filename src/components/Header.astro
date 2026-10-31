@@ -12,20 +12,23 @@ const socials = [
   { href: `mailto:${profile.email}`, icon: 'ri-mail-line', variant: 'mail' },
   { href: `https://matrix.to/#/${profile.matrixId}`, icon: 'ri-chat-1-line', variant: 'matrix', title: 'Matrix' },
 ];
-const overflowNav = nav.filter((item) => item.overflow);
+// Everything except Home can live in the "more" menu. Items that normally sit in the bar are
+// only listed there on very thin phones (under 360px), where the bar has no room for them.
+const overflowNav = nav.filter((item) => item.key !== 'home');
+const THIN = 'max-[359px]:hidden';
 const linkClass = (key: string) =>
   `navbar-anim-link transition-colors duration-200 ${key === active ? 'text-gray-100 font-bold' : 'text-gray-400 hover:text-gray-100'}`;
 const flyout =
   'hidden absolute right-0 top-full mt-2 p-4 bg-zinc-950/95 backdrop-blur-xl rounded-lg border border-zinc-800 shadow-xl z-50 w-48';
 ---
 
-<header class="flex flex-col sm:flex-row justify-between items-center card navbar-card relative">
-  <a href="/" class="flex items-center">
-    <img src={profile.logoUrl} alt={profile.logoAlt} class="w-12 h-12 mr-4 rounded-full" />
-    <h1 class="text-4xl font-extrabold text-gray-100">{site.title}</h1>
+<header class="flex flex-row justify-between items-center gap-2 card navbar-card relative">
+  <a href="/" class="flex items-center shrink-0">
+    <img src={profile.logoUrl} alt={profile.logoAlt} class="w-8 h-8 mr-2 max-[359px]:hidden sm:w-12 sm:h-12 sm:mr-4 rounded-full" />
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-100">{site.title}</h1>
   </a>
 
-  <div class="flex items-center space-x-4 mt-4 sm:mt-0">
+  <div class="flex items-center space-x-2 sm:space-x-4">
     <nav class="flex navbar-gap items-center">
       {
         nav.map((item) => (
@@ -33,7 +36,7 @@ const flyout =
             href={item.href}
             data-nav-key={item.key}
             aria-current={item.key === active ? 'page' : undefined}
-            class:list={[linkClass(item.key), item.overflow && 'hidden sm:flex']}
+            class:list={[linkClass(item.key), item.overflow ? 'hidden sm:flex' : item.key !== 'home' && THIN]}
           >
             <span class="icon-label-group">
               <i class={`${item.icon} text-2xl`} />
@@ -51,7 +54,7 @@ const flyout =
           <div class="flex flex-col space-y-2">
             {
               overflowNav.map((item) => (
-                <a href={item.href} data-nav-key={item.key} aria-current={item.key === active ? 'page' : undefined} class={linkClass(item.key)}>
+                <a href={item.href} data-nav-key={item.key} aria-current={item.key === active ? 'page' : undefined} class:list={[linkClass(item.key), !item.overflow && 'min-[360px]:hidden']}>
                   <span class="icon-label-group">
                     <i class={`${item.icon} text-xl`} />
                     <span class="nav-label ml-2">{item.label}</span>
@@ -59,11 +62,17 @@ const flyout =
                 </a>
               ))
             }
+            <button type="button" data-search-toggle class:list={[linkClass('search'), 'min-[360px]:hidden focus:outline-none']}>
+              <span class="icon-label-group">
+                <i class="ri-search-line text-xl"></i>
+                <span class="nav-label ml-2">Search</span>
+              </span>
+            </button>
           </div>
         </div>
       </div>
 
-      <button id="search-toggle" class="navbar-anim-link text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
+      <button id="search-toggle" class="navbar-anim-link max-[359px]:hidden text-gray-400 hover:text-gray-100 transition-colors duration-200 focus:outline-none">
         <span class="icon-label-group">
           <i class="ri-search-line text-2xl"></i><span class="nav-label hidden sm:inline">Search</span>
         </span>

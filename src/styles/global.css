@@ -121,12 +121,22 @@
     margin-bottom: 2rem;
     margin-top: 1rem;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
+  }
+  @media (min-width: 640px) {
+    .navbar-card {
+      padding: 1.5rem;
+    }
   }
 
   /* Navbar --------------------------------------------------------------- */
   .navbar-gap > *:not(:last-child) {
-    margin-right: 0.4rem;
+    margin-right: 0.1rem;
+  }
+  @media (min-width: 640px) {
+    .navbar-gap > *:not(:last-child) {
+      margin-right: 0.4rem;
+    }
   }
   .navbar-anim-link {
     position: relative;
@@ -200,6 +210,158 @@
   }
   .social-link.mail:hover i {
     color: #daa520;
+  }
+
+  /* Motion --------------------------------------------------------------- */
+  :root {
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes dot-pop {
+    0% {
+      transform: scale(0);
+    }
+    70% {
+      transform: scale(1.35);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes ping {
+    from {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(3.2);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    /* Page-load entrance, staggered by --i. Not gated on JS, so it can never leave content hidden. */
+    [data-rise] {
+      animation: rise 0.8s var(--ease) backwards;
+      animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+    }
+
+    /* Scroll reveals: hidden only while the page is waiting for the observer (needs html.js). */
+    html.js [data-reveal] {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      transition-delay: var(--d, 0ms);
+    }
+    html.js [data-reveal='left'] {
+      transform: translate3d(-56px, 0, 0);
+    }
+    html.js [data-reveal='right'] {
+      transform: translate3d(56px, 0, 0);
+    }
+    html.js [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    @media (max-width: 767px) {
+      html.js [data-reveal='left'],
+      html.js [data-reveal='right'] {
+        transform: translate3d(0, 28px, 0);
+      }
+    }
+
+    .timeline-row.is-in .tl-dot {
+      animation: dot-pop 0.6s var(--ease) 0.25s both;
+    }
+    .timeline-row.is-in .tl-dot::after {
+      animation: ping 1.4s ease-out 0.5s 1 both;
+    }
+    .timeline-row.is-in .tl-link {
+      transform: scaleX(1);
+    }
+    .tl-dot-start::after {
+      animation: ping 2.4s ease-out infinite;
+    }
+  }
+
+  /* Buttons give press feedback --------------------------------------------- */
+  .group:active {
+    transform: scale(0.98);
+  }
+
+  /* Timeline -------------------------------------------------------------- */
+  .tl-dot {
+    position: relative;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 9999px;
+    background: #d4d4d8;
+    box-shadow: 0 0 0 4px rgb(9 9 11 / 0.9);
+  }
+  .tl-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #d4d4d8;
+    opacity: 0;
+  }
+  .tl-link {
+    position: absolute;
+    height: 1px;
+    width: 3.5rem;
+    background: linear-gradient(90deg, rgb(161 161 170 / 0.6), transparent);
+    transform: scaleX(0);
+    transition: transform 0.6s var(--ease) 0.35s;
+  }
+  .tl-link.right-full {
+    background: linear-gradient(270deg, rgb(161 161 170 / 0.6), transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tl-link {
+      transform: scaleX(1);
+    }
+  }
+
+  .tl-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 15rem;
+    background: rgb(9 9 11 / 0.62);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+    transition: transform 0.35s var(--ease), border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  @media (max-width: 767px) {
+    .tl-card {
+      background: #09090b;
+    }
+  }
+  .tl-card:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 255 255 / 0.28);
+    box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  }
+  .tl-spot {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.09), transparent 45%);
+    transition: opacity 0.35s ease;
+  }
+  .tl-card:hover .tl-spot {
+    opacity: 1;
   }
 
   /* Home ----------------------------------------------------------------- */

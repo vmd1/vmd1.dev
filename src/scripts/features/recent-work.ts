@@ -3,6 +3,7 @@ import { profile } from '../../config/site';
 import { escapeHtml, truncate } from '../../lib/text';
 import { fetchGitHub, githubUrls, type Repo } from '../github';
 import { onPageLoad } from '../lifecycle';
+import { observeReveals } from '../ui/motion';
 
 interface TimelinePost {
   title: string;
@@ -71,12 +72,12 @@ function techStack(item: TimelineItem): string {
       const icon = TECH_ICONS[tech.toLowerCase().trim()];
       if (icon) return `<i class="${icon} text-lg" title="${escapeHtml(tech)}"></i>`;
       return item.isProject
-        ? `<span class="bg-zinc-800/50 text-zinc-300 px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap">${escapeHtml(tech)}</span>`
+        ? `<span class="bg-white/5 text-zinc-300 px-2 py-0.5 rounded-full text-[11px] whitespace-nowrap">${escapeHtml(tech)}</span>`
         : '';
     })
     .filter(Boolean)
-    .slice(0, 6);
-  return chips.length ? `<div class="flex flex-wrap gap-2 mt-2">${chips.join('')}</div>` : '';
+    .slice(0, 5);
+  return chips.length ? `<div class="flex flex-wrap items-center gap-2">${chips.join('')}</div>` : '';
 }
 
 function card(item: TimelineItem): string {
@@ -84,30 +85,35 @@ function card(item: TimelineItem): string {
   const stars =
     item.stars === null
       ? ''
-      : `<span class="flex items-center gap-1 mr-2 text-yellow-500"><i class="ri-star-fill"></i> ${item.stars}</span>`;
+      : `<span class="flex items-center gap-1 text-yellow-500"><i class="ri-star-fill"></i>${item.stars}</span>`;
   return `
-    <a href="${escapeHtml(item.link)}"${external} class="block card p-6 rounded-2xl bg-zinc-950/55 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/30 transition-all duration-300 hover:-translate-y-1 hover:bg-zinc-900/65 hover:border-white/20 hover:shadow-2xl hover:shadow-black/40 group decoration-0">
-      <span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-200 mb-3">${escapeHtml(monthDay.format(item.date))} · ${escapeHtml(item.type)}</span>
-      <h3 class="text-xl font-semibold text-gray-100 mb-3 group-hover:text-gray-100 transition-colors">${escapeHtml(item.title)}</h3>
-      <p class="text-body text-sm text-truncate-3 leading-relaxed mb-4">${escapeHtml(truncate(item.description, 150))}</p>
-      <div class="flex items-end justify-between gap-3">
-        <div class="flex flex-wrap gap-2">${techStack(item)}</div>
-        <div class="flex items-center text-meta text-[11px] font-mono shrink-0 ml-2">
-          <span class="flex items-center gap-1 mr-2">${stars}</span>
-          <i class="${item.icon} text-lg text-gray-300/70"></i>
+    <a href="${escapeHtml(item.link)}"${external} class="tl-card spot group block p-6 rounded-2xl decoration-0">
+      <span class="tl-spot" aria-hidden="true"></span>
+      <div class="relative flex items-center justify-between mb-4">
+        <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-200">${escapeHtml(monthDay.format(item.date))}<span class="text-zinc-500">·</span>${escapeHtml(item.type)}</span>
+        <i class="${item.icon} text-xl text-gray-400 transition-colors duration-300 group-hover:text-gray-100"></i>
+      </div>
+      <h3 class="relative text-xl font-semibold text-gray-100 mb-2 leading-snug">${escapeHtml(item.title)}</h3>
+      <p class="relative text-body text-sm text-truncate-3 leading-relaxed mb-5">${escapeHtml(truncate(item.description, 150))}</p>
+      <div class="relative flex items-center justify-between gap-3 mt-auto">
+        ${techStack(item) || '<span></span>'}
+        <div class="flex items-center gap-3 text-meta text-xs shrink-0">
+          ${stars}
+          <span aria-hidden="true" class="text-base text-gray-300 opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">→</span>
         </div>
       </div>
     </a>`;
 }
 
-function row(item: TimelineItem, index: number): string {
+function row(item: TimelineItem, index: number, animate: boolean): string {
   const left = index % 2 === 0;
+  const reveal = animate ? ` data-reveal="${left ? 'left' : 'right'}"` : '';
   return `
-    <div class="timeline-row relative flex flex-col md:flex-row w-full ${left ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0">
+    <div class="timeline-row relative flex flex-col md:flex-row w-full ${left ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-12 md:mb-0"${reveal}>
       <div class="w-full md:w-[45%] ${left ? 'md:pr-12' : 'md:pl-12'}">${card(item)}</div>
-      <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-10 h-10 z-20">
-        <div class="w-3.5 h-3.5 rounded-full bg-zinc-300 ring-4 ring-zinc-950/90"></div>
-        <div class="absolute ${left ? 'right-full' : 'left-full'} h-px w-14 bg-linear-to-r ${left ? 'from-transparent to-zinc-400/60' : 'from-zinc-400/60 to-transparent'}"></div>
+      <div class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center w-10 h-10 z-20" aria-hidden="true">
+        <span class="tl-dot"></span>
+        <span class="tl-link ${left ? 'right-full origin-right' : 'left-full origin-left'}"></span>
       </div>
       <div class="hidden md:block w-full md:w-[45%]"></div>
     </div>`;
@@ -115,12 +121,25 @@ function row(item: TimelineItem, index: number): string {
 
 async function loadProjects(user: string): Promise<{ projects: Repo[]; ok: boolean }> {
   try {
-    const [owned, starred] = await Promise.all([
-      fetchGitHub<Repo[]>(githubUrls.ownRepos(user), { ttlMs: 20 * 60 * 1000 }),
-      fetchGitHub<Repo[]>(githubUrls.starred(user), { ttlMs: 20 * 60 * 1000 }),
+    const ttlMs = 20 * 60 * 1000;
+    const [owned, starred, orgs] = await Promise.all([
+      fetchGitHub<Repo[]>(githubUrls.ownRepos(user), { ttlMs }),
+      fetchGitHub<Repo[]>(githubUrls.starred(user), { ttlMs }),
+      // Org lookups are best-effort: a failure here shouldn't hide personal projects.
+      fetchGitHub<{ login: string }[]>(githubUrls.orgs(user), { ttlMs }).catch(() => ({ data: [] as { login: string }[] })),
     ]);
+    const orgRepos = await Promise.all(
+      orgs.data.map((org) =>
+        fetchGitHub<Repo[]>(githubUrls.orgRepos(org.login), { ttlMs })
+          .then(({ data }) => data)
+          .catch(() => [] as Repo[]),
+      ),
+    );
+    // Featured = non-fork repos you've starred, whether they're yours or in one of your orgs.
     const starredIds = new Set(starred.data.map((repo) => repo.id));
-    return { projects: owned.data.filter((repo) => !repo.fork && starredIds.has(repo.id)), ok: true };
+    const unique = new Map<number, Repo>();
+    for (const repo of [...owned.data, ...orgRepos.flat()]) unique.set(repo.id, repo);
+    return { projects: [...unique.values()].filter((repo) => !repo.fork && starredIds.has(repo.id)), ok: true };
   } catch {
     return { projects: [], ok: false };
   }
@@ -134,7 +153,11 @@ onPageLoad(async () => {
 
   const posts = JSON.parse(postsJson.textContent || '[]') as TimelinePost[];
 
-  const render = (projects: Repo[], githubOk: boolean) => {
+  const render = (allProjects: Repo[], githubOk: boolean, animate: boolean) => {
+    // Show no more projects than posts, preferring the newest.
+    const projects = [...allProjects]
+      .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+      .slice(0, posts.length);
     const items: TimelineItem[] = [
       ...projects.map((repo) => ({
         isProject: true,
@@ -165,12 +188,24 @@ onPageLoad(async () => {
         ? ''
         : '<div class="mb-6 flex items-center justify-center gap-2 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-200"><i class="ri-error-warning-line text-base text-yellow-300"></i><span>GitHub API is unavailable, showing posts only (project data unavailable).</span></div>';
     }
-    container.innerHTML = items.map(row).join('');
+    container.innerHTML = items.map((item, index) => row(item, index, animate)).join('');
+    observeReveals(container);
     document.getElementById('timeline-line')?.classList.remove('hidden');
   };
 
-  // Posts are already on the page, so show them immediately and merge projects in when GitHub answers.
-  render([], true);
-  const { projects, ok } = await loadProjects(profile.githubUsername);
-  if (container.isConnected && (projects.length || !ok)) render(projects, ok);
+  // Wait briefly for GitHub so the timeline renders (and animates) once. If it is slow, show the
+  // posts now and merge the projects in later without replaying the entrance.
+  const projectsPromise = loadProjects(profile.githubUsername);
+  const first = await Promise.race([
+    projectsPromise,
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), 1200)),
+  ]);
+  if (!container.isConnected) return;
+  if (first) {
+    render(first.projects, first.ok, true);
+    return;
+  }
+  render([], true, true);
+  const { projects, ok } = await projectsPromise;
+  if (container.isConnected && (projects.length || !ok)) render(projects, ok, false);
 });
